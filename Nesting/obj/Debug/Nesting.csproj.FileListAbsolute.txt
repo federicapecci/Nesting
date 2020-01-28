@@ -5,3 +5,6 @@ C:\Users\stage_fpecci\source\repos\Nesting\Nesting\bin\Debug\Nesting.exe
 C:\Users\stage_fpecci\source\repos\Nesting\Nesting\bin\Debug\Nesting.pdb
 C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.exe
 C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.pdb
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.csprojAssemblyReference.cache
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.exe
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.pdb

@@ -8,9 +8,9 @@ namespace Nesting
 {
     class Triple 
     {
-        public int Pposition { get; set; } = 0;
+        public float Pposition { get; set; } = 0;
 
-        public int Qposition { get; set; } = 0;
+        public float Qposition { get; set; } = 0;
 
         public bool Rotation { get; set; } = false;
 

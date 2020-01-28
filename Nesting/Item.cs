@@ -18,17 +18,17 @@ namespace Nesting
         /// <summary>
         /// altezza dell'item
         /// </summary>
-        public int Height { get; set; } = 0;
+        public float Height { get; set; } = 0;
 
         /// <summary>
         /// lunghezza dell'item
         /// </summary>
-        public int Width { get; set; } = 0;
+        public float Width { get; set; } = 0;
 
         /// <summary>
         /// costo v dell'item
         /// </summary>
-        public int Price { get; set; } = 0;
+        public float Price { get; set; } = 0;
 
         public bool IsRemoved { get; set; } = false;
 

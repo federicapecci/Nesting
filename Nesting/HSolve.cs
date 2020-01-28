@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,18 +13,20 @@ namespace Nesting
         {
             Console.WriteLine("Algorithm started");
 
-        //================ STEP 1 - INITIALIZATION ================
+            //================ STEP 1 - INITIALIZATION ================
 
+            
             IList<Item> items = new List<Item>();
             int itemNumber = 5;
+          
             for (int k = 0; k < itemNumber; k++)
             {
                 items.Add(new Item()
                 {
-                    Id = k,
-                    Price = 4,
+                    Id = k,                   
                     Height = 2,
                     Width = 2,
+                    Price = 4,
                     IsRemoved = false
                 });
             }
@@ -51,10 +54,12 @@ namespace Nesting
 
             int zStar = itemNumber;
             int iter = 0;
+            float lowerBound = ComputeLowerBound(items, bins[0].Width, bins[0].Height);
+            int maxIter = 100;
 
-        //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
+            //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
-            //creo una lista temporanea di item (che sarebbe J')
+      l3:   //creo una lista temporanea di item (che sarebbe J')
             IList<Item> temporaryItems = new List<Item>();
             //assegno la lista di item J a J'
             temporaryItems = items;
@@ -122,7 +127,7 @@ namespace Nesting
 
         //================ STEP 6 - CHECK OPTIMALITY ================
 
-            if (zStar == L)
+            if (zStar == lowerBound)
             {
                 goto end;
             }
@@ -133,13 +138,19 @@ namespace Nesting
             {
                 goto end;
             }
+            else
+            {
+                UpdatePrice(z, items);
+                iter += 1;
+                goto l3;
+            }
 
         end: Console.WriteLine("Algorithm ended");
         }
 
         private bool IsBestPositionFound(Bin temporaryBin, Item temporaryItem)
         {
-
+            bool result = false;
             //trovo la posizione per il primo elemento del bin
             if (temporaryBin.OrientedItems == null)
             {
@@ -162,7 +173,8 @@ namespace Nesting
                     Qposition = 0
                 });
                 temporaryItem.IsRemoved = true;
-                return true;
+                result = true;
+                return result;
             }
             else
             {
@@ -201,8 +213,43 @@ namespace Nesting
                     Qposition = triple.Qposition + temporaryItem.Height
                 });
                 temporaryItem.IsRemoved = true;
-                return true;
+                result = true;
+                return result;
             }
+        }
+
+        /// <summary>
+        /// this method computes the continuos lower bound L0
+        /// (ref. pag 29 part I of the paper)
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="binWidth"></param>
+        /// <param name="binHeight"></param>
+        /// <returns></returns>
+        private float ComputeLowerBound(IList<Item> items, int binWidth, int binHeight)
+        {
+            float result = 0F;
+
+            foreach (var item in items)
+            {
+                result += item.Price;
+            }
+
+            result /= (binWidth * binHeight);
+
+            return result;
+        }
+
+        private void UpdatePrice(int z, IList<Item> items)
+        {
+            float alpha = 0.9F;
+            float beta = 1.1F;
+
+            foreach(var item in items)
+            {
+                item.Price = alpha * item.Price;
+            }
+
         }
     }
 }
