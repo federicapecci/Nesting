@@ -1,0 +1,7 @@
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.csprojAssemblyReference.cache
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.csproj.CoreCompileInputs.cache
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\bin\Debug\Nesting.exe.config
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\bin\Debug\Nesting.exe
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\bin\Debug\Nesting.pdb
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.exe
+C:\Users\stage_fpecci\source\repos\Nesting\Nesting\obj\Debug\Nesting.pdb
