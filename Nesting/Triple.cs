@@ -23,5 +23,13 @@ namespace Nesting
             Rotation = false;
             IsUsed = false;
         }
+
+        public Triple(Triple triple)
+        {
+            Pposition = triple.Pposition;
+            Qposition = triple.Qposition;
+            Rotation = triple.Rotation;
+            IsUsed = triple.IsUsed;
+        }
     }
 }

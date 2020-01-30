@@ -8,7 +8,6 @@ namespace Nesting
 {
     class Item
     {
-        private Item item;
 
         /// <summary>
         /// identificativo dell'item
@@ -29,14 +28,17 @@ namespace Nesting
         /// costo v dell'item
         /// </summary>
         public float Price { get; set; } = 0;
-
         public bool IsRemoved { get; set; } = false;
 
         public Item(){}
 
         public Item(Item item)
         {
-            this.item = item;
+            Id = item.Id;
+            Height = item.Height;
+            Width = item.Width;
+            Price = item.Price;
+            IsRemoved = item.IsRemoved;
         }
     }
 }
