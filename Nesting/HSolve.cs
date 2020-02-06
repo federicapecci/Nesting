@@ -38,12 +38,11 @@ namespace Nesting
                     Id = k,
                     Height = 5,
                     Width = 7,
-                    OrientedItems = new List<OrientedItem>()
+                    OrientedItems = new List<Nestedtem>()
                     {
-                        new OrientedItem(items.ElementAt(k)){
+                        new Nestedtem(items.ElementAt(k)){
                             Pposition = 0,
-                            Qposition = 0,
-                            Rotation = false,
+                            Qposition = 0
                         }
                     },
                     Points = new List<Tuple>()

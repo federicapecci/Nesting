@@ -41,13 +41,12 @@ namespace Nesting
             }
             else if (temporaryBin.Points.Count == 1) //se il bin contiene 1 sola tripla
             {
-                temporaryBin.OrientedItems = new List<OrientedItem>
+                temporaryBin.OrientedItems = new List<Nestedtem>
                 {
-                    new OrientedItem(temporaryItem)
+                    new Nestedtem(temporaryItem)
                     {
                         Pposition = 0,
-                        Qposition = 0,
-                        Rotation = false,
+                        Qposition = 0
                     }
                 };
                 temporaryBin.Points.ElementAt(0).IsUsed = true;

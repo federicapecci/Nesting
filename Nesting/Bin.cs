@@ -26,7 +26,7 @@ namespace Nesting
         /// <summary>
         /// lista di item all'interno del bin
         /// </summary>
-        public IList<OrientedItem> OrientedItems { get; set; } = null;
+        public IList<NestedItem> NestedItems { get; set; } = null;
 
         /// <summary>
         /// lista di triple in cui è possibile nestare il nuovo item 

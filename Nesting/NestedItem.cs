@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    class OrientedItem : Item
+    class Nestedtem : Item
     {
         /// <summary>
         /// coordinata P di aggancio dell'item
@@ -18,18 +18,12 @@ namespace Nesting
         /// </summary>
         public float Qposition { get; set; } = 0;
 
-        /// <summary>
-        /// campo che rappresenta la rotazione dell'item 
-        /// </summary>
-        public bool Rotation { get; set; } = false;
-
-        public OrientedItem(Item item) : base(item)  {
+        public Nestedtem(Item item) : base(item)  {
             Pposition = 0;
             Qposition = 0;
-            Rotation = false;
         }
 
-        public OrientedItem()
+        public Nestedtem()
         {
         }
     }
