@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    class FeasibleTriple : Triple
+    class EnrichedTuple : Tuple
     {
         /// <summary>
         /// questo campo stabilisce se una determinata 
@@ -14,8 +14,11 @@ namespace Nesting
         /// </summary>
         public bool IsFeasible { get; set; } = false;
 
-        public FeasibleTriple(Triple triple) : base(triple) {
+        public float HatchedRegion { get; set; } = 0;
+
+        public EnrichedTuple(Tuple tuple) : base(tuple) {
             IsFeasible = false;
+            HatchedRegion = 0;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    class Bin
+    class Bin<X>
     {
         /// <summary>
         /// identificativo del bin
@@ -31,7 +31,7 @@ namespace Nesting
         /// <summary>
         /// lista di triple in cui è possibile nestare il nuovo item 
         /// </summary>
-        public IList<Triple> Triples { get; set; } = null;
+        public IList<X> Points { get; set; } = null;
 
     }
 }

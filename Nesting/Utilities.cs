@@ -30,16 +30,16 @@ namespace Nesting
             return result;
         }
 
-        public bool IsBestPositionFound(Bin temporaryBin, Item temporaryItem)
+        public bool IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            IList<FeasibleTriple> feasibleTriples = SetFeasibleTriples(temporaryBin, temporaryItem);
+            IList<EnrichedTuple> feasibleTriples = SetFeasibleTriples(temporaryBin, temporaryItem);
 
             //se il bin non contiene triple
-            if (temporaryBin.Triples.Count == 0)
+            if (temporaryBin.Points.Count == 0)
             {
                 return false;
             }
-            else if (temporaryBin.Triples.Count == 1) //se il bin contiene 1 sola tripla
+            else if (temporaryBin.Points.Count == 1) //se il bin contiene 1 sola tripla
             {
                 temporaryBin.OrientedItems = new List<OrientedItem>
                 {
@@ -50,37 +50,19 @@ namespace Nesting
                         Rotation = false,
                     }
                 };
-                temporaryBin.Triples.ElementAt(0).IsUsed = true;
+                temporaryBin.Points.ElementAt(0).IsUsed = true;
 
-                temporaryBin.Triples.Add(new Triple()
+                temporaryBin.Points.Add(new Tuple()
                 {
                     Pposition = 0,
                     Qposition = temporaryItem.Height,
-                    Rotation = false,
                     IsUsed = false
                 });
 
-                temporaryBin.Triples.Add(new Triple()
-                {
-                    Pposition = 0,
-                    Qposition = temporaryItem.Height,
-                    Rotation = true,
-                    IsUsed = false
-                });
-
-                temporaryBin.Triples.Add(new Triple()
+                temporaryBin.Points.Add(new Tuple()
                 {
                     Pposition = temporaryItem.Width,
                     Qposition = 0,
-                    Rotation = false,
-                    IsUsed = false
-                });
-
-                temporaryBin.Triples.Add(new Triple()
-                {
-                    Pposition = temporaryItem.Width,
-                    Qposition = 0,
-                    Rotation = true,
                     IsUsed = false
                 });
 
@@ -97,10 +79,10 @@ namespace Nesting
 
                 //trovo la tripla con lo scarto minore
                 //https://stackoverflow.com/questions/914109/how-to-use-linq-to-select-object-with-minimum-or-maximum-property-value
-                Triple minHatchedRegionTriple = feasibleTriples.OrderBy(x => x.HatchedRegion.GetValueOrDefault(DateTime.MaxValue)).First());
+                EnrichedTuple minHatchedRegionTriple = feasibleTriples.OrderBy(x => x.HatchedRegion).First();
 
                 //controllo se ho più triple che hanno lo stesso scarto (il minore)
-                IList<FeasibleTriple> minHatchedRegionTriples = new List<FeasibleTriple>();
+                IList<EnrichedTuple> minHatchedRegionTriples = new List<EnrichedTuple>();
                 foreach (var feasibleTriple in feasibleTriples)
                 {
                     if (feasibleTriple.HatchedRegion == minHatchedRegionTriple.HatchedRegion)
@@ -115,9 +97,10 @@ namespace Nesting
                 }
                 else if (minHatchedRegionTriples.Count > 1)
                 {
-                    Triple triple = ApplyRule(minHatchedRegionTriples);
+                    Tuple triple = ApplyRule(minHatchedRegionTriples);
                     return true;
                 }
+                return false;
             }
         }
 
@@ -127,7 +110,7 @@ namespace Nesting
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void UpdatePrice(int z, IList<Item> items, Bin temporaryBin)
+        public void UpdatePrice(int z, IList<Item> items, Bin<Tuple> temporaryBin)
         {
             float alpha = 0.9F;
             float beta = 1.1F;
@@ -152,21 +135,21 @@ namespace Nesting
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private IList<FeasibleTriple> SetFeasibleTriples(Bin temporaryBin, Item temporaryItem)
+        private IList<EnrichedTuple> SetFeasibleTriples(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            IList<FeasibleTriple> result = new List<FeasibleTriple>();
-            foreach(var triple in temporaryBin.Triples)
+            IList<EnrichedTuple> result = new List<EnrichedTuple>();
+            foreach(var point in temporaryBin.Points)
             {
                 //se la tripla non è ancora stata usata &&
                 //la dimensione dell'item non va oltre la dimensione del bin se considero le coordinate p e q della tripla ||
                 //la tripla non rappresenta un punto che coincide con gli angoli del bin
-                if (!triple.IsUsed &&
-                    ((temporaryItem.Width <  triple.Pposition && temporaryItem.Height < triple.Qposition) ||
-                    (triple.Pposition != 0 && triple.Qposition != temporaryItem.Height) ||
-                    (triple.Pposition != temporaryItem.Width && triple.Qposition != temporaryItem.Height) ||
-                    (triple.Pposition != temporaryItem.Width && triple.Qposition != 0)))
+                if (!point.IsUsed &&
+                    ((temporaryItem.Width < point.Pposition && temporaryItem.Height < point.Qposition) ||
+                    (point.Pposition != 0 && point.Qposition != temporaryItem.Height) ||
+                    (point.Pposition != temporaryItem.Width && point.Qposition != temporaryItem.Height) ||
+                    (point.Pposition != temporaryItem.Width && point.Qposition != 0)))
                 {
-                    result.Add(new FeasibleTriple(triple)
+                    result.Add(new EnrichedTuple(point)
                     {
                         IsFeasible = true
                     });       
@@ -179,9 +162,9 @@ namespace Nesting
         /// TO DO
         /// </summary>
         /// <returns></returns>
-        private float ComputeHatchedRegion(FeasibleTriple feasibleTriple, Bin temporaryBin, Item temporaryItem)
+        private float ComputeHatchedRegion(EnrichedTuple feasibleTriple, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            return 0F;
+            return 0;
         }
 
         /// <summary>
@@ -195,10 +178,10 @@ namespace Nesting
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
-        private Triple ApplyRule(IList<FeasibleTriple> minHatchedRegionTriples)
+        private Tuple ApplyRule(IList<EnrichedTuple> minHatchedRegionTriples)
         {
-            Triple result = null;
-            IList<FeasibleTriple> pMinTriples = new List<FeasibleTriple>();
+            Tuple result = null;
+            IList<EnrichedTuple> pMinTriples = new List<EnrichedTuple>();
             float pMin = minHatchedRegionTriples.OrderBy(x => x.Pposition).First().Pposition;
 
             foreach (var minHatchedRegionTriple in minHatchedRegionTriples)
@@ -215,7 +198,7 @@ namespace Nesting
             }
             else
             {
-                IList<FeasibleTriple> qMinTriples = pMinTriples;
+                IList<EnrichedTuple> qMinTriples = pMinTriples;
                 float qMin = qMinTriples.OrderBy(x => x.Qposition).First().Qposition;
                 foreach (var qMinTriple in qMinTriples)
                 {
@@ -229,9 +212,9 @@ namespace Nesting
                     result = qMinTriples.ElementAt(0);
                    
                 }
-                else
+                /*else
                 {
-                    IList<FeasibleTriple> rMinTriples = qMinTriples;
+                    IList<EnrichedTuple> rMinTriples = qMinTriples;
                     bool rMin = rMinTriples.OrderBy(x => x.Rotation).First().Rotation;
                     foreach (var rMinTriple in rMinTriples)
                     {
@@ -241,7 +224,7 @@ namespace Nesting
                         }
                     }
                     result = rMinTriples.ElementAt(0);
-                }
+                }*/
             }
             return result;
         }

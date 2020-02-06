@@ -29,11 +29,11 @@ namespace Nesting
                 });
             }
 
-            IList<Bin> bins = new List<Bin>();
+            IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
             //alloco ogni item j in un bin diverso
             for (int k = 0; k < itemNumber; k++)
             {
-                var bin = new Bin()
+                var bin = new Bin<Tuple>()
                 {
                     Id = k,
                     Height = 5,
@@ -46,20 +46,18 @@ namespace Nesting
                             Rotation = false,
                         }
                     },
-                    Triples = new List<Triple>()
+                    Points = new List<Tuple>()
                     {
-                        new Triple()
+                        new Tuple()
                         {
                             Pposition = 0,
                             Qposition = 2,
-                            Rotation = false,
                             IsUsed = false
                         },
-                        new Triple()
+                        new Tuple()
                         {
                             Pposition = 2,
                             Qposition = 0,
-                            Rotation = false,
                             IsUsed = false
                         }
                     }
@@ -83,23 +81,22 @@ namespace Nesting
             int i = 0;
 
             //creo tanti bin temporanei quanti sono gli item
-            IList<Bin> temporaryBins = new List<Bin>();
+            IList<Bin<Tuple>> temporaryBins = new List<Bin<Tuple>>();
 
             for (int k = 0; k < itemNumber; k++)
             {
-                var temporaryBin = new Bin()
+                var temporaryBin = new Bin<Tuple>()
                 {
                     Id = k,
                     Height = 5,
                     Width = 7,
                     OrientedItems = null,
-                    Triples = new List<Triple>()
+                    Points = new List<Tuple>()
                     {
-                        new Triple()
+                        new Tuple()
                         {
                             Pposition = 0,
                             Qposition = 0,
-                            Rotation = false,
                             IsUsed = false
                         }
                     }

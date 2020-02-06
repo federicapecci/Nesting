@@ -6,29 +6,25 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    class Triple 
+    class Tuple 
     {
         public float Pposition { get; set; } = 0;
 
         public float Qposition { get; set; } = 0;
 
-        public bool Rotation { get; set; } = false;
-
         public bool IsUsed { get; set; } = false;
 
-        public Triple() 
+        public Tuple() 
         {
             Pposition = 0;
             Qposition = 0;
-            Rotation = false;
             IsUsed = false;
         }
 
-        public Triple(Triple triple)
+        public Tuple(Tuple triple)
         {
             Pposition = triple.Pposition;
             Qposition = triple.Qposition;
-            Rotation = triple.Rotation;
             IsUsed = triple.IsUsed;
         }
     }

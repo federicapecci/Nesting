@@ -10,9 +10,9 @@ namespace Nesting
     {
         float ComputeLowerBound(IList<Item> items, int binWidth, int binHeight);
 
-        bool IsBestPositionFound(Bin temporaryBin, Item temporaryItem);
+        bool IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem);
 
-        void UpdatePrice(int z, IList<Item> items, Bin temporaryBin);
+        void UpdatePrice(int z, IList<Item> items, Bin<Tuple> temporaryBin);
 
     }
 }
