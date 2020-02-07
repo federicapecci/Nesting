@@ -38,9 +38,9 @@ namespace Nesting
                     Id = k,
                     Height = 5,
                     Width = 7,
-                    OrientedItems = new List<Nestedtem>()
+                    NestedItems = new List<NestedItem>()
                     {
-                        new Nestedtem(items.ElementAt(k)){
+                        new NestedItem(items.ElementAt(k)){
                             Pposition = 0,
                             Qposition = 0
                         }
@@ -89,7 +89,7 @@ namespace Nesting
                     Id = k,
                     Height = 5,
                     Width = 7,
-                    OrientedItems = null,
+                    NestedItems = null,
                     Points = new List<Tuple>()
                     {
                         new Tuple()

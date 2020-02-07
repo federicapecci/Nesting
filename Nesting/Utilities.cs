@@ -32,18 +32,18 @@ namespace Nesting
 
         public bool IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            IList<EnrichedTuple> feasibleTriples = SetFeasibleTriples(temporaryBin, temporaryItem);
+            IList<EnrichedTuple> feasiblePoints = SetFeasiblePoints(temporaryBin, temporaryItem);
 
-            //se il bin non contiene triple
+            //se il bin non contiene punti
             if (temporaryBin.Points.Count == 0)
             {
                 return false;
             }
             else if (temporaryBin.Points.Count == 1) //se il bin contiene 1 sola tripla
             {
-                temporaryBin.OrientedItems = new List<Nestedtem>
+                temporaryBin.NestedItems = new List<NestedItem>
                 {
-                    new Nestedtem(temporaryItem)
+                    new NestedItem(temporaryItem)
                     {
                         Pposition = 0,
                         Qposition = 0
@@ -68,39 +68,38 @@ namespace Nesting
                 temporaryItem.IsRemoved = true;
                 return true;
             }
-            else //se il bin contiene n triple
+            else //se il bin contiene n 
             {
-                foreach (var feasibleTriple in feasibleTriples)
+                foreach (var feasiblePoint in feasiblePoints)
                 {
-                    //calcolo lo scarto potenziale di tale tripla
-                    feasibleTriple.HatchedRegion = ComputeHatchedRegion(feasibleTriple, temporaryBin, temporaryItem);
+                    CompactItems(feasiblePoint, temporaryBin, temporaryItem);
                 }
 
                 //trovo la tripla con lo scarto minore
                 //https://stackoverflow.com/questions/914109/how-to-use-linq-to-select-object-with-minimum-or-maximum-property-value
-                EnrichedTuple minHatchedRegionTriple = feasibleTriples.OrderBy(x => x.HatchedRegion).First();
+                EnrichedTuple minHatchedRegionTriple = feasiblePoints.OrderBy(x => x.HatchedRegion).First();
 
                 //controllo se ho più triple che hanno lo stesso scarto (il minore)
-                IList<EnrichedTuple> minHatchedRegionTriples = new List<EnrichedTuple>();
-                foreach (var feasibleTriple in feasibleTriples)
+                IList<EnrichedTuple> minHatchedRegionPoints = new List<EnrichedTuple>();
+                foreach (var feasiblePoint in feasiblePoints)
                 {
-                    if (feasibleTriple.HatchedRegion == minHatchedRegionTriple.HatchedRegion)
+                    if (feasiblePoint.HatchedRegion == minHatchedRegionTriple.HatchedRegion)
                     {
-                        minHatchedRegionTriples.Add(feasibleTriple);
+                        minHatchedRegionPoints.Add(feasiblePoint);
                     }
                 }
 
-                if (minHatchedRegionTriples.Count == 1)
+                if (minHatchedRegionPoints.Count == 1)
                 {
                     return true;
                 }
-                else if (minHatchedRegionTriples.Count > 1)
+                else if (minHatchedRegionPoints.Count > 1)
                 {
-                    Tuple triple = ApplyRule(minHatchedRegionTriples);
+                    Tuple point = ApplyRule(minHatchedRegionPoints);
                     return true;
                 }
                 return false;
-            }
+            }  
         }
 
         /// <summary>
@@ -134,17 +133,15 @@ namespace Nesting
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private IList<EnrichedTuple> SetFeasibleTriples(Bin<Tuple> temporaryBin, Item temporaryItem)
+        private IList<EnrichedTuple> SetFeasiblePoints(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
             IList<EnrichedTuple> result = new List<EnrichedTuple>();
             foreach(var point in temporaryBin.Points)
             {
                 //se la tripla non è ancora stata usata &&
-                //la dimensione dell'item non va oltre la dimensione del bin se considero le coordinate p e q della tripla ||
                 //la tripla non rappresenta un punto che coincide con gli angoli del bin
                 if (!point.IsUsed &&
-                    ((temporaryItem.Width < point.Pposition && temporaryItem.Height < point.Qposition) ||
-                    (point.Pposition != 0 && point.Qposition != temporaryItem.Height) ||
+                    ((point.Pposition != 0 && point.Qposition != temporaryItem.Height) ||
                     (point.Pposition != temporaryItem.Width && point.Qposition != temporaryItem.Height) ||
                     (point.Pposition != temporaryItem.Width && point.Qposition != 0)))
                 {
@@ -226,6 +223,19 @@ namespace Nesting
                 }*/
             }
             return result;
+        }
+
+        /// <summary>
+        /// this method tries to push an item down and towards the left
+        /// as much as possible. 
+        /// Then, it computes the hatched region (bottom and 
+        /// left area left empty) for the item.
+        /// </summary>
+        private void CompactItems(EnrichedTuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
+        {
+            //push down 
+            //push left
+            feasiblePoint.HatchedRegion = ComputeHatchedRegion(feasiblePoint, temporaryBin, temporaryItem);
         }
     }
 }

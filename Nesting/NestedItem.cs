@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    class Nestedtem : Item
+    class NestedItem : Item
     {
         /// <summary>
         /// coordinata P di aggancio dell'item
@@ -18,12 +18,13 @@ namespace Nesting
         /// </summary>
         public float Qposition { get; set; } = 0;
 
-        public Nestedtem(Item item) : base(item)  {
+        public NestedItem(Item item) : base(item)
+        {
             Pposition = 0;
             Qposition = 0;
         }
 
-        public Nestedtem()
+        public NestedItem()
         {
         }
     }
