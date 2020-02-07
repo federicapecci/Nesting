@@ -24,12 +24,12 @@ namespace Nesting
         public int Width { get; set; } = 0;
 
         /// <summary>
-        /// lista di item all'interno del bin
+        /// lista di item nestati all'interno del bin
         /// </summary>
         public IList<NestedItem> NestedItems { get; set; } = null;
 
         /// <summary>
-        /// lista di triple in cui è possibile nestare il nuovo item 
+        /// lista di punti contenuti nel bin 
         /// </summary>
         public IList<X> Points { get; set; } = null;
 

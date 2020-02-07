@@ -67,12 +67,12 @@ namespace Nesting
 
                 temporaryItem.IsRemoved = true;
                 return true;
-            }
+            }   
             else //se il bin contiene n 
             {
                 foreach (var feasiblePoint in feasiblePoints)
                 {
-                    CompactItems(feasiblePoint, temporaryBin, temporaryItem);
+                    feasiblePoint.HatchedRegion = GetHatchedRegion();
                 }
 
                 //trovo la tripla con lo scarto minore
@@ -155,10 +155,14 @@ namespace Nesting
         }
 
         /// <summary>
-        /// TO DO
+        /// Given the item starting position, this method tries 
+        /// to push an item down and towards the left
+        /// as much as possible (compatting items). 
+        /// Then, according to its final position, 
+        /// it computes the hatched region (bottom and 
+        /// left area left empty) of the item.
         /// </summary>
-        /// <returns></returns>
-        private float ComputeHatchedRegion(EnrichedTuple feasibleTriple, Bin<Tuple> temporaryBin, Item temporaryItem)
+        private float GetHatchedRegion(EnrichedTuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
             return 0;
         }
@@ -225,17 +229,7 @@ namespace Nesting
             return result;
         }
 
-        /// <summary>
-        /// this method tries to push an item down and towards the left
-        /// as much as possible. 
-        /// Then, it computes the hatched region (bottom and 
-        /// left area left empty) for the item.
-        /// </summary>
-        private void CompactItems(EnrichedTuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
-        {
-            //push down 
-            //push left
-            feasiblePoint.HatchedRegion = ComputeHatchedRegion(feasiblePoint, temporaryBin, temporaryItem);
-        }
+       
+       
     }
 }

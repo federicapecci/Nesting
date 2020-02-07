@@ -66,7 +66,7 @@ namespace Nesting
 
             int zStar = itemNumber;
             int iter = 0;
-            float lowerBound = utilities.ComputeLowerBound(items, bins[0].Width, bins[0].Height);
+            float lowerBound = 0;
             int maxIter = 100;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
@@ -115,7 +115,7 @@ namespace Nesting
                 }
             }
 
-            //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
+        //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
 
             int z = i;
             bool isTemporaryItemsEmpty = temporaryItems.Any(x => x.IsRemoved == true);
@@ -135,7 +135,9 @@ namespace Nesting
         l0: zStar = z;
             bins[i] = temporaryBins[i];
 
-            //================ STEP 6 - CHECK OPTIMALITY ================
+        //================ STEP 6 - CHECK OPTIMALITY ================
+
+            lowerBound = utilities.ComputeLowerBound(items, bins[i].Width, bins[i].Height);
 
             if (zStar == lowerBound)
             {

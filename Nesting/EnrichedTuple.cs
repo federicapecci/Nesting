@@ -9,15 +9,26 @@ namespace Nesting
     class EnrichedTuple : Tuple
     {
         /// <summary>
-        /// questo campo stabilisce se una determinata 
-        /// tripla è accettabile per agganciare un item j
+        /// campo che rappresenta la coordinata p dell'item
+        /// dopo aver cercato di compattare gli item
         /// </summary>
-        public bool IsFeasible { get; set; } = false;
+        public float PfinalPosition { get; set; } = 0;
 
+        /// <summary>
+        /// campo che rappresenta la coordinata q dell'item
+        /// dopo aver cercato di compattare gli item
+        /// </summary>
+        public float QfinalPosition { get; set; } = 0;
+
+        /// <summary>
+        /// campo che rappresenta lo scarto potenziale in basso e a sinistra dell'item, 
+        /// dopo che si è cercato di compattare la soluzione
+        /// </summary>
         public float HatchedRegion { get; set; } = 0;
 
         public EnrichedTuple(Tuple tuple) : base(tuple) {
-            IsFeasible = false;
+            PfinalPosition = 0;
+            QfinalPosition = 0;
             HatchedRegion = 0;
         }
     }
