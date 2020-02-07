@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nesting
+/*namespace Nesting
 {
     class EnrichedTuple : Tuple
     {
@@ -32,4 +32,4 @@ namespace Nesting
             HatchedRegion = 0;
         }
     }
-}
+}*/

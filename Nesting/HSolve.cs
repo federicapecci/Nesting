@@ -7,6 +7,7 @@ namespace Nesting
 {
     class HSolve : IHSolve
     {
+        
         public void ComputeHeuristic()
         {
             Console.WriteLine("Algorithm started");

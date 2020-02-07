@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
+    /// <summary>
+    /// classe che rappresenta un contenitore
+    /// di item. E generico in X perche la lista 
+    /// di punti potrebbe essere sia di tuple che di triple
+    /// </summary>
+    /// <typeparam name="X"></typeparam>
     class Bin<X>
     {
         /// <summary>
