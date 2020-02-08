@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
+    /// <summary>
+    /// classe che contiene dei metodi utili 
+    /// per implementare l'euristica
+    /// </summary>
     class Utilities : IUtilities
     {
         /// <summary>
-        /// this method computes the continuos lower bound L0
-        /// (ref. pag 29 part I of the paper)
+        /// metodo per calcolare il lower bound
         /// </summary>
         /// <param name="items"></param>
         /// <param name="binWidth"></param>
@@ -18,7 +21,7 @@ namespace Nesting
         /// <returns></returns>
         public float ComputeLowerBound(IList<Item> items, int binWidth, int binHeight)
         {
-            float result = 0F;
+            float result = 0;
 
             foreach (var item in items)
             {
@@ -30,6 +33,14 @@ namespace Nesting
             return result;
         }
 
+        /// <summary>
+        /// metodo per stabilire se è possibile 
+        /// trovare una posizione in cui nestare
+        /// un nuovo item
+        /// </summary>
+        /// <param name="temporaryBin"></param>
+        /// <param name="temporaryItem"></param>
+        /// <returns></returns>
         public bool IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
             SetFeasiblePoints(temporaryBin, temporaryItem);
@@ -45,7 +56,7 @@ namespace Nesting
                 {
                     new NestedItem(temporaryItem)
                     {
-                        Pposition = 0,
+                        BLposition = 0,
                         Qposition = 0
                     }
                 };
@@ -55,14 +66,17 @@ namespace Nesting
                 {
                     Pposition = 0,
                     Qposition = temporaryItem.Height,
-                    IsUsed = false
+                    IsUsed = false,
+                    ItemReference = temporaryItem.Id
+
                 });
 
                 temporaryBin.Points.Add(new Tuple()
                 {
                     Pposition = temporaryItem.Width,
                     Qposition = 0,
-                    IsUsed = false
+                    IsUsed = false,
+                    ItemReference = temporaryItem.Id
                 });
 
                 temporaryItem.IsRemoved = true;
@@ -72,7 +86,7 @@ namespace Nesting
             {
                 foreach (var point in temporaryBin.Points)
                 {
-                    point.HatchedRegion = GetHatchedRegion();
+                    point.HatchedRegion = GetHatchedRegion(point, temporaryBin, temporaryItem);
                 }
 
                 //trovo la tripla con lo scarto minore
@@ -127,8 +141,8 @@ namespace Nesting
         }
 
         /// <summary>
-        /// questo metodo setta come usate le tuple generate che eccedono 
-        /// le dimensioni del bin
+        /// questo metodo setta come usate le tuple generate che 
+        /// sono uguali o eccedono le dimensioni del bin
         /// </summary>
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
@@ -157,6 +171,46 @@ namespace Nesting
         /// </summary>
         private float GetHatchedRegion(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
+            //push down
+
+            //cerco intersezioni 
+
+            NestedItem newNestedItem = null;
+
+            //lista delle possibili intersezioni tra item nuovo e item già in soluzione
+            IList<NestedItem> possibleIntersectionItems = new List<NestedItem>();
+
+            foreach (var nestedItem in temporaryBin.NestedItems)
+            {
+                if(feasiblePoint.Pposition > nestedItem.TLposition &&
+                   feasiblePoint.Pposition < nestedItem.BRposition)
+                {
+                    possibleIntersectionItems.Add(nestedItem);
+                }
+            }
+
+            //lista delle intersezioni tra item nuovo e item già in soluzione
+            IList<NestedItem> intersectionItems = new List<NestedItem>();
+
+            foreach (var possibleIntersectionItem in possibleIntersectionItems)
+            {
+                if(feasiblePoint.Qposition > possibleIntersectionItem.TLposition)
+                {
+                    intersectionItems.Add(possibleIntersectionItem);
+                }
+            }
+
+            //3 possibili risultati
+            
+            //non ho intersezioni
+            if(intersectionItems == null)
+            {
+                newNestedItem = new NestedItem(temporaryItem)
+                {
+                    
+                }
+            }
+
             return 0;
         }
 

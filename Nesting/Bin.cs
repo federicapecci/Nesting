@@ -8,7 +8,7 @@ namespace Nesting
 {
     /// <summary>
     /// classe che rappresenta un contenitore
-    /// di item. E generico in X perche la lista 
+    /// di item. E' generico in X perché la lista 
     /// di punti potrebbe essere sia di tuple che di triple
     /// </summary>
     /// <typeparam name="X"></typeparam>
@@ -36,6 +36,8 @@ namespace Nesting
 
         /// <summary>
         /// lista di punti contenuti nel bin 
+        /// (Una coppia di punti viene generata ogni volta che un 
+        /// nuovo elemento viene nestato nel bin)
         /// </summary>
         public IList<X> Points { get; set; } = null;
 

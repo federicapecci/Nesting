@@ -5,9 +5,14 @@ using System.Linq;
 
 namespace Nesting
 {
+    /// <summary>
+    /// classe che implemnenta l'euristica 
+    /// </summary>
     class HSolve : IHSolve
     {
-        
+        /// <summary>
+        /// metodo che computa l'euristica di hsolve 
+        /// </summary>
         public void ComputeHeuristic()
         {
             Console.WriteLine("Algorithm started");
@@ -41,8 +46,8 @@ namespace Nesting
                     Width = 7,
                     NestedItems = new List<NestedItem>()
                     {
-                        new NestedItem(items.ElementAt(k)){
-                            Pposition = 0,
+                        new NestedItem(items.ElementAt(k)) {
+                            BLposition = 0,
                             Qposition = 0
                         }
                     },
@@ -52,13 +57,15 @@ namespace Nesting
                         {
                             Pposition = 0,
                             Qposition = 2,
-                            IsUsed = false
+                            IsUsed = false,
+                            ItemReference = k
                         },
                         new Tuple()
                         {
                             Pposition = 2,
                             Qposition = 0,
-                            IsUsed = false
+                            IsUsed = false,
+                            ItemReference = k
                         }
                     }
                 };

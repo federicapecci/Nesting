@@ -8,6 +8,10 @@ namespace Nesting
 {
     class Program
     {
+        /// <summary>
+        /// metodo entry point
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             IHSolve hsolve = new HSolve();

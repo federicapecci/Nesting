@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
+    /// <summary>
+    /// classe che rappresenta i punti in cui è 
+    /// possibile nestare un nuovo item 
+    /// </summary>
     class Tuple 
     {
+        /// <summary>
+        /// campo che stabilisce a quale item
+        /// la tupla faccia riferimento
+        /// </summary>
+        public int ItemReference { get; set; } = 0;
         /// <summary>
         /// campo che rappresenta la coordinata p iniziale
         /// dove si nesta inizialmente un item
@@ -46,6 +55,7 @@ namespace Nesting
 
         public Tuple() 
         {
+            ItemReference = 0;
             Pposition = 0;
             Qposition = 0;
             IsUsed = false;
@@ -56,6 +66,7 @@ namespace Nesting
 
         public Tuple(Tuple triple)
         {
+            ItemReference = 0;
             Pposition = triple.Pposition;
             Qposition = triple.Qposition;
             IsUsed = triple.IsUsed;

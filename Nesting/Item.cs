@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
+    /// <summary>
+    /// classe che rappresenta un oggetto (rettangolo)
+    /// che deve essere nestato nel bin
+    /// </summary>
     class Item
     {
 
@@ -28,6 +32,11 @@ namespace Nesting
         /// costo v dell'item
         /// </summary>
         public float Price { get; set; } = 0;
+
+        /// <summary>
+        /// campo per marcare come eliminato 
+        /// un item una volta che è stato inserito nel bin
+        /// </summary>
         public bool IsRemoved { get; set; } = false;
 
         public Item(){}
