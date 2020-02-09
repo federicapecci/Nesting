@@ -21,7 +21,7 @@ namespace Nesting
             //================ STEP 1 - INITIALIZATION ================
 
             IList<Item> items = new List<Item>();
-            int itemNumber = 12;
+            int itemNumber = 4;
 
             for (int k = 0; k < itemNumber; k++)
             {
@@ -47,8 +47,12 @@ namespace Nesting
                     NestedItems = new List<NestedItem>()
                     {
                         new NestedItem(items.ElementAt(k)) {
-                            BLposition = 0,
-                            Qposition = 0
+                            BLpPosition = 0,
+                            BLqPosition = 0,
+                            BRpPosition = items.ElementAt(k).Width,
+                            BRqPosition = 0,
+                            TLpPosition = 0,
+                            TLqPosition = items.ElementAt(k).Height
                         }
                     },
                     Points = new List<Tuple>()
@@ -56,16 +60,14 @@ namespace Nesting
                         new Tuple()
                         {
                             Pposition = 0,
-                            Qposition = 2,
-                            IsUsed = false,
-                            ItemReference = k
+                            Qposition = items.ElementAt(k).Height,
+                            IsUsed = false
                         },
                         new Tuple()
                         {
-                            Pposition = 2,
+                            Pposition = items.ElementAt(k).Width,
                             Qposition = 0,
-                            IsUsed = false,
-                            ItemReference = k
+                            IsUsed = false
                         }
                     }
                 };

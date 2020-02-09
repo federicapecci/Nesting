@@ -44,8 +44,8 @@ namespace Nesting
 
         public NestedItem(Item item) : base(item)
         {
-            BLpPosition = 0
-            BLqPosition = 0
+            BLpPosition = 0;
+            BLqPosition = 0;
             
         }
 
