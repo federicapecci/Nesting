@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,8 +66,11 @@ namespace Nesting
                         TLqPosition = temporaryItem.Height
                     }
                 };
+
+                //setto il punto ad usato
                 temporaryBin.Points.ElementAt(0).IsUsed = true;
 
+                //aggiungo 2 nuovi punti
                 temporaryBin.Points.Add(new Tuple()
                 {
                     Pposition = 0,
@@ -82,6 +86,7 @@ namespace Nesting
                     IsUsed = false
                 });
 
+                //setto item a nestato
                 temporaryItem.IsRemoved = true;
                 return true;
             }
@@ -122,14 +127,7 @@ namespace Nesting
                         TLqPosition = minHatchedRegionPoint.QfinalPosition + temporaryItem.Height
                     });
 
-                    //setta il punto ad usato
-                    Optional<Tuple> matchingObject = temporaryBin.Points.stream().
-                    filter(p->p.email().equals("testemail")).
-                    findFirst();
-
-                    //aggiungi 2 nuovi punti
-                    //setta item a nestato
-
+                    HandleOperationPostNestedItem(temporaryBin, temporaryItem, minHatchedRegionPoint);
                     return true;
                 }
                 else if (minHatchedRegionPoints.Count > 1)
@@ -146,14 +144,43 @@ namespace Nesting
                         TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
                     });
 
-                    //setta il punto ad usato
-                    //aggiungi 2 nuovi punti
-                    //setta item a nestato
-
+                    HandleOperationPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);                    
                     return true;
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// gestisco le operazione post item nestato
+        /// </summary>
+        /// <param name="temporaryBin"></param>
+        /// <param name="temporaryItem"></param>
+        /// <param name="point"></param>
+        private void HandleOperationPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point) {
+            //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
+            var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
+                                                       x.Qposition == point.Qposition)
+                                           .First().IsUsed == true;
+
+            //aggiungo 2 nuovi punti
+            temporaryBin.Points.Add(new Tuple()
+            {
+                Pposition = point.PfinalPosition,
+                Qposition = point.QfinalPosition + temporaryItem.Height,
+                IsUsed = false
+
+            });
+
+            temporaryBin.Points.Add(new Tuple()
+            {
+                Pposition = point.PfinalPosition + temporaryItem.Width,
+                Qposition = point.QfinalPosition,
+                IsUsed = false
+            });
+
+            //setto item a nestato
+            temporaryItem.IsRemoved = true;
         }
 
         /// <summary>
