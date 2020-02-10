@@ -50,9 +50,9 @@ namespace Nesting
             {
                 return false;
             }
-            else if (temporaryBin.Points.Count == 1 && 
-                temporaryBin.Points.ElementAt(0).Pposition == 0 && //se il bin contiene 1 solo punto
-                temporaryBin.Points.ElementAt(0).Qposition == 0 ) {
+            else if (temporaryBin.Points.Count == 1 && //se il bin contiene 1 solo punto e quel punto è (0,0)
+                temporaryBin.Points.ElementAt(0).Pposition == 0 && 
+                temporaryBin.Points.ElementAt(0).Qposition == 0) {
                 temporaryBin.NestedItems = new List<NestedItem>
                 {
                     new NestedItem(temporaryItem)
@@ -84,27 +84,25 @@ namespace Nesting
 
                 temporaryItem.IsRemoved = true;
                 return true;
-            }   
-            else if(temporaryBin.Points.Count > 1)//se il bin contiene n punti
+            }
+            else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
-                foreach (var point in temporaryBin.Points)
+                foreach (var feasiblePoint in temporaryBin.Points)
                 {
-                    if (!point.IsUsed)
+                    if (!feasiblePoint.IsUsed)
                     {
-                        point.HatchedRegion = GetHatchedRegion(point, temporaryBin, temporaryItem);
-                     
+                        ComputeHatchedRegion(feasiblePoint, temporaryBin, temporaryItem);
                     }
                 }
 
                 //trovo la tupla con lo scarto minore tra quelle ancora disponibili
-                //https://stackoverflow.com/questions/914109/how-to-use-linq-to-select-object-with-minimum-or-maximum-property-value
                 Tuple minHatchedRegionTuple = temporaryBin.Points.Where(x => x.IsUsed == false).OrderBy(x => x.HatchedRegion).First();
 
-                //controllo se ho più triple che hanno lo stesso scarto (il minore)
+                //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList<Tuple> minHatchedRegionPoints = new List<Tuple>();
                 foreach (var point in temporaryBin.Points)
                 {
-                    if (point.HatchedRegion == minHatchedRegionTriple.HatchedRegion)
+                    if (point.HatchedRegion == minHatchedRegionTuple.HatchedRegion && !point.IsUsed)
                     {
                         minHatchedRegionPoints.Add(point);
                     }
@@ -112,14 +110,48 @@ namespace Nesting
 
                 if (minHatchedRegionPoints.Count == 1)
                 {
+                    var minHatchedRegionPoint = minHatchedRegionPoints.ElementAt(0);
+
+                    temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
+                    {
+                        BLpPosition = minHatchedRegionPoint.PfinalPosition,
+                        BLqPosition = minHatchedRegionPoint.QfinalPosition,
+                        BRpPosition = minHatchedRegionPoint.PfinalPosition + temporaryItem.Width,
+                        BRqPosition = minHatchedRegionPoint.QfinalPosition,
+                        TLpPosition = minHatchedRegionPoint.PfinalPosition,
+                        TLqPosition = minHatchedRegionPoint.QfinalPosition + temporaryItem.Height
+                    });
+
+                    //setta il punto ad usato
+                    Optional<Tuple> matchingObject = temporaryBin.Points.stream().
+                    filter(p->p.email().equals("testemail")).
+                    findFirst();
+
+                    //aggiungi 2 nuovi punti
+                    //setta item a nestato
+
                     return true;
                 }
                 else if (minHatchedRegionPoints.Count > 1)
                 {
-                    Tuple point = ApplyRule(minHatchedRegionPoints);
+                    Tuple minCoordinatePoint = ApplyRule(minHatchedRegionPoints);
+
+                    temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
+                    {
+                        BLpPosition = minCoordinatePoint.PfinalPosition,
+                        BLqPosition = minCoordinatePoint.QfinalPosition,
+                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
+                        BRqPosition = minCoordinatePoint.QfinalPosition,
+                        TLpPosition = minCoordinatePoint.PfinalPosition,
+                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
+                    });
+
+                    //setta il punto ad usato
+                    //aggiungi 2 nuovi punti
+                    //setta item a nestato
+
                     return true;
                 }
-                return false;
             }
             return false;
         }
@@ -157,7 +189,7 @@ namespace Nesting
         /// <returns></returns>
         private void SetFeasiblePoints(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            foreach(var point in temporaryBin.Points)
+            foreach (var point in temporaryBin.Points)
             {
                 //il punto è esterno al bin
                 if ((point.Pposition == 0 && point.Qposition >= temporaryBin.Height) ||
@@ -165,21 +197,24 @@ namespace Nesting
                     (point.Pposition >= temporaryItem.Width && point.Qposition >= temporaryItem.Height))
                 {
                     point.IsUsed = true;
-                }               
+                }
             }
         }
 
         /// <summary>
-        /// Given the item starting position, this method tries 
-        /// to push an item down and towards the left
-        /// as much as possible (compatting items). 
-        /// Then, according to its final position, 
-        /// it computes the hatched region (bottom and 
-        /// left area left empty) of the item.
+        /// questo metodo, data la posizione inziale di un item,
+        /// prova a spingerlo in basso e verso sinistra quanto
+        /// più possibile.
+        /// Poi, calcola l'hatched region in basso e a sinistra 
+        /// dell'item
         /// </summary>
-        private float GetHatchedRegion(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
+        /// <param name="feasiblePoint"></param>
+        /// <param name="temporaryBin"></param>
+        /// <param name="temporaryItem"></param>
+        /// <returns></returns>
+        private float ComputeHatchedRegion(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            //PushItemDown() algorithm
+            //creo nuovo nested item e attribuisco le 3 coordinate nel piano 
             NestedItem newNestedItem = new NestedItem(temporaryItem)
             {
                 BLpPosition = feasiblePoint.Pposition,
@@ -190,12 +225,27 @@ namespace Nesting
                 TLqPosition = feasiblePoint.Qposition + temporaryItem.Height
             };
 
+            if (temporaryItem.Id <= 1)
+            {
+                return 0;
+            }
+            else
+            {
+                PushItemDown(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
+                PushItemLeft(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
+                //scrivo qui come calcolare l'hatched region
+                return 0;
+            }
+        }
+
+        private void PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
+        {
             //lista delle possibili intersezioni tra item nuovo e item già in soluzione
             IList<NestedItem> possibleIntersectionItems = new List<NestedItem>();
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
-                if(feasiblePoint.Pposition > nestedItem.TLpPosition &&
+                if (feasiblePoint.Pposition > nestedItem.TLpPosition &&
                    feasiblePoint.Pposition < nestedItem.BRpPosition)
                 {
                     possibleIntersectionItems.Add(nestedItem);
@@ -207,27 +257,29 @@ namespace Nesting
 
             foreach (var possibleIntersectionItem in possibleIntersectionItems)
             {
-                if(feasiblePoint.Qposition > possibleIntersectionItem.TLqPosition)
+                if (feasiblePoint.Qposition > possibleIntersectionItem.TLqPosition)
                 {
                     intersectionItems.Add(possibleIntersectionItem);
                 }
             }
 
             //3 possibili risultati
-            
+
             //non ho intersezioni
-            if(intersectionItems == null)
+            if (intersectionItems.Count == 0)
             {
                 newNestedItem.BLqPosition = 0;
                 newNestedItem.TLqPosition = temporaryItem.Height;
                 newNestedItem.BRqPosition = 0;
-            }else if(intersectionItems.Count == 1)
+            }
+            else if (intersectionItems.Count == 1) // 1 sola intersezione
             {
                 float waste = feasiblePoint.Qposition - intersectionItems.ElementAt(0).Height;
                 newNestedItem.BLqPosition -= waste;
                 newNestedItem.TLqPosition -= waste;
                 newNestedItem.BRqPosition -= waste;
-            }else if (intersectionItems.Count > 1)
+            }
+            else if (intersectionItems.Count > 1) //N intersezioni
             {
                 float heightSum = 0;
                 foreach (var intersectionItem in intersectionItems)
@@ -241,12 +293,11 @@ namespace Nesting
             }
 
             feasiblePoint.QfinalPosition = newNestedItem.BLqPosition;
+        }
 
-            //PushItemLeft() algorithm
+        private void PushItemLeft(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
+        {
             //feasiblePoint.PfinalPosition = newNestedItem.BLpPosition;
-
-            //computeHatchedRegion() algorithm
-            return 0;
         }
 
         /// <summary>
@@ -260,58 +311,43 @@ namespace Nesting
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
-        private Tuple ApplyRule(IList<Tuple> minHatchedRegionTriples)
-        {
-            Tuple result = null;
-            IList<Tuple> pMinTriples = new List<Tuple>();
-            float pMin = minHatchedRegionTriples.OrderBy(x => x.Pposition).First().Pposition;
+        private Tuple ApplyRule(IList<Tuple> minHatchedRegionTuples)
+            {
+                Tuple result = null;
+                IList<Tuple> pMinTuples = new List<Tuple>();
+                float pMin = minHatchedRegionTuples.OrderBy(x => x.Pposition).First().Pposition;
 
-            foreach (var minHatchedRegionTriple in minHatchedRegionTriples)
-            {
-                if(minHatchedRegionTriple.Pposition == pMin)
+                foreach (var minHatchedRegionTuple in minHatchedRegionTuples)
                 {
-                    pMinTriples.Add(minHatchedRegionTriple);
-                }
-            }
-
-            if(pMinTriples.Count == 1)
-            {
-                result = pMinTriples.ElementAt(0);
-            }
-            else
-            {
-                IList<Tuple> qMinTriples = pMinTriples;
-                float qMin = qMinTriples.OrderBy(x => x.Qposition).First().Qposition;
-                foreach (var qMinTriple in qMinTriples)
-                {
-                    if (qMinTriple.Qposition == qMin)
+                    if (minHatchedRegionTuple.Pposition == pMin)
                     {
-                        qMinTriples.Add(qMinTriple);
+                        pMinTuples.Add(minHatchedRegionTuple);
                     }
                 }
-                if (qMinTriples.Count == 1)
+
+                if (pMinTuples.Count == 1)
                 {
-                    result = qMinTriples.ElementAt(0);
-                   
+                    result = pMinTuples.ElementAt(0);
                 }
-                /*else
+                else
                 {
-                    IList<EnrichedTuple> rMinTriples = qMinTriples;
-                    bool rMin = rMinTriples.OrderBy(x => x.Rotation).First().Rotation;
-                    foreach (var rMinTriple in rMinTriples)
+                    IList<Tuple> qMinTriples = pMinTuples;
+                    float qMin = qMinTriples.OrderBy(x => x.Qposition).First().Qposition;
+                    foreach (var qMinTriple in qMinTriples)
                     {
-                        if(rMinTriple.Rotation == rMin)
+                        if (qMinTriple.Qposition == qMin)
                         {
-                            rMinTriples.Add(rMinTriple);
+                            qMinTriples.Add(qMinTriple);
                         }
                     }
-                    result = rMinTriples.ElementAt(0);
-                }*/
-            }
-            return result;
-        }
+                    if (qMinTriples.Count == 1)
+                    {
+                        result = qMinTriples.ElementAt(0);
 
-       
-       
+                    }
+                }
+                return result;
+        }
     }
 }
+
