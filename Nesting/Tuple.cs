@@ -34,13 +34,13 @@ namespace Nesting
         /// campo che rappresenta la coordinata p dell'item
         /// dopo aver cercato di compattare gli item
         /// </summary>
-        public float PfinalPosition { get; set; } = 0;
+        public float pFinalPosition { get; set; } = 0;
 
         /// <summary>
         /// campo che rappresenta la coordinata q dell'item
         /// dopo aver cercato di compattare gli item
         /// </summary>
-        public float QfinalPosition { get; set; } = 0;
+        public float qFinalPosition { get; set; } = 0;
 
         /// <summary>
         /// campo che rappresenta lo scarto potenziale in basso e a sinistra dell'item, 
@@ -53,8 +53,8 @@ namespace Nesting
             Pposition = 0;
             Qposition = 0;
             IsUsed = false;
-            PfinalPosition = 0;
-            QfinalPosition = 0;
+            pFinalPosition = 0;
+            qFinalPosition = 0;
             HatchedRegion = 0;
         }
 
@@ -63,8 +63,8 @@ namespace Nesting
             Pposition = triple.Pposition;
             Qposition = triple.Qposition;
             IsUsed = triple.IsUsed;
-            PfinalPosition = 0;
-            QfinalPosition = 0;
+            pFinalPosition = 0;
+            qFinalPosition = 0;
             HatchedRegion = 0;
         }
     }

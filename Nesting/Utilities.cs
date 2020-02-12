@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace Nesting
 {
     /// <summary>
-    /// classe che contiene dei metodi utili 
-    /// per implementare l'euristica
+    /// classe che contiene delle utilities 
+    /// per implementare l'euristica 
     /// </summary>
     class Utilities : IUtilities
     {
@@ -96,7 +96,17 @@ namespace Nesting
                 {
                     if (!feasiblePoint.IsUsed)
                     {
-                        ComputeHatchedRegion(feasiblePoint, temporaryBin, temporaryItem);
+                        //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
+                        NestedItem newNestedItem = new NestedItem(temporaryItem)
+                        {
+                            BLpPosition = feasiblePoint.Pposition,
+                            BLqPosition = feasiblePoint.Qposition,
+                            BRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
+                            BRqPosition = feasiblePoint.Qposition,
+                            TLpPosition = feasiblePoint.Pposition,
+                            TLqPosition = feasiblePoint.Qposition + temporaryItem.Height
+                        };
+                        ComputeHatchedRegion(feasiblePoint, newNestedItem, temporaryBin, temporaryItem);
                     }
                 }
 
@@ -119,15 +129,15 @@ namespace Nesting
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
-                        BLpPosition = minHatchedRegionPoint.PfinalPosition,
-                        BLqPosition = minHatchedRegionPoint.QfinalPosition,
-                        BRpPosition = minHatchedRegionPoint.PfinalPosition + temporaryItem.Width,
-                        BRqPosition = minHatchedRegionPoint.QfinalPosition,
-                        TLpPosition = minHatchedRegionPoint.PfinalPosition,
-                        TLqPosition = minHatchedRegionPoint.QfinalPosition + temporaryItem.Height
+                        BLpPosition = minHatchedRegionPoint.pFinalPosition,
+                        BLqPosition = minHatchedRegionPoint.qFinalPosition,
+                        BRpPosition = minHatchedRegionPoint.pFinalPosition + temporaryItem.Width,
+                        BRqPosition = minHatchedRegionPoint.qFinalPosition,
+                        TLpPosition = minHatchedRegionPoint.pFinalPosition,
+                        TLqPosition = minHatchedRegionPoint.qFinalPosition + temporaryItem.Height
                     });
 
-                    HandleOperationPostNestedItem(temporaryBin, temporaryItem, minHatchedRegionPoint);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedRegionPoint);
                     return true;
                 }
                 else if (minHatchedRegionPoints.Count > 1)
@@ -136,15 +146,15 @@ namespace Nesting
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
-                        BLpPosition = minCoordinatePoint.PfinalPosition,
-                        BLqPosition = minCoordinatePoint.QfinalPosition,
-                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
-                        BRqPosition = minCoordinatePoint.QfinalPosition,
-                        TLpPosition = minCoordinatePoint.PfinalPosition,
-                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
+                        BLpPosition = minCoordinatePoint.pFinalPosition,
+                        BLqPosition = minCoordinatePoint.qFinalPosition,
+                        BRpPosition = minCoordinatePoint.pFinalPosition + temporaryItem.Width,
+                        BRqPosition = minCoordinatePoint.qFinalPosition,
+                        TLpPosition = minCoordinatePoint.pFinalPosition,
+                        TLqPosition = minCoordinatePoint.qFinalPosition + temporaryItem.Height
                     });
 
-                    HandleOperationPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);                    
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);                    
                     return true;
                 }
             }
@@ -157,25 +167,26 @@ namespace Nesting
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point) {
+        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point) {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
             var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
                                                        x.Qposition == point.Qposition)
-                                           .First().IsUsed == true;
+                                           .First();
+            matchingPoint.IsUsed = true;
 
             //aggiungo 2 nuovi punti
             temporaryBin.Points.Add(new Tuple()
             {
-                Pposition = point.PfinalPosition,
-                Qposition = point.QfinalPosition + temporaryItem.Height,
+                Pposition = point.pFinalPosition,
+                Qposition = point.qFinalPosition + temporaryItem.Height,
                 IsUsed = false
 
             });
 
             temporaryBin.Points.Add(new Tuple()
             {
-                Pposition = point.PfinalPosition + temporaryItem.Width,
-                Qposition = point.QfinalPosition,
+                Pposition = point.pFinalPosition + temporaryItem.Width,
+                Qposition = point.qFinalPosition,
                 IsUsed = false
             });
 
@@ -239,21 +250,12 @@ namespace Nesting
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private float ComputeHatchedRegion(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem)
+        private float ComputeHatchedRegion(Tuple feasiblePoint, NestedItem newNestedItem, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            //creo nuovo nested item e attribuisco le 3 coordinate nel piano 
-            NestedItem newNestedItem = new NestedItem(temporaryItem)
-            {
-                BLpPosition = feasiblePoint.Pposition,
-                BLqPosition = feasiblePoint.Qposition,
-                BRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
-                BRqPosition = feasiblePoint.Qposition,
-                TLpPosition = feasiblePoint.Pposition,
-                TLqPosition = feasiblePoint.Qposition + temporaryItem.Height
-            };
-
             if (temporaryItem.Id <= 1)
             {
+                feasiblePoint.pFinalPosition = feasiblePoint.Pposition;
+                feasiblePoint.qFinalPosition = feasiblePoint.Qposition;
                 return 0;
             }
             else
@@ -267,6 +269,15 @@ namespace Nesting
 
         private void PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
         {
+            //dichiaro booleano per vedere se ho già calcolato la PfinalPosition e la QfinalPosition
+            bool finalPositionAlreadyComputed = false;
+
+            if(feasiblePoint.Pposition == feasiblePoint.pFinalPosition &&
+                feasiblePoint.Qposition == feasiblePoint.qFinalPosition)
+            {
+                finalPositionAlreadyComputed = true;
+            }
+
             //lista delle possibili intersezioni tra item nuovo e item già in soluzione
             IList<NestedItem> possibleIntersectionItems = new List<NestedItem>();
 
@@ -290,36 +301,38 @@ namespace Nesting
                 }
             }
 
-            //3 possibili risultati
-
-            //non ho intersezioni
-            if (intersectionItems.Count == 0)
+            //se non ha già calcolato la PfinalPosition e la QfinalPosition        
+            if (!finalPositionAlreadyComputed)
             {
-                newNestedItem.BLqPosition = 0;
-                newNestedItem.TLqPosition = temporaryItem.Height;
-                newNestedItem.BRqPosition = 0;
-            }
-            else if (intersectionItems.Count == 1) // 1 sola intersezione
-            {
-                float waste = feasiblePoint.Qposition - intersectionItems.ElementAt(0).Height;
-                newNestedItem.BLqPosition -= waste;
-                newNestedItem.TLqPosition -= waste;
-                newNestedItem.BRqPosition -= waste;
-            }
-            else if (intersectionItems.Count > 1) //N intersezioni
-            {
-                float heightSum = 0;
-                foreach (var intersectionItem in intersectionItems)
+                //3 possibili risultati
+                if (intersectionItems.Count == 0) //non ho intersezioni
                 {
-                    heightSum += intersectionItem.Height;
+                    newNestedItem.BLqPosition = 0;
+                    newNestedItem.TLqPosition = temporaryItem.Height;
+                    newNestedItem.BRqPosition = 0;
                 }
-                float waste = feasiblePoint.Qposition - heightSum;
-                newNestedItem.BLqPosition -= waste;
-                newNestedItem.TLqPosition -= waste;
-                newNestedItem.BRqPosition -= waste;
-            }
+                else if (intersectionItems.Count == 1) //1 sola intersezione
+                {
+                    float waste = feasiblePoint.Qposition - intersectionItems.ElementAt(0).Height;
+                    newNestedItem.BLqPosition -= waste;
+                    newNestedItem.TLqPosition -= waste;
+                    newNestedItem.BRqPosition -= waste;
+                }
+                else if (intersectionItems.Count > 1) //N intersezioni
+                {
+                    float heightSum = 0;
+                    foreach (var intersectionItem in intersectionItems)
+                    {
+                        heightSum += intersectionItem.Height;
+                    }
+                    float waste = feasiblePoint.Qposition - heightSum;
+                    newNestedItem.BLqPosition -= waste;
+                    newNestedItem.TLqPosition -= waste;
+                    newNestedItem.BRqPosition -= waste;
+                }
 
-            feasiblePoint.QfinalPosition = newNestedItem.BLqPosition;
+                feasiblePoint.qFinalPosition = newNestedItem.BLqPosition;
+            }
         }
 
         private void PushItemLeft(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
@@ -370,7 +383,6 @@ namespace Nesting
                     if (qMinTriples.Count == 1)
                     {
                         result = qMinTriples.ElementAt(0);
-
                     }
                 }
                 return result;
