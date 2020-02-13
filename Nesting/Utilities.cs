@@ -89,7 +89,10 @@ namespace Nesting
                 }
 
                 //trovo la tupla con lo scarto minore tra quelle ancora disponibili
-                Tuple minHatchedRegionTuple = temporaryBin.Points.Where(x => x.IsUsed == false).OrderBy(x => x.HatchedRegion).First();
+                //(Where(x => x.HatchedRegion >= 0) filtra solo le tuple con hatched region = 0)
+                Tuple minHatchedRegionTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedRegion >= 0)
+                                                                 .OrderBy(x => x.HatchedRegion) 
+                                                                 .First();
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList<Tuple> minHatchedRegionPoints = new List<Tuple>();
@@ -231,34 +234,18 @@ namespace Nesting
         /// <returns></returns>
         private float GetHatchedRegion(Tuple feasiblePoint, NestedItem newNestedItem, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-            /*if (feasiblePoint.pFinalPosition == 0 &&
-                feasiblePoint.qFinalPosition == 0)
-            {*/
                 PushItemDown(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
                 PushItemLeft(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
 
                 //controllo se l'oggettto, anche essendo stato spostato in basso a sintra, sborda
                 if (IsBorderObserved(newNestedItem, temporaryBin.Height, temporaryBin.Width))
                 {
-                    if (feasiblePoint.Pposition == feasiblePoint.pFinalPosition &&
-                        feasiblePoint.Qposition == feasiblePoint.qFinalPosition)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        //TO DO calcolo hatched region
-                        float hatchedRegion = 3;
-                        return hatchedRegion;
-                    }
+                    return 0;
                 }
                 else
                 {
                     return -1;
                 }
-            //}
-            //return feasiblePoint.HatchedRegion;
-            //}
         }
 
         private void PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
@@ -383,6 +370,7 @@ namespace Nesting
         {
             Tuple result = null;
             IList<Tuple> pMinTuples = new List<Tuple>();
+
             float pMin = minHatchedRegionTuples.OrderBy(x => x.Pposition).First().Pposition;
 
             foreach (var minHatchedRegionTuple in minHatchedRegionTuples)
@@ -399,18 +387,18 @@ namespace Nesting
             }
             else
             {
-                IList<Tuple> qMinTriples = pMinTuples;
-                float qMin = qMinTriples.OrderBy(x => x.Qposition).First().Qposition;
-                foreach (var qMinTriple in qMinTriples)
+                IList<Tuple> qMinTuples = new List<Tuple>();
+                float qMin = pMinTuples.OrderBy(x => x.Qposition).First().Qposition;
+                foreach (var qMinTuple in pMinTuples)
                 {
-                    if (qMinTriple.Qposition == qMin)
+                    if (qMinTuple.Qposition == qMin)
                     {
-                        qMinTriples.Add(qMinTriple);
+                        qMinTuples.Add(qMinTuple);
                     }
                 }
-                if (qMinTriples.Count == 1)
+                if (qMinTuples.Count == 1)
                 {
-                    result = qMinTriples.ElementAt(0);
+                    result = qMinTuples.ElementAt(0);
                 }
             }
             return result;
