@@ -110,12 +110,12 @@ namespace Nesting
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
-                        BLpPosition = minHatchedRegionPoint.pFinalPosition,
-                        BLqPosition = minHatchedRegionPoint.qFinalPosition,
-                        BRpPosition = minHatchedRegionPoint.pFinalPosition + temporaryItem.Width,
-                        BRqPosition = minHatchedRegionPoint.qFinalPosition,
-                        TLpPosition = minHatchedRegionPoint.pFinalPosition,
-                        TLqPosition = minHatchedRegionPoint.qFinalPosition + temporaryItem.Height
+                        BLpPosition = minHatchedRegionPoint.PfinalPosition,
+                        BLqPosition = minHatchedRegionPoint.QfinalPosition,
+                        BRpPosition = minHatchedRegionPoint.PfinalPosition + temporaryItem.Width,
+                        BRqPosition = minHatchedRegionPoint.QfinalPosition,
+                        TLpPosition = minHatchedRegionPoint.PfinalPosition,
+                        TLqPosition = minHatchedRegionPoint.QfinalPosition + temporaryItem.Height
                     });
 
                     HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedRegionPoint);
@@ -127,12 +127,12 @@ namespace Nesting
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
-                        BLpPosition = minCoordinatePoint.pFinalPosition,
-                        BLqPosition = minCoordinatePoint.qFinalPosition,
-                        BRpPosition = minCoordinatePoint.pFinalPosition + temporaryItem.Width,
-                        BRqPosition = minCoordinatePoint.qFinalPosition,
-                        TLpPosition = minCoordinatePoint.pFinalPosition,
-                        TLqPosition = minCoordinatePoint.qFinalPosition + temporaryItem.Height
+                        BLpPosition = minCoordinatePoint.PfinalPosition,
+                        BLqPosition = minCoordinatePoint.QfinalPosition,
+                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
+                        BRqPosition = minCoordinatePoint.QfinalPosition,
+                        TLpPosition = minCoordinatePoint.PfinalPosition,
+                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
                     });
 
                     HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);
@@ -157,15 +157,15 @@ namespace Nesting
             matchingPoint.IsUsed = true;
 
             //aggiungo 2 nuovi punti ma prima controllo se sono già presenti nella lista temporaryBin.Points
-            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.pFinalPosition &&
-                                           x.Qposition == point.qFinalPosition + temporaryItem.Height).FirstOrDefault();
+            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
+                                           x.Qposition == point.QfinalPosition + temporaryItem.Height).FirstOrDefault();
 
             if (pointFound == null)
             {
                 temporaryBin.Points.Add(new Tuple()
                 {
-                    Pposition = point.pFinalPosition,
-                    Qposition = point.qFinalPosition + temporaryItem.Height,
+                    Pposition = point.PfinalPosition,
+                    Qposition = point.QfinalPosition + temporaryItem.Height,
                     IsUsed = false
 
                 });
@@ -175,15 +175,15 @@ namespace Nesting
                 pointFound = null;
             }
 
-            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.pFinalPosition + temporaryItem.Width &&
-                                           x.Qposition == point.qFinalPosition).FirstOrDefault();
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + temporaryItem.Width &&
+                                           x.Qposition == point.QfinalPosition).FirstOrDefault();
 
             if (pointFound == null)
             {
                 temporaryBin.Points.Add(new Tuple()
                 {
-                    Pposition = point.pFinalPosition + temporaryItem.Width,
-                    Qposition = point.qFinalPosition,
+                    Pposition = point.PfinalPosition + temporaryItem.Width,
+                    Qposition = point.QfinalPosition,
                     IsUsed = false
                 });
             }
@@ -307,7 +307,7 @@ namespace Nesting
                 newNestedItem.BRqPosition -= delta;
             }
 
-            feasiblePoint.qFinalPosition = newNestedItem.BLqPosition;
+            feasiblePoint.QfinalPosition = newNestedItem.BLqPosition;
 
         }
 
@@ -354,7 +354,7 @@ namespace Nesting
                 newNestedItem.BRpPosition -= delta;
             }
 
-            feasiblePoint.pFinalPosition = newNestedItem.BLpPosition;
+            feasiblePoint.PfinalPosition = newNestedItem.BLpPosition;
 
 
         }
@@ -387,11 +387,11 @@ namespace Nesting
             Tuple result = null;
             IList<Tuple> pMinTuples = new List<Tuple>();
 
-            float pMin = minHatchedRegionTuples.OrderBy(x => x.Pposition).First().Pposition;
+            float minFinalP = minHatchedRegionTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
 
             foreach (var minHatchedRegionTuple in minHatchedRegionTuples)
             {
-                if (minHatchedRegionTuple.Pposition == pMin)
+                if (minHatchedRegionTuple.PfinalPosition == minFinalP)
                 {
                     pMinTuples.Add(minHatchedRegionTuple);
                 }
@@ -404,18 +404,18 @@ namespace Nesting
             else
             {
                 IList<Tuple> qMinTuples = new List<Tuple>();
-                float qMin = pMinTuples.OrderBy(x => x.Qposition).First().Qposition;
+                float minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
                 foreach (var qMinTuple in pMinTuples)
                 {
-                    if (qMinTuple.Qposition == qMin)
+                    if (qMinTuple.QfinalPosition == minFinalQ)
                     {
                         qMinTuples.Add(qMinTuple);
                     }
                 }
-                if (qMinTuples.Count == 1)
-                {
+                //if (qMinTuples.Count == 1)
+                //{
                     result = qMinTuples.ElementAt(0);
-                }
+                //}
             }
             return result;
         }
