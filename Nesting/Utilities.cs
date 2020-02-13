@@ -156,21 +156,37 @@ namespace Nesting
                                            .First();
             matchingPoint.IsUsed = true;
 
-            //aggiungo 2 nuovi punti
-            temporaryBin.Points.Add(new Tuple()
-            {
-                Pposition = point.pFinalPosition,
-                Qposition = point.qFinalPosition + temporaryItem.Height,
-                IsUsed = false
+            //aggiungo 2 nuovi punti ma prima controllo se sono già presenti nella lista temporaryBin.Points
+            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.pFinalPosition &&
+                                           x.Qposition == point.qFinalPosition + temporaryItem.Height).FirstOrDefault();
 
-            });
-
-            temporaryBin.Points.Add(new Tuple()
+            if (pointFound == null)
             {
-                Pposition = point.pFinalPosition + temporaryItem.Width,
-                Qposition = point.qFinalPosition,
-                IsUsed = false
-            });
+                temporaryBin.Points.Add(new Tuple()
+                {
+                    Pposition = point.pFinalPosition,
+                    Qposition = point.qFinalPosition + temporaryItem.Height,
+                    IsUsed = false
+
+                });
+            }
+            else
+            {
+                pointFound = null;
+            }
+
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.pFinalPosition + temporaryItem.Width &&
+                                           x.Qposition == point.qFinalPosition).FirstOrDefault();
+
+            if (pointFound == null)
+            {
+                temporaryBin.Points.Add(new Tuple()
+                {
+                    Pposition = point.pFinalPosition + temporaryItem.Width,
+                    Qposition = point.qFinalPosition,
+                    IsUsed = false
+                });
+            }
 
             //setto item a nestato
             temporaryItem.IsRemoved = true;
