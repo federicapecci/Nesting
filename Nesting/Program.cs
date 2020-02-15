@@ -15,7 +15,11 @@ namespace Nesting
         static void Main(string[] args)
         {
             IHSolve hsolve = new HSolve();
-            hsolve.ComputeHeuristic();
+            Bin<Tuple> bin = hsolve.ComputeHeuristic();
+
+            IDrawer drawer = new DxfDrawer(bin);
+            drawer.WriteDxfDocument();
+
         }
     }
 }

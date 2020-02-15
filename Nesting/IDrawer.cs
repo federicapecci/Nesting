@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Nesting
 {
-    interface IHSolve
+    interface IDrawer
     {
-        Bin<Tuple> ComputeHeuristic();
+        void WriteDxfDocument();
     }
 }

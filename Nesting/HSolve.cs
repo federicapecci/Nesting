@@ -13,7 +13,7 @@ namespace Nesting
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public void ComputeHeuristic()
+        public Bin<Tuple> ComputeHeuristic()
         {
             Console.WriteLine("Algorithm started");
             IUtilities utilities = new Utilities();
@@ -167,7 +167,9 @@ namespace Nesting
                 goto l3;
             }
 
-        end: Console.WriteLine("Algorithm ended");
+        end:
+            Console.WriteLine("Algorithm ended");
+            return bins[i];
         }
     }  
 }

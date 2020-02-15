@@ -140,3 +140,6 @@ C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\zh-Hans\Micr
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\zh-Hant\Microsoft.CodeAnalysis.resources.dll
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.exe.config
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.csproj.CopyComplete
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.dll
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.pdb
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.xml
