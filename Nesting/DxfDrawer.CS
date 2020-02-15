@@ -1,4 +1,5 @@
-﻿using netDxf;
+﻿
+using netDxf;
 using netDxf.Entities;
 using netDxf.Header;
 using System;
@@ -20,25 +21,26 @@ namespace Nesting
 
         public void WriteDxfDocument()
         {
-            string file = "samplemiao.dxf";
+            string file = "bin2.dxf";
 
             // by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();
 
             // a rectangular wipeout defined by its bottom-left corner and its width and height
-            Wipeout bin = new Wipeout(0, 0, 7.0, 5.0);
-            Wipeout rectangle1 = new Wipeout(0, 0, 2.0, 2.0);
-            Wipeout rectangle2 = new Wipeout(0, 2, 2.0, 2.0);
-            Wipeout rectangle3 = new Wipeout(2, 0, 2.0, 2.0);
-            Wipeout rectangle4 = new Wipeout(2, 2, 2.0, 2.0);
-            dxf.AddEntity(bin);
-            dxf.AddEntity(rectangle1);
-            dxf.AddEntity(rectangle2);
-            dxf.AddEntity(rectangle3);
-            dxf.AddEntity(rectangle4);
+            Wipeout wipeout = new Wipeout(0, 0, Bin.Width, Bin.Height);
+            dxf.AddEntity(wipeout);
 
-            // save to file
-            dxf.Save(file);
+            if (Bin.NestedItems.Count >= 1)
+            {
+                foreach (var nestedItem in Bin.NestedItems)
+                {
+                    wipeout = new Wipeout(nestedItem.BLpPosition, nestedItem.BLqPosition, nestedItem.Width, nestedItem.Height);
+                    dxf.AddEntity(wipeout);
+                }
+
+                // save to file
+                dxf.Save(file);
+            }
 
             // this check is optional but recommended before loading a DXF file
             DxfVersion dxfVersion = DxfDocument.CheckDxfFileVersion(file);

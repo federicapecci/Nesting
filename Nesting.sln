@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesting", "Nesting\Nesting.csproj", "{762B4F65-B2B7-474F-B978-AE9B1E7F8AF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netDxf", "..\..\..\Downloads\netDxf-master\netDxf\netDxf.csproj", "{785380E0-CEB9-4C34-82E5-60D0E33E848E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netDxf", "netDxf-master\netDxf\netDxf.csproj", "{785380E0-CEB9-4C34-82E5-60D0E33E848E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDxfDocument", "..\..\..\Downloads\netDxf-master\TestDxfDocument\TestDxfDocument.csproj", "{65B33B00-93CE-484A-8023-7A9BA972D4D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDxfDocument", "netDxf-master\TestDxfDocument\TestDxfDocument.csproj", "{65B33B00-93CE-484A-8023-7A9BA972D4D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

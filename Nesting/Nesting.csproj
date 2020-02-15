@@ -97,7 +97,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.6\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Downloads\netDxf-master\netDxf\netDxf.csproj">
+    <ProjectReference Include="..\netDxf-master\netDxf\netDxf.csproj">
       <Project>{785380E0-CEB9-4C34-82E5-60D0E33E848E}</Project>
       <Name>netDxf</Name>
     </ProjectReference>
