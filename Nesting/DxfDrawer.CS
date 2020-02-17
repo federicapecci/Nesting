@@ -21,7 +21,7 @@ namespace Nesting
 
         public void WriteDxfDocument()
         {
-            string file = "bin2.dxf";
+            string file = "bin3.dxf";
 
             // by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();
