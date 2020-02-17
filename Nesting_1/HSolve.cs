@@ -21,9 +21,9 @@ namespace Nesting_1
             //================ STEP 1 - INITIALIZATION ================
 
             IList<Item> items = new List<Item>();
-            int itemNumber = 4;
+            int itemNumber = 5;
 
-            for (int k = 0; k < itemNumber; k++)
+            /*for (int k = 0; k < itemNumber; k++)
             {
                 items.Add(new Item()
                 {
@@ -33,7 +33,52 @@ namespace Nesting_1
                     Price = 4,
                     IsRemoved = false
                 });
-            }
+            }*/
+
+            items.Add(new Item()
+            {
+                Id = 0,
+                Height = 3,
+                Width = 5,
+                Price = 15,
+                IsRemoved = false
+            });
+
+            items.Add(new Item()
+            {
+                Id = 1,
+                Height = 1,
+                Width = 2,
+                Price = 2,
+                IsRemoved = false
+            });
+
+            items.Add(new Item()
+            {
+                Id = 2,
+                Height = 2,
+                Width = 3,
+                Price = 6,
+                IsRemoved = false
+            });
+
+            items.Add(new Item()
+            {
+                Id = 3,
+                Height = 2,
+                Width = 5,
+                Price = 10,
+                IsRemoved = false
+            });
+
+            items.Add(new Item()
+            {
+                Id = 4,
+                Height = 1,
+                Width = 1,
+                Price = 1,
+                IsRemoved = false
+            });
 
             IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
             //alloco ogni item j in un bin diverso
@@ -43,7 +88,7 @@ namespace Nesting_1
                 {
                     Id = k,
                     Height = 5,
-                    Width = 7,
+                    Width = 8,
                     NestedItems = new List<NestedItem>()
                     {
                         new NestedItem(items.ElementAt(k)) {
@@ -98,7 +143,7 @@ namespace Nesting_1
                 {
                     Id = k,
                     Height = 5,
-                    Width = 7,
+                    Width = 8,
                     NestedItems = null,
                     Points = new List<Tuple>()
                     {

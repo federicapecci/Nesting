@@ -48,9 +48,5 @@ namespace Nesting_1
             BLqPosition = 0;
             
         }
-
-        public NestedItem()
-        {
-        }
     }
 }

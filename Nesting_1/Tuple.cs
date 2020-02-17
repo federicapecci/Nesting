@@ -46,7 +46,7 @@ namespace Nesting_1
         /// campo che rappresenta lo scarto potenziale in basso e a sinistra dell'item, 
         /// dopo che si è cercato di compattare la soluzione
         /// </summary>
-        public float HatchedRegion { get; set; } = 0;
+        public float HatchedArea { get; set; } = 0;
 
         public Tuple() 
         {
@@ -55,7 +55,7 @@ namespace Nesting_1
             IsUsed = false;
             PfinalPosition = 0;
             QfinalPosition = 0;
-            HatchedRegion = 0;
+            HatchedArea = 0;
         }
 
         public Tuple(Tuple triple)
@@ -65,7 +65,7 @@ namespace Nesting_1
             IsUsed = triple.IsUsed;
             PfinalPosition = 0;
             QfinalPosition = 0;
-            HatchedRegion = 0;
+            HatchedArea = 0;
         }
     }
 }

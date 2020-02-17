@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Nesting_1
@@ -84,46 +85,46 @@ namespace Nesting_1
                             TLpPosition = feasiblePoint.Pposition,
                             TLqPosition = feasiblePoint.Qposition + temporaryItem.Height
                         };
-                        feasiblePoint.HatchedRegion = GetHatchedRegion(feasiblePoint, newNestedItem, temporaryBin, temporaryItem);
+                        feasiblePoint.HatchedArea = GetHatchedArea(feasiblePoint, newNestedItem, temporaryBin, temporaryItem);
                     }
                 }
 
                 //trovo la tupla con lo scarto minore tra quelle ancora disponibili
-                //(Where(x => x.HatchedRegion >= 0) filtra solo le tuple con hatched region = 0)
-                Tuple minHatchedRegionTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedRegion >= 0)
-                                                                 .OrderBy(x => x.HatchedRegion) 
-                                                                 .First();
+                //(Where(x => x.HatchedArea >= 0) filtra solo le tuple con hatched area = 0)
+                Tuple minHatchedAreaTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedArea >= 0)
+                                                                .OrderBy(x => x.HatchedArea) 
+                                                                .First();
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
-                IList<Tuple> minHatchedRegionPoints = new List<Tuple>();
+                IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
                 foreach (var point in temporaryBin.Points)
                 {
-                    if (point.HatchedRegion == minHatchedRegionTuple.HatchedRegion && !point.IsUsed)
+                    if (point.HatchedArea == minHatchedAreaTuple.HatchedArea && !point.IsUsed)
                     {
-                        minHatchedRegionPoints.Add(point);
+                        minHatchedAreaPoints.Add(point);
                     }
                 }
 
-                if (minHatchedRegionPoints.Count == 1)
+                if (minHatchedAreaPoints.Count == 1)
                 {
-                    var minHatchedRegionPoint = minHatchedRegionPoints.ElementAt(0);
+                    var minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
-                        BLpPosition = minHatchedRegionPoint.PfinalPosition,
-                        BLqPosition = minHatchedRegionPoint.QfinalPosition,
-                        BRpPosition = minHatchedRegionPoint.PfinalPosition + temporaryItem.Width,
-                        BRqPosition = minHatchedRegionPoint.QfinalPosition,
-                        TLpPosition = minHatchedRegionPoint.PfinalPosition,
-                        TLqPosition = minHatchedRegionPoint.QfinalPosition + temporaryItem.Height
+                        BLpPosition = minHatchedAreaPoint.PfinalPosition,
+                        BLqPosition = minHatchedAreaPoint.QfinalPosition,
+                        BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
+                        BRqPosition = minHatchedAreaPoint.QfinalPosition,
+                        TLpPosition = minHatchedAreaPoint.PfinalPosition,
+                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
                     });
 
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedRegionPoint);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint);
                     return true;
                 }
-                else if (minHatchedRegionPoints.Count > 1)
+                else if (minHatchedAreaPoints.Count > 1)
                 {
-                    Tuple minCoordinatePoint = ApplyRule(minHatchedRegionPoints);
+                    Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints);
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
@@ -241,22 +242,22 @@ namespace Nesting_1
         /// questo metodo, data la posizione inziale di un item,
         /// prova a spingerlo in basso e verso sinistra quanto
         /// più possibile.
-        /// Poi, calcola l'hatched region in basso e a sinistra 
+        /// Poi, calcola l'hatched area in basso e a sinistra 
         /// dell'item
         /// </summary>
         /// <param name="feasiblePoint"></param>
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private float GetHatchedRegion(Tuple feasiblePoint, NestedItem newNestedItem, Bin<Tuple> temporaryBin, Item temporaryItem)
+        private float GetHatchedArea(Tuple feasiblePoint, NestedItem newNestedItem, Bin<Tuple> temporaryBin, Item temporaryItem)
         {
-                PushItemDown(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
-                PushItemLeft(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
+                float downtHatchedArea = PushItemDown(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
+                float leftHatchedArea = PushItemLeft(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
 
                 //controllo se l'oggettto, anche essendo stato spostato in basso a sintra, sborda
                 if (IsBorderObserved(newNestedItem, temporaryBin.Height, temporaryBin.Width))
                 {
-                    return 0;
+                    return downtHatchedArea + leftHatchedArea;
                 }
                 else
                 {
@@ -264,7 +265,7 @@ namespace Nesting_1
                 }
         }
 
-        private void PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
+        private float PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
         {
 
             //lista delle intersezioni tra item nuovo e item già in soluzione
@@ -287,35 +288,43 @@ namespace Nesting_1
                 newNestedItem.TLqPosition = temporaryItem.Height;
                 newNestedItem.BRqPosition = 0;
             }
-            else if (intersectedItems.Count == 1) //1 sola intersezione
+            else
             {
-                float delta = feasiblePoint.Qposition - intersectedItems.ElementAt(0).Height;
-                newNestedItem.BLqPosition -= delta;
-                newNestedItem.TLqPosition -= delta;
-                newNestedItem.BRqPosition -= delta;
-            }
-            else if (intersectedItems.Count > 1) //N intersezioni
-            {
-                float heightSum = 0;
-                foreach (var intersectionItem in intersectedItems)
+                if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    heightSum += intersectionItem.Height;
+                    float delta = feasiblePoint.Qposition - intersectedItems.ElementAt(0).Height;
+                    newNestedItem.BLqPosition -= delta;
+                    newNestedItem.TLqPosition -= delta;
+                    newNestedItem.BRqPosition -= delta;
                 }
-                float delta = feasiblePoint.Qposition - heightSum;
-                newNestedItem.BLqPosition -= delta;
-                newNestedItem.TLqPosition -= delta;
-                newNestedItem.BRqPosition -= delta;
+                else if (intersectedItems.Count > 1) //N intersezioni
+                {
+                    float heightSum = 0;
+                    foreach (var intersectionItem in intersectedItems)
+                    {
+                        heightSum += intersectionItem.Height;
+                    }
+                    float delta = feasiblePoint.Qposition - heightSum;
+                    newNestedItem.BLqPosition -= delta;
+                    newNestedItem.TLqPosition -= delta;
+                    newNestedItem.BRqPosition -= delta;
+                }
+
             }
 
             feasiblePoint.QfinalPosition = newNestedItem.BLqPosition;
-
+            return 0;
         }
 
-        private void PushItemLeft(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
+        private float PushItemLeft(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
         {
+            //variabile per l'hatched area che eventualmente rimane a sinistra
+            float leftHatchedArea = 0;
 
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<NestedItem> intersectedItems = new List<NestedItem>();
+
+            bool areIntersectedItemPresent = false;
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
@@ -334,28 +343,68 @@ namespace Nesting_1
                 newNestedItem.TLpPosition = 0;
                 newNestedItem.BRpPosition = temporaryItem.Width;
             }
-            else if (intersectedItems.Count == 1) //1 sola intersezione
-            {
-                float delta = feasiblePoint.Pposition - intersectedItems.ElementAt(0).Width;
-                newNestedItem.BLpPosition -= delta;
-                newNestedItem.TLpPosition -= delta;
-                newNestedItem.BRpPosition -= delta;
-            }
-            else if (intersectedItems.Count > 1) //N intersezioni
-            {
-                float widthSum = 0;
-                foreach (var intersectedItem in intersectedItems)
+            else {
+                if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    widthSum += intersectedItem.Width;
+                    float delta = feasiblePoint.Pposition - intersectedItems.ElementAt(0).Width;
+                    newNestedItem.BLpPosition -= delta;
+                    newNestedItem.TLpPosition -= delta;
+                    newNestedItem.BRpPosition -= delta;
                 }
-                float delta = feasiblePoint.Pposition - widthSum;
-                newNestedItem.BLpPosition -= delta;
-                newNestedItem.TLpPosition -= delta;
-                newNestedItem.BRpPosition -= delta;
+                else if (intersectedItems.Count > 1) //N intersezioni
+                {
+                    float widthSum = 0;
+                    foreach (var intersectedItem in intersectedItems)
+                    {
+                        widthSum += intersectedItem.Width;
+                    }
+                    float delta = feasiblePoint.Pposition - widthSum;
+                    newNestedItem.BLpPosition -= delta;
+                    newNestedItem.TLpPosition -= delta;
+                    newNestedItem.BRpPosition -= delta;
+                }
+
+                areIntersectedItemPresent = true;
+
             }
 
             feasiblePoint.PfinalPosition = newNestedItem.BLpPosition;
+            if(areIntersectedItemPresent)
+            {
+                //altezza della green area
+                float greenAreaHeight = newNestedItem.Height;
 
+                //ampiezza dellea green area
+                float greenAreaWidth = newNestedItem.BLpPosition;
+
+                //definiso la green area a sintra del nuovo item
+                GreenZone leftGreenZone = new GreenZone()
+                {
+                    BRpPosition = feasiblePoint.PfinalPosition,
+                    BRqPosition = feasiblePoint.QfinalPosition,
+                    TRpPosition = feasiblePoint.PfinalPosition,
+                    TRqPosition = feasiblePoint.QfinalPosition + newNestedItem.Height,
+                    BLqPosition = feasiblePoint.QfinalPosition, 
+                    BLpPosition = 0, 
+                    TLpPosition = 0, 
+                    TLqPosition = feasiblePoint.QfinalPosition + newNestedItem.Height,
+                    Area = greenAreaHeight * greenAreaWidth
+                };
+
+                //per ogni item già in posizione, che è stato intersecato, 
+                //calcolo quanta parte di area di esso rientra nella green area e 
+                //infine sommo tale area all'area totale degli item intersecati
+                float itemsInSolutionArea = 0;
+                foreach (var intersectedItem in intersectedItems)
+                {
+                    float intersectedHeight = Math.Abs(intersectedItem.TLqPosition - leftGreenZone.BLqPosition);
+                    itemsInSolutionArea += (intersectedHeight * intersectedItem.Width);
+                }
+
+                leftHatchedArea = leftGreenZone.Area - itemsInSolutionArea;
+            }
+
+            return leftHatchedArea;
 
         }
 
@@ -368,7 +417,7 @@ namespace Nesting_1
         /// <returns></returns>
         bool IsBorderObserved(NestedItem newNestedItem, float temporaryBinHeight, float temporaryBinWidth)
         {
-            return newNestedItem.TLqPosition < temporaryBinHeight && newNestedItem.BRpPosition < temporaryBinWidth;
+            return newNestedItem.TLqPosition <= temporaryBinHeight && newNestedItem.BRpPosition <= temporaryBinWidth;
         }
 
         /// <summary>
@@ -382,18 +431,18 @@ namespace Nesting_1
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
-        private Tuple ApplyRule(IList<Tuple> minHatchedRegionTuples)
+        private Tuple ApplyRule(IList<Tuple> minHatchedAreaTuples)
         {
             Tuple result = null;
             IList<Tuple> pMinTuples = new List<Tuple>();
 
-            float minFinalP = minHatchedRegionTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
+            float minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
 
-            foreach (var minHatchedRegionTuple in minHatchedRegionTuples)
+            foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
             {
-                if (minHatchedRegionTuple.PfinalPosition == minFinalP)
+                if (minHatchedAreaTuple.PfinalPosition == minFinalP)
                 {
-                    pMinTuples.Add(minHatchedRegionTuple);
+                    pMinTuples.Add(minHatchedAreaTuple);
                 }
             }
 
