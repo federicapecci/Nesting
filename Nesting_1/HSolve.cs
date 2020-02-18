@@ -23,17 +23,7 @@ namespace Nesting_1
             IList<Item> items = new List<Item>();
             int itemNumber = 5;
 
-            /*for (int k = 0; k < itemNumber; k++)
-            {
-                items.Add(new Item()
-                {
-                    Id = k,
-                    Height = 2,
-                    Width = 2,
-                    Price = 4,
-                    IsRemoved = false
-                });
-            }*/
+            //configuro gli item
 
             items.Add(new Item()
             {
