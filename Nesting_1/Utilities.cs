@@ -92,8 +92,8 @@ namespace Nesting_1
                 //trovo la tupla con lo scarto minore tra quelle ancora disponibili
                 //(Where(x => x.HatchedArea >= 0) filtra solo le tuple con hatched area = 0)
                 Tuple minHatchedAreaTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedArea >= 0)
-                                                                .OrderBy(x => x.HatchedArea) 
-                                                                .First();
+                                                               .OrderBy(x => x.HatchedArea) 
+                                                               .First();
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
@@ -219,7 +219,7 @@ namespace Nesting_1
 
         /// <summary>
         /// questo metodo setta come usate le tuple generate che 
-        /// sono uguali o eccedono le dimensioni del bin
+        /// sono uguali alle dimensioni del bin o le eccedono
         /// </summary>
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
@@ -239,13 +239,12 @@ namespace Nesting_1
         }
 
         /// <summary>
-        /// questo metodo, data la posizione inziale di un item,
-        /// prova a spingerlo in basso e verso sinistra quanto
-        /// più possibile.
-        /// Poi, calcola l'hatched area in basso e a sinistra 
-        /// dell'item
+        /// questo metodo calcola l'hatched area in basso e a sinistra dell'item.
+        /// Infine, ritorna la somma delle due. 
+        /// Ritorna -1 se l'item, per come è posizionato, eccede le dimensioni del bin
         /// </summary>
         /// <param name="feasiblePoint"></param>
+        /// <param name="newNestedItem"></param>
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
@@ -265,11 +264,24 @@ namespace Nesting_1
                 }
         }
 
+        /// <summary>
+        /// questo metodo spinge in basso un nuovo item e
+        /// calcolo l'hatched area sotto il nuovo iten
+        /// </summary>
+        /// <param name="feasiblePoint"></param>
+        /// <param name="temporaryBin"></param>
+        /// <param name="temporaryItem"></param>
+        /// <param name="newNestedItem"></param>
+        /// <returns></returns>
         private float PushItemDown(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
         {
+            //variabile per l'hatched area che eventualmente rimane sotto il nuovo item
+            float hatchedArea = 0;
 
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<NestedItem> intersectedItems = new List<NestedItem>();
+
+            bool areIntersectedItemsPresent = false;
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
@@ -310,21 +322,77 @@ namespace Nesting_1
                     newNestedItem.BRqPosition -= delta;
                 }
 
+                areIntersectedItemsPresent = true;
+
             }
 
             feasiblePoint.QfinalPosition = newNestedItem.BLqPosition;
-            return 0;
+            if (areIntersectedItemsPresent)
+            {
+                //altezza della green area
+                float greenAreaHeight = newNestedItem.BRqPosition;
+
+                //ampiezza dellea green area
+                float greenAreaWidth = newNestedItem.Width;
+
+                //definiso la green area sotto il nuovo item
+                GreenZone greenZone = new GreenZone()
+                {
+                    BRpPosition = feasiblePoint.PfinalPosition + newNestedItem.Width, ///
+                    BRqPosition = 0, ///
+                    TRpPosition = feasiblePoint.PfinalPosition + newNestedItem.Width, ///
+                    TRqPosition = feasiblePoint.QfinalPosition, ///
+                    BLpPosition = feasiblePoint.PfinalPosition, ///
+                    BLqPosition = 0, ///
+                    TLpPosition = feasiblePoint.PfinalPosition, ///
+                    TLqPosition = feasiblePoint.QfinalPosition, ///
+                    Area = greenAreaHeight * greenAreaWidth
+                };
+
+                //per ogni item già in posizione, che è stato intersecato, 
+                //calcolo quanta parte di area di esso rientra nella green area e 
+                //infine sommo tale area all'area totale degli item intersecati
+                float itemsInSolutionArea = 0;
+                float intersectedWidth = 0;
+                foreach (var intersectedItem in intersectedItems)
+                {
+                    //guardo se è più a destra l'item intersecato o il nuovo item
+                    if (newNestedItem.BRpPosition > intersectedItem.BRpPosition)
+                    {
+                        intersectedWidth = Math.Abs(intersectedItem.BRpPosition - greenZone.BLpPosition);
+                    }
+                    else if (newNestedItem.BRpPosition <= intersectedItem.BRpPosition)
+                    {
+                        intersectedWidth = newNestedItem.Width;
+                    }
+                    itemsInSolutionArea += (intersectedItem.Height * intersectedWidth);
+                }
+
+                hatchedArea = greenZone.Area - itemsInSolutionArea;
+            }
+
+            return hatchedArea;
         }
 
+
+        /// <summary>
+        /// questo metodo spinge a sinistra un nuovo item e
+        /// calcolo l'hatched area a sinistra del nuovo iten
+        /// </summary>
+        /// <param name="feasiblePoint"></param>
+        /// <param name="temporaryBin"></param>
+        /// <param name="temporaryItem"></param>
+        /// <param name="newNestedItem"></param>
+        /// <returns></returns>
         private float PushItemLeft(Tuple feasiblePoint, Bin<Tuple> temporaryBin, Item temporaryItem, NestedItem newNestedItem)
         {
-            //variabile per l'hatched area che eventualmente rimane a sinistra
-            float leftHatchedArea = 0;
+            //variabile per l'hatched area che eventualmente rimane a sinistra del nuovo item
+            float hatchedArea = 0;
 
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<NestedItem> intersectedItems = new List<NestedItem>();
 
-            bool areIntersectedItemPresent = false;
+            bool areIntersectedItemsPresent = false;
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
@@ -364,12 +432,12 @@ namespace Nesting_1
                     newNestedItem.BRpPosition -= delta;
                 }
 
-                areIntersectedItemPresent = true;
+                areIntersectedItemsPresent = true;
 
             }
 
             feasiblePoint.PfinalPosition = newNestedItem.BLpPosition;
-            if(areIntersectedItemPresent)
+            if(areIntersectedItemsPresent)
             {
                 //altezza della green area
                 float greenAreaHeight = newNestedItem.Height;
@@ -378,14 +446,14 @@ namespace Nesting_1
                 float greenAreaWidth = newNestedItem.BLpPosition;
 
                 //definiso la green area a sintra del nuovo item
-                GreenZone leftGreenZone = new GreenZone()
+                GreenZone greenZone = new GreenZone()
                 {
                     BRpPosition = feasiblePoint.PfinalPosition,
                     BRqPosition = feasiblePoint.QfinalPosition,
                     TRpPosition = feasiblePoint.PfinalPosition,
                     TRqPosition = feasiblePoint.QfinalPosition + newNestedItem.Height,
-                    BLqPosition = feasiblePoint.QfinalPosition, 
-                    BLpPosition = 0, 
+                    BLpPosition = 0,
+                    BLqPosition = feasiblePoint.QfinalPosition,
                     TLpPosition = 0, 
                     TLqPosition = feasiblePoint.QfinalPosition + newNestedItem.Height,
                     Area = greenAreaHeight * greenAreaWidth
@@ -395,16 +463,24 @@ namespace Nesting_1
                 //calcolo quanta parte di area di esso rientra nella green area e 
                 //infine sommo tale area all'area totale degli item intersecati
                 float itemsInSolutionArea = 0;
+                float intersectedHeight = 0;
                 foreach (var intersectedItem in intersectedItems)
                 {
-                    float intersectedHeight = Math.Abs(intersectedItem.TLqPosition - leftGreenZone.BLqPosition);
+                    //guardo se è più in alto l'item intersecato o il nuovo item
+                    if (newNestedItem.TLqPosition > intersectedItem.TLqPosition)
+                    {
+                        intersectedHeight = Math.Abs(intersectedItem.TLqPosition - greenZone.BLqPosition);
+                    }else if(newNestedItem.TLqPosition <= intersectedItem.TLqPosition)
+                    {
+                        intersectedHeight = newNestedItem.Height;
+                    }
                     itemsInSolutionArea += (intersectedHeight * intersectedItem.Width);
                 }
 
-                leftHatchedArea = leftGreenZone.Area - itemsInSolutionArea;
+                hatchedArea = greenZone.Area - itemsInSolutionArea;
             }
 
-            return leftHatchedArea;
+            return hatchedArea;
 
         }
 
