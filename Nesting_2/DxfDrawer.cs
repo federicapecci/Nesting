@@ -24,7 +24,7 @@ namespace Nesting_2
 
         public void WriteDxfDocument()
         {
-            string file = "bin4.dxf";
+            string file = "binRectangularItems.dxf";
 
             //// by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();

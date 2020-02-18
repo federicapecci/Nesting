@@ -285,9 +285,15 @@ namespace Nesting_2
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
-                if (feasiblePoint.Pposition >= nestedItem.TLpPosition &&
-                   feasiblePoint.Pposition < nestedItem.BRpPosition &&
-                   feasiblePoint.Qposition >= nestedItem.TLqPosition)
+                if ( //controllo se la p in basso a sx e la p in basso a dx del nuovo nested item sono comprese nelle p degli item già in sol
+                    
+                   ((feasiblePoint.Pposition >= nestedItem.TLpPosition &&
+                   feasiblePoint.Pposition < nestedItem.BRpPosition) ||
+
+                   (feasiblePoint.Pposition + newNestedItem.Width >= nestedItem.TLpPosition &&
+                   feasiblePoint.Pposition + newNestedItem.Width < nestedItem.BRpPosition)) &&
+
+                   feasiblePoint.Qposition >= nestedItem.TLqPosition) //e se il feasible point è più in alto degli item già in sol
                 {
                     intersectedItems.Add(nestedItem);
                 }
@@ -311,11 +317,26 @@ namespace Nesting_2
                 }
                 else if (intersectedItems.Count > 1) //N intersezioni
                 {
+                   
                     float heightSum = 0;
-                    foreach (var intersectionItem in intersectedItems)
+
+                    var qCheck = intersectedItems.ElementAt(0).BLqPosition; //salvo il primo valore di q BL degli item che si intersecano e sono già in sol
+
+                    var qCheckedList = intersectedItems.Where(x => x.BLqPosition == qCheck); //mi salvo in una lista tutti gli item già in sol che hanno le stessa q BL che sto cercando
+
+                    if(qCheckedList.Count() == intersectedItems.Count()) //se tutti gli item già in sol hanno la stessa q nel BL
                     {
-                        heightSum += intersectionItem.Height;
+                        heightSum = intersectedItems.OrderBy(x => x.Height) //prendo l'item con la height maggiore 
+                                                    .Last().Height; 
                     }
+                    else //gli item già in sol sono uno sotto l'altro quindi sommo le altezze 
+                    {
+                        foreach (var intersectionItem in intersectedItems)
+                        {
+                            heightSum += intersectionItem.Height;
+                        }
+                    }
+
                     float delta = feasiblePoint.Qposition - heightSum;
                     newNestedItem.BLqPosition -= delta;
                     newNestedItem.TLqPosition -= delta;
@@ -363,7 +384,8 @@ namespace Nesting_2
                     }
                     else if (newNestedItem.BRpPosition <= intersectedItem.BRpPosition)
                     {
-                        intersectedWidth = newNestedItem.Width;
+                        //intersectedWidth = newNestedItem.Width;
+                        intersectedWidth = Math.Abs(greenZone.BRpPosition - intersectedItem.BLpPosition);
                     }
                     itemsInSolutionArea += (intersectedItem.Height * intersectedWidth);
                 }
@@ -396,6 +418,7 @@ namespace Nesting_2
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
+                // TO DO!!!!!!! MODIFICARE PUSH LEFT COME PUSH DOWN, NELL'IF VANNO AGGIUNTE CONDIZIONI E NON SOLO, VEDI PUSH DOWN!!!!!!
                 if (feasiblePoint.Qposition < nestedItem.TLqPosition &&
                    feasiblePoint.Qposition >= nestedItem.BRqPosition &&
                    feasiblePoint.Pposition >= nestedItem.BRpPosition)
