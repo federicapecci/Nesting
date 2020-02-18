@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nesting_1
+namespace Nesting_2
 {
     class DxfDrawer : IDrawer
     {
@@ -24,7 +24,7 @@ namespace Nesting_1
 
         public void WriteDxfDocument()
         {
-            string file = "binRectangularItems.dxf";
+            string file = "bin4.dxf";
 
             //// by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();

@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netDxf", "netDxf-master\net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDxfDocument", "netDxf-master\TestDxfDocument\TestDxfDocument.csproj", "{65B33B00-93CE-484A-8023-7A9BA972D4D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesting_1", "Nesting_1\Nesting_1.csproj", "{059D0A87-980B-4850-A65E-F5C689C65EFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nesting_1", "Nesting_1\Nesting_1.csproj", "{059D0A87-980B-4850-A65E-F5C689C65EFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesting_2", "Nesting_2\Nesting_2.csproj", "{9050B8AD-D8ED-4131-9090-8269CB509A92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{059D0A87-980B-4850-A65E-F5C689C65EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{059D0A87-980B-4850-A65E-F5C689C65EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{059D0A87-980B-4850-A65E-F5C689C65EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9050B8AD-D8ED-4131-9090-8269CB509A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9050B8AD-D8ED-4131-9090-8269CB509A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9050B8AD-D8ED-4131-9090-8269CB509A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9050B8AD-D8ED-4131-9090-8269CB509A92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
