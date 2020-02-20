@@ -273,9 +273,7 @@ namespace Nesting_2
         {
             float totalHatchedArea = 0;
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
-            float partialHatchedArea = 0; 
-
-            //HATCHED AREA DOWN
+            float partialHatchedArea; 
 
             if (downIntersectedNestedItems.Count > 0)
             {
@@ -323,7 +321,6 @@ namespace Nesting_2
                 totalHatchedArea += partialHatchedArea;
             }
 
-            //HATCHED AREA LEFT -> TO CORRECT
             if (leftIntersectedNestedItems.Count > 0)
             {
                 //altezza della green area
@@ -425,11 +422,14 @@ namespace Nesting_2
 
                     float heightSum = 0;
 
-                    var qCheck = intersectedItems.ElementAt(0).BLqPosition; //salvo il primo valore di q BL degli item che si intersecano e sono già in sol
+                    //salvo il primo valore di q BL degli item che si intersecano e sono già in sol
+                    var qCheck = intersectedItems.ElementAt(0).BLqPosition;
 
-                    var qCheckedList = intersectedItems.Where(x => x.BLqPosition == qCheck); //mi salvo in una lista tutti gli item già in sol che hanno le stessa q BL che sto cercando
+                    //mi salvo in una lista tutti gli item già in sol che hanno le stessa q BL che sto cercando
+                    var qCheckedList = intersectedItems.Where(x => x.BLqPosition == qCheck);
 
-                    if (qCheckedList.Count() == intersectedItems.Count()) //se tutti gli item già in sol hanno la stessa q nel BL
+                    //se tutti gli item già in sol hanno la stessa q nel BL
+                    if (qCheckedList.Count() == intersectedItems.Count()) 
                     {
                         heightSum = intersectedItems.OrderBy(x => x.Height) //prendo l'item con la height maggiore 
                                                     .Last().Height;
@@ -455,6 +455,7 @@ namespace Nesting_2
         }
 
 
+        /// CORRECT PUSH ITEM LEFT, SEE THE "IFs" OF PUSH ITEM DOWN
         /// <summary>
         /// questo metodo spinge a sinistra un nuovo item e
         /// calcolo l'hatched area a sinistra del nuovo iten
