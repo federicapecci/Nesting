@@ -10,7 +10,7 @@ namespace Nesting_2
     /// classe che rappresenta l'item nel contesto 
     /// di un bin 
     /// </summary>
-    class NestedItem : Item
+    public class NestedItem : Item
     {
         /// <summary>
         /// coordinata P in basso a sinitra dell'item

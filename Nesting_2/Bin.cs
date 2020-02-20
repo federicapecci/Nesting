@@ -12,7 +12,7 @@ namespace Nesting_2
     /// di punti potrebbe essere sia di tuple che di triple
     /// </summary>
     /// <typeparam name="X"></typeparam>
-    class Bin<X>
+    public class Bin<X>
     {
         /// <summary>
         /// identificativo del bin

@@ -10,7 +10,7 @@ namespace Nesting_2
     /// classe che rappresenta un oggetto (rettangolo)
     /// che deve essere nestato nel bin
     /// </summary>
-    class Item
+    public class Item
     {
 
         /// <summary>

@@ -11,6 +11,21 @@ namespace Nesting_2
     class HSolve : IHSolve
     {
         /// <summary>
+        /// la configurazione conente i parametri con 
+        /// cui lanciare l'algortimo hsolve
+        /// </summary>
+        public Configuration Configuration { get; set; } = null;
+
+        /// <summary>
+        /// costruttore in cui setto la configuration di hsolve
+        /// </summary>
+        /// <param name="configuration"></param>
+        public HSolve(Configuration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
         public Bin<Tuple> ComputeHeuristic()
@@ -21,54 +36,10 @@ namespace Nesting_2
             //================ STEP 1 - INITIALIZATION ================
 
             IList<Item> items = new List<Item>();
-            int itemNumber = 5;
+            int itemNumber = Configuration.Items.Count;
 
             //configuro gli item
-
-            items.Add(new Item()
-            {
-                Id = 0,
-                Height = 3,
-                Width = 5,
-                Price = 15,
-                IsRemoved = false
-            });
-
-            items.Add(new Item()
-            {
-                Id = 1,
-                Height = 1,
-                Width = 2,
-                Price = 2,
-                IsRemoved = false
-            });
-
-            items.Add(new Item()
-            {
-                Id = 2,
-                Height = 2,
-                Width = 3,
-                Price = 6,
-                IsRemoved = false
-            });
-
-            items.Add(new Item()
-            {
-                Id = 3,
-                Height = 2,
-                Width = 5,
-                Price = 10,
-                IsRemoved = false
-            });
-
-            items.Add(new Item()
-            {
-                Id = 4,
-                Height = 1,
-                Width = 1,
-                Price = 1,
-                IsRemoved = false
-            });
+            items = Configuration.Items;
 
             IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
             //alloco ogni item j in un bin diverso
@@ -77,8 +48,8 @@ namespace Nesting_2
                 var bin = new Bin<Tuple>()
                 {
                     Id = k,
-                    Height = 5,
-                    Width = 8,
+                    Height = Configuration.BinHeight,
+                    Width = Configuration.BinWidth,
                     NestedItems = new List<NestedItem>()
                     {
                         new NestedItem(items.ElementAt(k)) {
@@ -112,7 +83,7 @@ namespace Nesting_2
             int zStar = itemNumber;
             int iter = 0;
             float lowerBound = 0;
-            int maxIter = 100;
+            int maxIter = Configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
@@ -132,8 +103,8 @@ namespace Nesting_2
                 var temporaryBin = new Bin<Tuple>()
                 {
                     Id = k,
-                    Height = 5,
-                    Width = 8,
+                    Height = Configuration.BinHeight,
+                    Width = Configuration.BinWidth,
                     NestedItems = null,
                     Points = new List<Tuple>()
                     {
