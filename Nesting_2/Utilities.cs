@@ -278,10 +278,10 @@ namespace Nesting_2
             if (downIntersectedNestedItems.Count > 0)
             {
                 //altezza della green area
-                float greenAreaHeight = newNestedItem.BRqPosition;
+                //float greenAreaHeight = newNestedItem.BRqPosition;
 
                 //ampiezza dellea green area
-                float greenAreaWidth = newNestedItem.Width;
+                //float greenAreaWidth = newNestedItem.Width;
 
                 //definiso la green area sotto il nuovo item
                 GreenZone greenZone = new GreenZone()
@@ -294,26 +294,40 @@ namespace Nesting_2
                     BLqPosition = 0,
                     TLpPosition = feasiblePoint.PfinalPosition,
                     TLqPosition = feasiblePoint.QfinalPosition,
-                    Area = greenAreaHeight * greenAreaWidth
+                    Height = newNestedItem.BRqPosition,
+                    Width = newNestedItem.Width,
+                    Area = newNestedItem.BRqPosition * newNestedItem.Width
                 };
 
                 //per ogni item già in posizione, che è stato intersecato, 
                 //calcolo quanta parte di area di esso rientra nella green area e 
                 //infine sommo tale area all'area totale degli item intersecati
                 float itemsInSolutionArea = 0;
-                float intersectedWidth = 0;
+                float intersectedWidth;
+
                 foreach (var intersectedItem in downIntersectedNestedItems)
                 {
-                    //guardo se è più a destra l'item intersecato o il nuovo item
-                    if (newNestedItem.BRpPosition > intersectedItem.BRpPosition)
+                    //if else per scegliere la width dell'item in soluzione 
+                    //di cui devo calcolare l'area 
+                    //per fare valore assoluto Math.Abs( ... );
+                    if((newNestedItem.BLpPosition < intersectedItem.BLpPosition && //new item + a sx di interesect item
+                       newNestedItem.BRpPosition < intersectedItem.BRpPosition) ||
+                       (intersectedItem.BLpPosition < newNestedItem.BLpPosition && //new item + a  dx di intersected item
+                       intersectedItem.BRpPosition < newNestedItem.BRpPosition))
                     {
-                        intersectedWidth = Math.Abs(intersectedItem.BRpPosition - greenZone.BLpPosition);
-                    }
-                    else if (newNestedItem.BRpPosition <= intersectedItem.BRpPosition)
+                        intersectedWidth = intersectedItem.Width - greenZone.Width;
+                    }else if ((newNestedItem.BLpPosition == intersectedItem.BLpPosition && 
+                    newNestedItem.BRpPosition < intersectedItem.BRpPosition) ||
+                    (intersectedItem.BLpPosition < newNestedItem.BLpPosition && 
+                    intersectedItem.BRpPosition == newNestedItem.BRpPosition))
                     {
-                        //intersectedWidth = newNestedItem.Width;
-                        intersectedWidth = Math.Abs(greenZone.BRpPosition - intersectedItem.BLpPosition);
+                        intersectedWidth = greenZone.Width;
                     }
+                    else
+                    {
+                        intersectedWidth = intersectedItem.Width;
+                    }
+
                     itemsInSolutionArea += (intersectedItem.Height * intersectedWidth);
                 }
 
@@ -324,10 +338,10 @@ namespace Nesting_2
             if (leftIntersectedNestedItems.Count > 0)
             {
                 //altezza della green area
-                float greenAreaHeight = newNestedItem.Height;
+                //float greenAreaHeight = newNestedItem.Height;
 
                 //ampiezza dellea green area
-                float greenAreaWidth = newNestedItem.BLpPosition;
+                //float greenAreaWidth = newNestedItem.BLpPosition;
 
                 //definiso la green area a sintra del nuovo item
                 GreenZone greenZone = new GreenZone()
@@ -340,25 +354,39 @@ namespace Nesting_2
                     BLqPosition = feasiblePoint.QfinalPosition,
                     TLpPosition = 0,
                     TLqPosition = feasiblePoint.QfinalPosition + newNestedItem.Height,
-                    Area = greenAreaHeight * greenAreaWidth
+                    Height = newNestedItem.Height,
+                    Width = newNestedItem.BLpPosition,
+                    Area = newNestedItem.Height * newNestedItem.BLpPosition
                 };
 
                 //per ogni item già in posizione, che è stato intersecato, 
                 //calcolo quanta parte di area di esso rientra nella green area e 
                 //infine sommo tale area all'area totale degli item intersecati
                 float itemsInSolutionArea = 0;
-                float intersectedHeight = 0;
+                float intersectedHeight;
                 foreach (var intersectedItem in leftIntersectedNestedItems)
                 {
-                    //guardo se è più in alto l'item nuovo o quello intersecato
-                    if (newNestedItem.TLqPosition > intersectedItem.TLqPosition)
+                    //if else per scegliere la height dell'item in soluzione 
+                    //di cui devo calcolare l'area 
+                    //per fare valore assoluto Math.Abs( ... );
+                    if ((newNestedItem.BLqPosition < intersectedItem.BLqPosition && //new item + in basso di interesect item
+                       newNestedItem.TLqPosition < intersectedItem.TLqPosition) ||
+                       (intersectedItem.BLqPosition < newNestedItem.BLqPosition && //new item + in alto di intersected item
+                       intersectedItem.TLqPosition < newNestedItem.TLqPosition))
                     {
-                        intersectedHeight = Math.Abs(intersectedItem.TLqPosition - greenZone.BLqPosition);
-                    }
-                    else if (newNestedItem.TLqPosition <= intersectedItem.TLqPosition)
+                        intersectedHeight = intersectedItem.Height - greenZone.Height;
+                    }else if ((newNestedItem.BLqPosition == intersectedItem.BLqPosition && 
+                       newNestedItem.TLqPosition < intersectedItem.TLqPosition) ||
+                       (intersectedItem.BLqPosition < newNestedItem.BLqPosition && 
+                       intersectedItem.TLqPosition == newNestedItem.TLqPosition))
                     {
-                        intersectedHeight = newNestedItem.Height;
+                        intersectedHeight = greenZone.Height;
                     }
+                    else
+                    {
+                        intersectedHeight = intersectedItem.Height;
+                    }
+
                     itemsInSolutionArea += (intersectedHeight * intersectedItem.Width);
                 }
 

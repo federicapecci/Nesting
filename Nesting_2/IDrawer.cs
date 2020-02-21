@@ -8,6 +8,6 @@ namespace Nesting_2
 {
     interface IDrawer
     {
-        void WriteDxfDocument();
+        void WriteDxfDocument(string fileName);
     }
 }

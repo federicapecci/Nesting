@@ -22,9 +22,9 @@ namespace Nesting_2
             this.Bin = Bin;
         }
 
-        public void WriteDxfDocument()
+        public void WriteDxfDocument(string fileName)
         {
-            string file = "binRectangularItems5.dxf";
+            string file = fileName + ".dxf";
 
             //// by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();

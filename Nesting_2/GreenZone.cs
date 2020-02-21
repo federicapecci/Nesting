@@ -51,6 +51,17 @@ namespace Nesting_2
         /// </summary>
         public float TRqPosition { get; set; } = 0;
 
+
+        /// <summary>
+        /// superficie di estensione della green area
+        /// </summary>
+        public float Height { get; set; } = 0;
+
+        /// <summary>
+        /// superficie di estensione della green area
+        /// </summary>
+        public float Width { get; set; } = 0;
+
         /// <summary>
         /// superficie di estensione della green area
         /// </summary>
