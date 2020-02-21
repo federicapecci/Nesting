@@ -277,12 +277,6 @@ namespace Nesting_2
 
             if (downIntersectedNestedItems.Count > 0)
             {
-                //altezza della green area
-                //float greenAreaHeight = newNestedItem.BRqPosition;
-
-                //ampiezza dellea green area
-                //float greenAreaWidth = newNestedItem.Width;
-
                 //definiso la green area sotto il nuovo item
                 GreenZone greenZone = new GreenZone()
                 {
@@ -316,10 +310,12 @@ namespace Nesting_2
                        intersectedItem.BRpPosition < newNestedItem.BRpPosition))
                     {
                         intersectedWidth = intersectedItem.Width - greenZone.Width;
-                    }else if ((newNestedItem.BLpPosition == intersectedItem.BLpPosition && 
+                    }else if ((newNestedItem.BLpPosition == intersectedItem.BLpPosition && //new item inizia come insertected item ma termina prima
                     newNestedItem.BRpPosition < intersectedItem.BRpPosition) ||
-                    (intersectedItem.BLpPosition < newNestedItem.BLpPosition && 
-                    intersectedItem.BRpPosition == newNestedItem.BRpPosition))
+                    (intersectedItem.BLpPosition < newNestedItem.BLpPosition && // new item inizia dopo di insertected item ma terminano uguali
+                    intersectedItem.BRpPosition == newNestedItem.BRpPosition) || 
+                    (intersectedItem.BLpPosition < newNestedItem.BLpPosition &&  //le coordinate p del new item cadono dentro quelle p dell'intersected item
+                    intersectedItem.BRpPosition > newNestedItem.BRpPosition))
                     {
                         intersectedWidth = greenZone.Width;
                     }
@@ -337,12 +333,6 @@ namespace Nesting_2
 
             if (leftIntersectedNestedItems.Count > 0)
             {
-                //altezza della green area
-                //float greenAreaHeight = newNestedItem.Height;
-
-                //ampiezza dellea green area
-                //float greenAreaWidth = newNestedItem.BLpPosition;
-
                 //definiso la green area a sintra del nuovo item
                 GreenZone greenZone = new GreenZone()
                 {
@@ -375,10 +365,12 @@ namespace Nesting_2
                        intersectedItem.TLqPosition < newNestedItem.TLqPosition))
                     {
                         intersectedHeight = intersectedItem.Height - greenZone.Height;
-                    }else if ((newNestedItem.BLqPosition == intersectedItem.BLqPosition && 
+                    }else if ((newNestedItem.BLqPosition == intersectedItem.BLqPosition && //new item inizia come insertected item ma termina prima
                        newNestedItem.TLqPosition < intersectedItem.TLqPosition) ||
-                       (intersectedItem.BLqPosition < newNestedItem.BLqPosition && 
-                       intersectedItem.TLqPosition == newNestedItem.TLqPosition))
+                       (intersectedItem.BLqPosition < newNestedItem.BLqPosition && // new item inizia dopo di insertected item ma terminano uguali
+                       intersectedItem.TLqPosition == newNestedItem.TLqPosition) ||
+                       (intersectedItem.BLqPosition < newNestedItem.BLqPosition && //le coordinate q del new item cadono dentro quelle dell'intersected item 
+                       intersectedItem.TLqPosition > newNestedItem.TLqPosition))
                     {
                         intersectedHeight = greenZone.Height;
                     }
