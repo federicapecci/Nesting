@@ -120,24 +120,20 @@ namespace Nesting_2
             }
 
         //================ STEP 3 - FILLING UP BIN i ================
-
-
-
         l1:
 
             int counter = 1;
             foreach (var temporaryItem in temporaryItems)
             {
-                
-                    Console.WriteLine("X INS " + counter);
-                    //TO DO -> FIND THE TRIPLE (p,q,r) FOR PLACING ITEM j IN BIN i 
-                    bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);
-                    if (!isBestPositionFound)
-                    {
-                        break;
-                    }
+                Console.WriteLine("X INS " + counter);
+                //TO DO -> FIND THE TRIPLE (p,q,r) FOR PLACING ITEM j IN BIN i 
+                bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);
+                if (!isBestPositionFound)
+                {
+                    break;
+                }
                 counter += 1;
-                    Console.WriteLine("\n");
+                Console.WriteLine("\n");
                 
             }
 

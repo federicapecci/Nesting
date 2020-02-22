@@ -52,23 +52,20 @@ namespace Nesting_2
                 temporaryBin.Points.ElementAt(0).Pposition == 0 &&
                 temporaryBin.Points.ElementAt(0).Qposition == 0)
             {
-
-                temporaryBin.NestedItems = new List<NestedItem>
+                var nestedItem = new NestedItem(temporaryItem)
                 {
-                    new NestedItem(temporaryItem)
-                    {
-                        BLpPosition = 0,
-                        BLqPosition = 0,
-                        BRpPosition = temporaryItem.Width,
-                        BRqPosition = 0,
-                        TLpPosition = 0,
-                        TLqPosition = temporaryItem.Height
-                    }
+                    BLpPosition = 0,
+                    BLqPosition = 0,
+                    BRpPosition = temporaryItem.Width,
+                    BRqPosition = 0,
+                    TLpPosition = 0,
+                    TLqPosition = temporaryItem.Height
                 };
 
+                temporaryBin.NestedItems = new List<NestedItem>();
+                temporaryBin.NestedItems.Add(nestedItem);
 
-
-                HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0));
+                HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), nestedItem);
                 return true;
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
@@ -111,7 +108,7 @@ namespace Nesting_2
                 {
                     var minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
 
-                    temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
+                    var nestedItem = new NestedItem(temporaryItem)
                     {
                         BLpPosition = minHatchedAreaPoint.PfinalPosition,
                         BLqPosition = minHatchedAreaPoint.QfinalPosition,
@@ -119,16 +116,18 @@ namespace Nesting_2
                         BRqPosition = minHatchedAreaPoint.QfinalPosition,
                         TLpPosition = minHatchedAreaPoint.PfinalPosition,
                         TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
-                    });
+                    };
 
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint);
+                    temporaryBin.NestedItems.Add(nestedItem);
+
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint, nestedItem);
                     return true;
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
                     Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints);
 
-                    temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
+                    var nestedItem = new NestedItem(temporaryItem)
                     {
                         BLpPosition = minCoordinatePoint.PfinalPosition,
                         BLqPosition = minCoordinatePoint.QfinalPosition,
@@ -136,9 +135,11 @@ namespace Nesting_2
                         BRqPosition = minCoordinatePoint.QfinalPosition,
                         TLpPosition = minCoordinatePoint.PfinalPosition,
                         TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
-                    });
+                    };
 
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);
+                    temporaryBin.NestedItems.Add(nestedItem);
+
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint, nestedItem);
                     return true;
                 }
             }
@@ -151,7 +152,7 @@ namespace Nesting_2
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point)
+        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point, NestedItem nestedItem)
         {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
             var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
@@ -159,36 +160,84 @@ namespace Nesting_2
                                            .First();
             matchingPoint.IsUsed = true;
 
-            //aggiungo 2 nuovi punti ma prima controllo se sono già presenti nella lista temporaryBin.Points
-            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
-                                           x.Qposition == point.QfinalPosition + temporaryItem.Height).FirstOrDefault();
-
-            if (pointFound == null)
+            //controllo se non è più possibile usare dei punti in quanto sono stati "coperti" dal nuovo item nestato
+            foreach (var p in temporaryBin.Points)
             {
-                temporaryBin.Points.Add(new Tuple()
+                if (p.Pposition >= nestedItem.BLpPosition && p.Pposition < nestedItem.BRpPosition &&
+                   p.Qposition >= nestedItem.BLqPosition && p.Qposition < nestedItem.TLqPosition)
                 {
-                    Pposition = point.PfinalPosition,
-                    Qposition = point.QfinalPosition + temporaryItem.Height,
-                    IsUsed = false
+                    p.IsUsed = true;
+                }
+            }
 
-                });
+            //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points
+            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
+                                                   x.Qposition == point.QfinalPosition + temporaryItem.Height &&
+                                                   x.IsUsed == false).FirstOrDefault();
+
+            //definisco il primo nuovo punto
+            var firstPoint = new Tuple()
+            {
+                Pposition = point.PfinalPosition,
+                Qposition = point.QfinalPosition + temporaryItem.Height,
+                IsUsed = false
+
+            };
+
+            //controllo se il primo nuovo punto è idoneo ad essere aggiunto perché
+            //potrebbe essere erroneaemente creato sul lato di un item già esistente
+            bool isPointLyingOnItemSide = false;
+            foreach (var ni in temporaryBin.NestedItems) {
+                if (firstPoint.Qposition == ni.BLqPosition &&
+                    firstPoint.Pposition >= ni.BLpPosition &&
+                    firstPoint.Pposition <= ni.BRpPosition)
+                {
+                    isPointLyingOnItemSide = true;
+                    break;
+                }
+            }
+
+            //aggiungo il primo nuovo punto
+            if (pointFound == null && !isPointLyingOnItemSide)
+            {
+                temporaryBin.Points.Add(firstPoint);
             }
             else
             {
                 pointFound = null;
             }
 
-            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + temporaryItem.Width &&
-                                           x.Qposition == point.QfinalPosition).FirstOrDefault();
+            isPointLyingOnItemSide = false;
 
-            if (pointFound == null)
+            //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + temporaryItem.Width &&
+                                                        x.Qposition == point.QfinalPosition).FirstOrDefault();
+
+            //definisco il secondo nuovo punto
+            var secondPoint = new Tuple()
             {
-                temporaryBin.Points.Add(new Tuple()
+                Pposition = point.PfinalPosition + temporaryItem.Width,
+                Qposition = point.QfinalPosition,
+                IsUsed = false
+            };
+
+            //controllo se il secondo nuovo punto è idoneo ad essere aggiunto perché
+            //potrebbe essere erroneaemente creato sul lato di un item già esistente
+            foreach (var ni in temporaryBin.NestedItems)
+            {
+                if (secondPoint.Pposition == ni.BLpPosition &&
+                    secondPoint.Qposition >= ni.BLqPosition &&
+                    secondPoint.Qposition <= ni.TLqPosition)
                 {
-                    Pposition = point.PfinalPosition + temporaryItem.Width,
-                    Qposition = point.QfinalPosition,
-                    IsUsed = false
-                });
+                    isPointLyingOnItemSide = true;
+                    break;
+                }
+            }
+
+            //aggiungo il secondo nuovo punto
+            if (pointFound == null && !isPointLyingOnItemSide)
+            {
+                temporaryBin.Points.Add(secondPoint);
             }
 
             //setto item a nestato
@@ -417,9 +466,9 @@ namespace Nesting_2
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
-                //cerco intersezioni verticali tra nuovo item e item già in soluzione
-                if (((newNestedItem.BLpPosition >= nestedItem.BLpPosition && newNestedItem.BLpPosition <= nestedItem.BRpPosition) ||
-                   (newNestedItem.BRpPosition >= nestedItem.BLpPosition && newNestedItem.BRpPosition <= nestedItem.BRpPosition)) &&
+                //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
+                if (((newNestedItem.BLpPosition >= nestedItem.BLpPosition && newNestedItem.BLpPosition < nestedItem.BRpPosition) ||
+                   (newNestedItem.BRpPosition >= nestedItem.BLpPosition && newNestedItem.BRpPosition < nestedItem.BRpPosition)) &&
                     newNestedItem.BLqPosition >= nestedItem.TLqPosition)
                 { 
                     intersectedItems.Add(nestedItem);
@@ -473,9 +522,9 @@ namespace Nesting_2
 
             foreach (var nestedItem in temporaryBin.NestedItems)
             {
-                //cerco interesezioni orizzontali tra nuovo item e item già in soluzione
-                if(((newNestedItem.BLqPosition >= nestedItem.BLqPosition && newNestedItem.BLqPosition <= nestedItem.TLqPosition) ||
-                    (newNestedItem.TLqPosition >= nestedItem.BLqPosition && newNestedItem.TLqPosition <= nestedItem.TLqPosition)) &&
+                //cerco interesezioni orizzontali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
+                if(((newNestedItem.BLqPosition >= nestedItem.BLqPosition && newNestedItem.BLqPosition < nestedItem.TLqPosition) ||
+                    (newNestedItem.TLqPosition >= nestedItem.BLqPosition && newNestedItem.TLqPosition < nestedItem.TLqPosition)) &&
                     newNestedItem.BLpPosition >= nestedItem.BRpPosition) { 
                         intersectedItems.Add(nestedItem);
                 }
