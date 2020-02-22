@@ -251,15 +251,13 @@ namespace Nesting_2
         {
             IList<NestedItem> downIntersectedNestedItems = PushItemDown(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
             IList<NestedItem> leftIntersectedNestedItems = PushItemLeft(feasiblePoint, temporaryBin, temporaryItem, newNestedItem);
-            ComputeHatchedArea(feasiblePoint, newNestedItem, downIntersectedNestedItems, leftIntersectedNestedItems);
-
-
-            Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
-                ", new coord(" + feasiblePoint.PfinalPosition + ", " + feasiblePoint.QfinalPosition + ")");
 
             //controllo se l'oggettto, anche essendo stato spostato in basso a sintra, sborda
             if (IsBorderObserved(newNestedItem, temporaryBin.Height, temporaryBin.Width))
             {
+                ComputeHatchedArea(feasiblePoint, newNestedItem, downIntersectedNestedItems, leftIntersectedNestedItems);
+                Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
+                ", new coord(" + feasiblePoint.PfinalPosition + ", " + feasiblePoint.QfinalPosition + ")");
                 return feasiblePoint.HatchedArea;
             }
             else
