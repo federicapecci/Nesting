@@ -468,7 +468,7 @@ namespace Nesting_2
             {
                 //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if (((newNestedItem.BLpPosition >= nestedItem.BLpPosition && newNestedItem.BLpPosition < nestedItem.BRpPosition) ||
-                   (newNestedItem.BRpPosition >= nestedItem.BLpPosition && newNestedItem.BRpPosition < nestedItem.BRpPosition)) &&
+                   (newNestedItem.BRpPosition > nestedItem.BLpPosition && newNestedItem.BRpPosition <= nestedItem.BRpPosition)) &&
                     newNestedItem.BLqPosition >= nestedItem.TLqPosition)
                 { 
                     intersectedItems.Add(nestedItem);
@@ -524,7 +524,7 @@ namespace Nesting_2
             {
                 //cerco interesezioni orizzontali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if(((newNestedItem.BLqPosition >= nestedItem.BLqPosition && newNestedItem.BLqPosition < nestedItem.TLqPosition) ||
-                    (newNestedItem.TLqPosition >= nestedItem.BLqPosition && newNestedItem.TLqPosition < nestedItem.TLqPosition)) &&
+                    (newNestedItem.TLqPosition > nestedItem.BLqPosition && newNestedItem.TLqPosition <= nestedItem.TLqPosition)) &&
                     newNestedItem.BLpPosition >= nestedItem.BRpPosition) { 
                         intersectedItems.Add(nestedItem);
                 }
