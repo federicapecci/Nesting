@@ -12,7 +12,7 @@ namespace Nesting_2
 
         bool IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem);
 
-        void UpdatePrice(int z, IList<Item> items, Bin<Tuple> temporaryBin);
+        void UpdatePrice(float z, IList<Item> items, IList<Bin<Tuple>> bins);
 
     }
 }

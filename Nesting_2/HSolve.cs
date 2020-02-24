@@ -172,7 +172,7 @@ namespace Nesting_2
             }
             else
             {
-                utilities.UpdatePrice(z, items, temporaryBins[i]);
+                utilities.UpdatePrice(z, items, bins);
                 iter += 1;
                 goto l3;
             }

@@ -250,21 +250,40 @@ namespace Nesting_2
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void UpdatePrice(int z, IList<Item> items, Bin<Tuple> temporaryBin)
+        public void UpdatePrice(float z, IList<Item> items, IList<Bin<Tuple>> bins)
         {
             float alpha = 0.9F;
             float beta = 1.1F;
+            bool isItemFound = false;
 
+            //dato un certo item
             foreach (var item in items)
             {
-                /*if(temporaryBin.OrientedItemNumber <= (0.5*z))
-                {
-                    item.Price = alpha * item.Price;
+                foreach (var bin in bins) //scorro tutti i bins
+                { 
+                    foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
+                    {
+                        if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
+                        {
+                            //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
+                            if (bin.Id <= (0.5 * z)) 
+                            {
+                                item.Price = alpha * item.Price;
+                            }
+                            else if (bin.Id > (0.5 * z))
+                            {
+                                item.Price = beta * item.Price;
+                            }
+                            isItemFound = true;
+                            break;
+                        }
+                    }
+                    if (isItemFound)
+                    {
+                        isItemFound = false;
+                        break;
+                    }
                 }
-                if(temporaryBin.OrientedItemNumber > (0.5*z))
-                {
-                    item.Price = beta * item.Price;
-                }    */
             }
         }
 
