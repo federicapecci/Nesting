@@ -16,15 +16,15 @@ namespace Nesting_2
             //jsonDibaIO.WriteAllData(ref configuration, "hsolveConfiguration");
 
             //leggo da file json come impostare i parametri dell'algortimo hsolve
-            Configuration configuration = jsonConfigurationIO.ReadAllData("5_hsolve_configuration");
+            Configuration configuration = jsonConfigurationIO.ReadAllData("1_hsolve_configuration");
 
             //lancio l'euristica passando i parametri
             IHSolve hsolve = new HSolve(configuration);
-            Bin<Tuple> bin = hsolve.ComputeHeuristic();
+            IList<Bin<Tuple>> bins = hsolve.ComputeHeuristic();
 
             //scrivo il file dxf
-            IDrawer dxfDrawer = new DxfDrawer(bin);
-            dxfDrawer.WriteAllData("output_5_hsolve_output");
+            IDrawer dxfDrawer = new DxfDrawer(bins);
+            dxfDrawer.WriteAllData("output_1_hsolve_output");
 
         }
     }
