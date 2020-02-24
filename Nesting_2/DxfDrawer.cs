@@ -22,7 +22,7 @@ namespace Nesting_2
             this.Bin = Bin;
         }
 
-        public void WriteDxfDocument(string fileName)
+        public void WriteAllData(string fileName)
         {
             string file = fileName + ".dxf";
 
