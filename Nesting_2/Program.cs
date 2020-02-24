@@ -70,7 +70,7 @@ namespace Nesting_2
             //jsonDibaIO.WriteAllData(ref configuration, "hsolveConfiguration");
 
             //leggo da file json come impostare i parametri dell'algortimo hsolve
-            Configuration configuration = jsonDibaIO.ReadAllData("2_hsolveConfiguration");
+            Configuration configuration = jsonDibaIO.ReadAllData("5_hsolve_configuration");
 
             //lancio l'euristica passando i parametri
             IHSolve hsolve = new HSolve(configuration);
@@ -78,7 +78,7 @@ namespace Nesting_2
 
             //scrivo il dxf
             IDrawer drawer = new DxfDrawer(bin);
-            drawer.WriteDxfDocument("output_2_hsolveConfiguration");
+            drawer.WriteDxfDocument("output_5_hsolve_output");
 
         }
     }
