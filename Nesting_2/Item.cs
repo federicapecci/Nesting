@@ -12,7 +12,6 @@ namespace Nesting_2
     /// </summary>
     public class Item
     {
-
         /// <summary>
         /// identificativo dell'item
         /// </summary>

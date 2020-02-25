@@ -17,18 +17,25 @@ namespace Nesting_2
         public Configuration Configuration { get; set; } = null;
 
         /// <summary>
+        /// ogni container appartente a containers contiene
+        /// gli n bin di una certa iterazione
+        /// </summary>
+        public IList<Container> Containers { get; set; } = null;
+
+        /// <summary>
         /// costruttore in cui setto la configuration di hsolve
         /// </summary>
         /// <param name="configuration"></param>
         public HSolve(Configuration configuration)
         {
             Configuration = configuration;
+            Containers = new List<Container>();
         }
 
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public IList<Bin<Tuple>> ComputeHeuristic()
+        public IList<Container> ComputeHeuristic()
         {
             Console.WriteLine("Algorithm started");
             IUtilities utilities = new Utilities();
@@ -123,6 +130,8 @@ namespace Nesting_2
                 temporaryBins.Add(temporaryBin);
             }
 
+            //ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
+            //dato che i price sono stati aggiornati
             var sortedTemporaryItems = temporaryItems.OrderByDescending(x => x.Price);
 
         //================ STEP 3 - FILLING UP BIN i ================
@@ -181,8 +190,18 @@ namespace Nesting_2
             else
             {
                 utilities.UpdatePrice(z, items, bins);
+
+                //creo un nuovo containter con tutti i bin dell'iterazione corrente
+                Container container = new Container()
+                {
+                    Bins = bins
+                };
+
+                //aggiungo il container di una certa iterazione iter alla lista dei containers
+                Containers.Add(container);
+
                 iter += 1;
-                //rimetto tutti gli item a non removed perché cominicio una nuova iterazione
+                //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
                 foreach (var item in items)
                 {
                     item.IsRemoved = false;
@@ -192,7 +211,7 @@ namespace Nesting_2
 
         end:
             Console.WriteLine("Algorithm ended");
-            return bins;
+            return Containers;
         }
     }  
 }

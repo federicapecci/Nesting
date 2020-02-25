@@ -15,58 +15,56 @@ namespace Nesting_2
 {
     class DxfDrawer : IDrawer
     {
-        public IList<Bin<Tuple>> Bins { get; set; } = null;
+        public IList<Container> Containers { get; set; } = null;
 
-        public DxfDrawer(IList<Bin<Tuple>> Bins)
+        public DxfDrawer(IList<Container> Containers)
         {
-            this.Bins = Bins;
+            this.Containers = Containers;
         }
 
         public void WriteAllData(string fileName)
         {
             string file = fileName + ".dxf";
-
-            //// by default it will create an AutoCad2000 DXF version
             DxfDocument dxf = new DxfDocument();
-            int offset = 0;
-            foreach (var bin in Bins)
+            TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
+            int offsetX = 0;
+            int offsetY = 0;
+
+            foreach (var container in Containers)
             {
-                //un wipeout rettangolare che contiene tutte le altre forme 
-                Wipeout wipeout = new Wipeout(0+offset, 0, bin.Width, bin.Height);
-                dxf.AddEntity(wipeout);
-
-                TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
-
-                if (bin.NestedItems != null)
+                foreach (var bin in container.Bins)
                 {
-                    foreach (var nestedItem in bin.NestedItems)
+                    if (bin.NestedItems != null)
                     {
-                        //un wipeout rettangolare che rapprsenta una forma
-                        wipeout = new Wipeout(nestedItem.BLpPosition + offset, nestedItem.BLqPosition, nestedItem.Width, nestedItem.Height);
-                        //un id progressivo per il wipeout rettangolare
-                        MText text = new MText(nestedItem.Id.ToString())
-                        {
-                            Position = new Vector3(nestedItem.BLpPosition + 0.3 + offset, nestedItem.BLqPosition + 0.5, 0.0),
-                            Height = 0.2,
-                            Style = style
-                        };
+                        //un wipeout rettangolare che contiene tutte le altre forme 
+                        Wipeout wipeout = new Wipeout(0 + offsetX, 0 + offsetY, container.Bins.ElementAt(0).Width, container.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
-                        dxf.AddEntity(text);
+
+                        foreach (var nestedItem in bin.NestedItems)
+                        {
+                            //un wipeout rettangolare che rapprsenta una forma
+                            wipeout = new Wipeout(nestedItem.BLpPosition + offsetX, nestedItem.BLqPosition + offsetY, nestedItem.Width, nestedItem.Height);
+                            //un id progressivo per il wipeout rettangolare
+                            MText text = new MText(nestedItem.Id.ToString())
+                            {
+                                Position = new Vector3(nestedItem.BLpPosition + 0.3 + offsetX, nestedItem.BLqPosition + 0.5 + offsetY, 0.0),
+                                Height = 0.2,
+                                Style = style
+                            };
+                            dxf.AddEntity(wipeout);
+                            dxf.AddEntity(text);
+                        }
                     }
+                    offsetX += 20;
                 }
-                offset += 20;
+                //dato che ricomincio a disegnare i bin di una nuova iterazione, riporto offsetX = 0
+                offsetX = 0;
+                //inoltre mi sposto in basso di 25, così ho i bin del container i+1 sotto i bin del container i
+                offsetY = -25;
             }
 
-            // save to file
             dxf.Save(file);
             
-            //// this check is optional but recommended before loading a DXF file
-            //DxfVersion dxfVersion = DxfDocument.CheckDxfFileVersion(file);
-            //// netDxf is only compatible with AutoCad2000 and higher DXF version
-            //if (dxfVersion < DxfVersion.AutoCad2000) return;
-            //// load file
-            //DxfDocument loaded = DxfDocument.Load(file);
-
         }
     }
 }

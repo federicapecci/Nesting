@@ -20,10 +20,10 @@ namespace Nesting_2
 
             //lancio l'euristica passando i parametri
             IHSolve hsolve = new HSolve(configuration);
-            IList<Bin<Tuple>> bins = hsolve.ComputeHeuristic();
+            IList<Container> container = hsolve.ComputeHeuristic();
 
             //scrivo il file dxf
-            IDrawer dxfDrawer = new DxfDrawer(bins);
+            IDrawer dxfDrawer = new DxfDrawer(container);
             dxfDrawer.WriteAllData("output_6_hsolve_output");
 
         }
