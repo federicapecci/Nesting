@@ -85,13 +85,15 @@ namespace Nesting_2
             //inizializzo il numero di iterazioni
             int iter = 0;
             float lowerBound = utilities.ComputeLowerBound(items, Configuration.BinWidth, Configuration.BinHeight);
-            float lowerBoundDelta = 0.80F;
+            float lowerBoundMin = lowerBound - Configuration.LowerBoundDelta;
+            float lowerBoundMax = lowerBound + Configuration.LowerBoundDelta;
             int maxIter = Configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
         l3: //creo una lista temporanea J' di item 
             IList<Item> temporaryItems = new List<Item>();
+
             //assegno la lista di item J a J'
             temporaryItems = items;
 
@@ -121,28 +123,24 @@ namespace Nesting_2
                 temporaryBins.Add(temporaryBin);
             }
 
+            var sortedTemporaryItems = temporaryItems.OrderByDescending(x => x.Price);
+
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
-            foreach (var temporaryItem in temporaryItems)
+            foreach (var sortedTemporaryItem in sortedTemporaryItems)
             {
-                if (!temporaryItem.IsRemoved)
+                if (!sortedTemporaryItem.IsRemoved)
                 {
-                    bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);
-                    if (!isBestPositionFound)
-                    {
-                        break;
-                    }
+                    utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem);
                 }
             }
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
-
             int z = i;
             bool isTemporaryItemsEmpty = true;
             
-          
             //controllo se tutta la lista è stata svuotata
-            foreach(var temporaryItem in temporaryItems)
+            foreach(var temporaryItem in sortedTemporaryItems)
             {
                 if (temporaryItem.IsRemoved == false)
                 {
@@ -162,15 +160,14 @@ namespace Nesting_2
             }
             goto l2;
 
-        //================ STEfP 5 - UPDATE THE BEST SOLUTION ================
+        //================ STEP 5 - UPDATE THE BEST SOLUTION ================
 
         l0: zStar = z;
             bins = temporaryBins;
 
         //================ STEP 6 - CHECK OPTIMALITY ================
-        //guardo se il costo della soluzione è compreso nel lower bound 
-            if (zStar > (lowerBound - lowerBoundDelta) &&
-                zStar < (lowerBound + lowerBoundDelta)) 
+        //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
+            if (zStar > lowerBoundMin && zStar < lowerBoundMax) 
             {
                 goto end;
             }
@@ -185,6 +182,11 @@ namespace Nesting_2
             {
                 utilities.UpdatePrice(z, items, bins);
                 iter += 1;
+                //rimetto tutti gli item a non removed perché cominicio una nuova iterazione
+                foreach (var item in items)
+                {
+                    item.IsRemoved = false;
+                }
                 goto l3;
             }
 

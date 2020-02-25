@@ -29,5 +29,10 @@ namespace Nesting_2
         /// </summary>
         public int MaxIter { get; set; } = 0;
 
+        /// <summary>
+        /// variazione concessa per limite inferiore e superiore del lower bound
+        /// </summary>
+        public float LowerBoundDelta { get; set; } = 0;
+
     }
 }
