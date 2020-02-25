@@ -35,14 +35,14 @@ namespace Nesting_2
 
             //================ STEP 1 - INITIALIZATION ================
 
+            //configuro gli item (e inizializzo il prezzo associato ad ogni item j)
             IList<Item> items = new List<Item>();
-            int itemNumber = Configuration.Items.Count;
-
-            //configuro gli item
             items = Configuration.Items;
 
+            int itemNumber = Configuration.Items.Count;
+
+            //creo i bin pi greco e alloco ogni item in un bin diverso
             IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
-            //alloco ogni item j in un bin diverso
             for (int k = 0; k < itemNumber; k++)
             {
                 var bin = new Bin<Tuple>()
@@ -80,24 +80,26 @@ namespace Nesting_2
                 bins.Add(bin);
             }
 
+            //inizializzo il costo della soluzione
             int zStar = itemNumber;
+            //inizializzo il numero di iterazioni
             int iter = 0;
-            float lowerBound = 0;
+            float lowerBound = utilities.ComputeLowerBound(items, Configuration.BinWidth, Configuration.BinHeight);
+            float lowerBoundDelta = 0.80F;
             int maxIter = Configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
-        l3: //creo una lista temporanea di item (che sarebbe J')
+        l3: //creo una lista temporanea J' di item 
             IList<Item> temporaryItems = new List<Item>();
             //assegno la lista di item J a J'
             temporaryItems = items;
 
-            //i = current empty bin index
+            //setto il bin che considero al momento
             int i = 0;
 
             //creo tanti bin temporanei quanti sono gli item
             IList<Bin<Tuple>> temporaryBins = new List<Bin<Tuple>>();
-
             for (int k = 0; k < itemNumber; k++)
             {
                 var temporaryBin = new Bin<Tuple>()
@@ -120,25 +122,35 @@ namespace Nesting_2
             }
 
         //================ STEP 3 - FILLING UP BIN i ================
-        l1:
-            //int counter = 1;
+        l1://cerco la posizione migliore per ogni item j'
             foreach (var temporaryItem in temporaryItems)
             {
-                //Console.WriteLine("X INS " + counter);
-                //TO DO -> FIND THE TRIPLE (p,q,r) FOR PLACING ITEM j IN BIN i 
-                bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);
-                if (!isBestPositionFound)
+                if (!temporaryItem.IsRemoved)
                 {
-                    break;
+                    bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);
+                    if (!isBestPositionFound)
+                    {
+                        break;
+                    }
                 }
-                //counter += 1;
-                //Console.WriteLine("\n");
             }
 
-        //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
+            //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
 
             int z = i;
-            bool isTemporaryItemsEmpty = temporaryItems.Any(x => x.IsRemoved == true);
+            bool isTemporaryItemsEmpty = true;
+            
+          
+            //controllo se tutta la lista è stata svuotata
+            foreach(var temporaryItem in temporaryItems)
+            {
+                if (temporaryItem.IsRemoved == false)
+                {
+                    isTemporaryItemsEmpty = false;
+                    break;
+                }
+            }
+
             if (isTemporaryItemsEmpty)
             {
                 goto l0;
@@ -150,16 +162,15 @@ namespace Nesting_2
             }
             goto l2;
 
-        //================ STEP 5 - UPDATE THE BEST SOLUTION ================
+        //================ STEfP 5 - UPDATE THE BEST SOLUTION ================
 
         l0: zStar = z;
-            bins[i] = temporaryBins[i];
+            bins = temporaryBins;
 
         //================ STEP 6 - CHECK OPTIMALITY ================
-
-            lowerBound = utilities.ComputeLowerBound(items, bins[i].Width, bins[i].Height);
-
-            if (zStar == lowerBound)
+        //guardo se il costo della soluzione è compreso nel lower bound 
+            if (zStar > (lowerBound - lowerBoundDelta) &&
+                zStar < (lowerBound + lowerBoundDelta)) 
             {
                 goto end;
             }

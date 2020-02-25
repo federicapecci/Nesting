@@ -92,7 +92,13 @@ namespace Nesting_2
                 //(Where(x => x.HatchedArea >= 0) filtra solo le tuple con hatched area = 0)
                 Tuple minHatchedAreaTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedArea >= 0)
                                                                .OrderBy(x => x.HatchedArea)
-                                                               .First();
+                                                               .FirstOrDefault();
+
+                //se non riesco a trovare la tupla, vuol dire che le tuple sono finite 
+                if(minHatchedAreaTuple == null)
+                {
+                    return false;
+                }
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
@@ -260,28 +266,31 @@ namespace Nesting_2
             foreach (var item in items)
             {
                 foreach (var bin in bins) //scorro tutti i bins
-                { 
-                    foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
+                {
+                    if (bin.NestedItems != null)
                     {
-                        if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
+                        foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
                         {
-                            //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
-                            if (bin.Id <= (0.5 * z)) 
+                            if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
                             {
-                                item.Price = alpha * item.Price;
+                                //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
+                                if (bin.Id <= (0.5 * z))
+                                {
+                                    item.Price = alpha * item.Price;
+                                }
+                                else if (bin.Id > (0.5 * z))
+                                {
+                                    item.Price = beta * item.Price;
+                                }
+                                isItemFound = true;
+                                break;
                             }
-                            else if (bin.Id > (0.5 * z))
-                            {
-                                item.Price = beta * item.Price;
-                            }
-                            isItemFound = true;
+                        }
+                        if (isItemFound)
+                        {
+                            isItemFound = false;
                             break;
                         }
-                    }
-                    if (isItemFound)
-                    {
-                        isItemFound = false;
-                        break;
                     }
                 }
             }

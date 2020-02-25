@@ -37,19 +37,22 @@ namespace Nesting_2
 
                 TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
 
-                foreach (var nestedItem in bin.NestedItems)
+                if (bin.NestedItems != null)
                 {
-                    //un wipeout rettangolare che rapprsenta una forma
-                    wipeout = new Wipeout(nestedItem.BLpPosition+offset, nestedItem.BLqPosition, nestedItem.Width, nestedItem.Height);
-                    //un id progressivo per il wipeout rettangolare
-                    MText text = new MText(nestedItem.Id.ToString())
+                    foreach (var nestedItem in bin.NestedItems)
                     {
-                        Position = new Vector3(nestedItem.BLpPosition + 0.3 + offset , nestedItem.BLqPosition + 0.5, 0.0),
-                        Height = 0.2,
-                        Style = style
-                    };
-                    dxf.AddEntity(wipeout);
-                    dxf.AddEntity(text);
+                        //un wipeout rettangolare che rapprsenta una forma
+                        wipeout = new Wipeout(nestedItem.BLpPosition + offset, nestedItem.BLqPosition, nestedItem.Width, nestedItem.Height);
+                        //un id progressivo per il wipeout rettangolare
+                        MText text = new MText(nestedItem.Id.ToString())
+                        {
+                            Position = new Vector3(nestedItem.BLpPosition + 0.3 + offset, nestedItem.BLqPosition + 0.5, 0.0),
+                            Height = 0.2,
+                            Style = style
+                        };
+                        dxf.AddEntity(wipeout);
+                        dxf.AddEntity(text);
+                    }
                 }
                 offset += 20;
             }
