@@ -6,7 +6,7 @@ using System.Linq;
 namespace Nesting_2
 {
     /// <summary>
-    /// classe che implemnenta l'euristica 
+    /// classe che implementa l'euristica 
     /// </summary>
     class HSolve : IHSolve
     {
@@ -20,7 +20,7 @@ namespace Nesting_2
         /// ogni container appartente a containers contiene
         /// gli n bin di una certa iterazione
         /// </summary>
-        public IList<Container> Containers { get; set; } = null;
+        public IList<Sequence> Sequences { get; set; } = null;
 
         /// <summary>
         /// costruttore in cui setto la configuration di hsolve
@@ -29,15 +29,14 @@ namespace Nesting_2
         public HSolve(Configuration configuration)
         {
             Configuration = configuration;
-            Containers = new List<Container>();
+            Sequences = new List<Sequence>();
         }
 
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public IList<Container> ComputeHeuristic()
+        public IList<Sequence> ComputeHeuristic()
         {
-            Console.WriteLine("Algorithm started");
             IUtilities utilities = new Utilities();
 
             //================ STEP 1 - INITIALIZATION ================
@@ -192,13 +191,13 @@ namespace Nesting_2
                 utilities.UpdatePrice(z, items, bins);
 
                 //creo un nuovo containter con tutti i bin dell'iterazione corrente
-                Container container = new Container()
+                Sequence sequence = new Sequence()
                 {
                     Bins = bins
                 };
 
                 //aggiungo il container di una certa iterazione iter alla lista dei containers
-                Containers.Add(container);
+                Sequences.Add(sequence);
 
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
@@ -210,8 +209,7 @@ namespace Nesting_2
             }
 
         end:
-            Console.WriteLine("Algorithm ended");
-            return Containers;
+            return Sequences;
         }
     }  
 }

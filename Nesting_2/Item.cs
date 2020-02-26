@@ -38,8 +38,6 @@ namespace Nesting_2
         /// </summary>
         public bool IsRemoved { get; set; } = false;
 
-        public Item(){}
-
         public Item(Item item)
         {
             Id = item.Id;

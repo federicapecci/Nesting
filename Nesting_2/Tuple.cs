@@ -58,7 +58,7 @@ namespace Nesting_2
             HatchedArea = 0;
         }
 
-        public Tuple(Tuple triple)
+        /*public Tuple(Tuple triple)
         {
             Pposition = triple.Pposition;
             Qposition = triple.Qposition;
@@ -66,6 +66,6 @@ namespace Nesting_2
             PfinalPosition = 0;
             QfinalPosition = 0;
             HatchedArea = 0;
-        }
+        }*/
     }
 }

@@ -13,16 +13,18 @@ using System.Threading.Tasks;
 
 namespace Nesting_2
 {
+    /// <summary>
+    /// classe per gestire i file dxf
+    /// </summary>
     class DxfDrawer : IDrawer
     {
-        public IList<Container> Containers { get; set; } = null;
-
-        public DxfDrawer(IList<Container> Containers)
-        {
-            this.Containers = Containers;
-        }
-
-        public void WriteAllData(string fileName)
+        /// <summary>
+        /// metodo per scrivere un file dxf a partire
+        /// dalle sequenze di bin generate da hsolve
+        /// </summary>
+        /// <param name="sequences"></param>
+        /// <param name="fileName"></param>
+        public void WriteAllData(IList<Sequence> sequences, string fileName)
         {
             string file = fileName + ".dxf";
             DxfDocument dxf = new DxfDocument();
@@ -30,19 +32,19 @@ namespace Nesting_2
             int offsetX = 0;
             int offsetY = 0;
 
-            foreach (var container in Containers)
+            foreach (var sequence in sequences)
             {
-                foreach (var bin in container.Bins)
+                foreach (var bin in sequence.Bins)
                 {
                     if (bin.NestedItems != null)
                     {
                         //un wipeout rettangolare che contiene tutte le altre forme 
-                        Wipeout wipeout = new Wipeout(0 + offsetX, 0 + offsetY, container.Bins.ElementAt(0).Width, container.Bins.ElementAt(0).Height);
+                        Wipeout wipeout = new Wipeout(0 + offsetX, 0 + offsetY, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
 
                         foreach (var nestedItem in bin.NestedItems)
                         {
-                            //un wipeout rettangolare che rapprsenta una forma
+                            //un wipeout rettangolare che rappresenta una forma
                             wipeout = new Wipeout(nestedItem.BLpPosition + offsetX, nestedItem.BLqPosition + offsetY, nestedItem.Width, nestedItem.Height);
                             //un id progressivo per il wipeout rettangolare
                             MText text = new MText(nestedItem.Id.ToString())

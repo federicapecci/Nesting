@@ -8,6 +8,6 @@ namespace Nesting_2
 {
     interface IHSolve
     {
-        IList<Container> ComputeHeuristic();
+        IList<Sequence> ComputeHeuristic();
     }
 }

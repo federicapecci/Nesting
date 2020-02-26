@@ -8,6 +8,6 @@ namespace Nesting_2
 {
     interface IDrawer
     {
-        void WriteAllData(string fileName);
+        void WriteAllData(IList<Sequence> sequences, string fileName);
     }
 }

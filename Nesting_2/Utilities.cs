@@ -5,8 +5,8 @@ using System.Linq;
 namespace Nesting_2
 {
     /// <summary>
-    /// classe che contiene delle utilities 
-    /// per implementare l'euristica 
+    /// classe che contiene le utilities 
+    /// per implementare l'algoritmo hsolve
     /// </summary>
     class Utilities : IUtilities
     {
@@ -153,7 +153,7 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// gestisco le operazione post item nestato
+        /// metodo per gestire le operazioni post item nestato
         /// </summary>
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
@@ -251,7 +251,7 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// this method updates each item price (v) 
+        /// questo metodo aggiorna il prezzo di ogni item 
         /// </summary>
         /// <param name="z"></param>
         /// <param name="items"></param>
@@ -297,7 +297,7 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// questo metodo setta come usate le tuple generate che 
+        /// metodo che setta come usate le tuple generate che 
         /// sono uguali alle dimensioni del bin o le eccedono
         /// </summary>
         /// <param name="temporaryBin"></param>
@@ -315,9 +315,10 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// questo metodo calcola l'hatched area in basso e a sinistra dell'item.
-        /// Infine, ritorna la somma delle due. 
-        /// Ritorna -1 se l'item, per come è posizionato, eccede le dimensioni del bin
+        /// metodo che calcola l'hatched area totale relativa 
+        /// al posizionamento di un nuovo item e la ritorna.
+        /// il metodo ritorna -1 se l'item, per come è posizionato (cioè dopo averlo spinto 
+        /// in basso a sinistra), eccede le dimensioni del bin
         /// </summary>
         /// <param name="feasiblePoint"></param>
         /// <param name="newNestedItem"></param>
@@ -344,7 +345,7 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// questo metodo calcolo l'hatched area prima sotto 
+        /// metodo che calcola l'hatched area prima sotto 
         /// e poi a sinistra del nuovo item
         /// </summary>
         /// <param name="downIntersectedNestedItems"></param>
@@ -479,8 +480,8 @@ namespace Nesting_2
 
 
         /// <summary>
-        /// questo metodo spinge in basso un nuovo item e
-        /// calcolo l'hatched area sotto il nuovo iten
+        /// metodo che spinge il più in basso possibile
+        /// il nuovo item da nestare
         /// </summary>
         /// <param name="feasiblePoint"></param>
         /// <param name="temporaryBin"></param>
@@ -535,8 +536,8 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// questo metodo spinge a sinistra un nuovo item e
-        /// calcolo l'hatched area a sinistra del nuovo iten
+        /// il metodo che spinge il più a sinistra possibile
+        /// il nuovo item da nestare
         /// </summary>
         /// <param name="feasiblePoint"></param>
         /// <param name="temporaryBin"></param>
@@ -590,7 +591,8 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// Questo metodo controlla se le dimensione dell'item eccedono quelle del bin
+        /// metodo che controlla se, a fronte del posizione del nuovo item da nestare, 
+        /// le dimensioni di tale item sforano rispetto alle dimensioni del bin
         /// </summary>
         /// <param name="newNestedItem"></param>
         /// <param name="temporaryBinHeight"></param>
@@ -602,13 +604,12 @@ namespace Nesting_2
         }
 
         /// <summary>
-        /// Questo metodo stabilisce un criterio per decidere quale
+        /// Metodo che stabilisce un criterio per decidere quale
         /// tripla scegliere se ho più triple che hanno lo stesso scarto potenziale minimo.
         /// Il criterio implementato fa in modo che gli item stiano il più a sinistra possibile.
         /// In particolare:
         /// -tra le triple sceglie quella con la p minima
         /// -a parità di p minima sceglie la tripla con la q minima
-        /// -a parità di q minima sceglie la tripla con la r minima
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
@@ -642,10 +643,7 @@ namespace Nesting_2
                         qMinTuples.Add(qMinTuple);
                     }
                 }
-                //if (qMinTuples.Count == 1)
-                //{
                 result = qMinTuples.ElementAt(0);
-                //}
             }
             return result;
         }
