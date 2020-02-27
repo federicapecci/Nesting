@@ -47,10 +47,11 @@ namespace Nesting_3
                             //un wipeout rettangolare che rappresenta una forma
                             wipeout = new Wipeout(nestedItem.BLpPosition + offsetX, nestedItem.BLqPosition + offsetY, nestedItem.Width, nestedItem.Height);
                             //un id progressivo per il wipeout rettangolare
+
                             MText text = new MText(nestedItem.Id.ToString())
                             {
-                                Position = new Vector3(nestedItem.BLpPosition + 0.3 + offsetX, nestedItem.BLqPosition + 0.5 + offsetY, 0.0),
-                                Height = 0.2,
+                                Position = new Vector3(nestedItem.BLpPosition + 30 + offsetX, nestedItem.BLqPosition + 70 + offsetY, 0.0),
+                                Height = (sequence.Bins.ElementAt(0).Width * sequence.Bins.ElementAt(0).Height) / 100000,
                                 Style = style
                             };
                             dxf.AddEntity(wipeout);
