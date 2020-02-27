@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nesting_2
+namespace Nesting_3
 {
-    //4 ANGOLI
+
     /// <summary>
     /// classe che rappresenta l'area a sinistra dell'item nuovo da nestare o
     /// quella sotto l'item nuovo da nestare

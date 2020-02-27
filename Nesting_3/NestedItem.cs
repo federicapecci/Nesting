@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nesting_2
+namespace Nesting_3
 {
-    // 3 ANGOLI
     /// <summary>
     /// classe che rappresenta l'item nel contesto 
     /// di un bin 
