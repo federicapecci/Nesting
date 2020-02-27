@@ -131,7 +131,7 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, pricedItem, minHatchedAreaPoint);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minHatchedAreaPoint);
                     return true;
                 }
                 else if (minHatchedAreaPoints.Count > 1)
@@ -153,7 +153,7 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, pricedItem, minCoordinatePoint);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
                     return true;
                 }
             }
@@ -166,7 +166,7 @@ namespace Nesting_3
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, PricedItem pricedItem, Tuple point)
+        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, PricedItem sortedTemporaryPricedItem, Tuple point)
         {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
             var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
@@ -177,8 +177,8 @@ namespace Nesting_3
             //controllo se non è più possibile usare dei punti in quanto sono stati "coperti" dal nuovo item nestato
             foreach (var p in temporaryBin.Points)
             {
-                if (p.Pposition >= pricedItem.BLpPosition && p.Pposition < pricedItem.BRpPosition &&
-                   p.Qposition >= pricedItem.BLqPosition && p.Qposition < pricedItem.TLqPosition)
+                if (p.Pposition >= sortedTemporaryPricedItem.BLpPosition && p.Pposition < sortedTemporaryPricedItem.BRpPosition &&
+                   p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition)
                 {
                     p.IsUsed = true;
                 }
@@ -186,14 +186,14 @@ namespace Nesting_3
 
             //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points
             Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
-                                                   x.Qposition == point.QfinalPosition + pricedItem.Height &&
+                                                   x.Qposition == point.QfinalPosition + sortedTemporaryPricedItem.Height &&
                                                    x.IsUsed == false).FirstOrDefault();
 
             //definisco il primo nuovo punto
             var firstPoint = new Tuple()
             {
                 Pposition = point.PfinalPosition,
-                Qposition = point.QfinalPosition + pricedItem.Height,
+                Qposition = point.QfinalPosition + sortedTemporaryPricedItem.Height,
                 IsUsed = false
 
             };
@@ -225,13 +225,13 @@ namespace Nesting_3
             isPointLyingOnItemSide = false;
 
             //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points
-            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + pricedItem.Width &&
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + sortedTemporaryPricedItem.Width &&
                                                         x.Qposition == point.QfinalPosition).FirstOrDefault();
 
             //definisco il secondo nuovo punto
             var secondPoint = new Tuple()
             {
-                Pposition = point.PfinalPosition + pricedItem.Width,
+                Pposition = point.PfinalPosition + sortedTemporaryPricedItem.Width,
                 Qposition = point.QfinalPosition,
                 IsUsed = false
             };
@@ -256,7 +256,7 @@ namespace Nesting_3
             }
 
             //setto item a nestato
-            pricedItem.IsRemoved = true;
+            sortedTemporaryPricedItem.IsRemoved = true;
         }
 
         /// <summary>

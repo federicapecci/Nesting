@@ -223,6 +223,14 @@ namespace Nesting_3
             }
 
         end:
+            //creo un nuovo containter con tutti i bin dell'iterazione corrente
+            Sequence sequence1 = new Sequence()
+            {
+                Bins = bins
+            };
+
+            //aggiungo il container di una certa iterazione iter alla lista dei containers
+            Sequences.Add(sequence1);
             return Sequences;
         }
     }
