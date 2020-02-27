@@ -29,7 +29,7 @@ namespace Nesting_3
             string file = fileName + ".dxf";
             DxfDocument dxf = new DxfDocument();
             TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
-            int offsetX = 0;
+            double offsetX = 0;
             int offsetY = 0;
 
             foreach (var sequence in sequences)
@@ -58,8 +58,7 @@ namespace Nesting_3
                         }
        
                     }
-                    offsetX += 20;
-                    break;
+                    offsetX += sequence.Bins.ElementAt(0).Width/0.8; 
                 }
                 //dato che ricomincio a disegnare i bin di una nuova iterazione, riporto offsetX = 0
                 offsetX = 0;
