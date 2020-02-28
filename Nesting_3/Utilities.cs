@@ -131,6 +131,7 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
+                    Console.WriteLine("item ID = " + pricedItem.Id + " nested in " + "(" + pricedItem.BLpPosition + ", " + pricedItem.BLqPosition + ")");
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minHatchedAreaPoint);
                     return true;
                 }
@@ -153,6 +154,7 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
+                    Console.WriteLine("item ID = " + pricedItem.Id + " nested in " + "(" + pricedItem.BLpPosition + ", " + pricedItem.BLqPosition + ")");
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
                     return true;
                 }
@@ -177,8 +179,12 @@ namespace Nesting_3
             //controllo se non è più possibile usare dei punti in quanto sono stati "coperti" dal nuovo item nestato
             foreach (var p in temporaryBin.Points)
             {
-                if (p.Pposition >= sortedTemporaryPricedItem.BLpPosition && p.Pposition < sortedTemporaryPricedItem.BRpPosition &&
-                   p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition)
+                if ((p.Pposition >= sortedTemporaryPricedItem.BLpPosition && p.Pposition < sortedTemporaryPricedItem.BRpPosition &&
+                   p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition) ||
+                   
+                   (p.PfinalPosition == matchingPoint.PfinalPosition &&
+                   p.QfinalPosition == matchingPoint.QfinalPosition))
+                   
                 {
                     p.IsUsed = true;
                 }
@@ -344,8 +350,8 @@ namespace Nesting_3
             if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width))
             {
                 ComputeHatchedArea(feasiblePoint, newPricedItem, downIntersectedPricedItems, leftIntersectedPricedItems);
-                Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
-                ", new coord(" + feasiblePoint.PfinalPosition + ", " + feasiblePoint.QfinalPosition + ")");
+                //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
+                //", new coord(" + feasiblePoint.PfinalPosition + ", " + feasiblePoint.QfinalPosition + ")");
                 return feasiblePoint.HatchedArea;
             }
             else
