@@ -29,46 +29,37 @@ namespace Nesting_3
             string file = fileName + ".dxf";
             DxfDocument dxf = new DxfDocument();
             TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
-            double offsetX = 0;
-            int offsetY = 0;
-
+            int offsetX = 0;
             foreach (var sequence in sequences)
             {
                 foreach (var bin in sequence.Bins)
                 {
+                    //un wipeout rettangolare che contiene tutte le altre forme 
+                    Wipeout wipeout = new Wipeout(0+offsetX, 0, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
+                    dxf.AddEntity(wipeout);
                     if (bin.PricedItems != null)
                     {
-                        //un wipeout rettangolare che contiene tutte le altre forme 
-                        Wipeout wipeout = new Wipeout(0 + offsetX, 0 + offsetY, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
-                        dxf.AddEntity(wipeout);
-
-                        foreach (var nestedItem in bin.PricedItems)
+                        foreach (var pricedItem in bin.PricedItems)
                         {
                             //un wipeout rettangolare che rappresenta una forma
-                            wipeout = new Wipeout(nestedItem.BLpPosition + offsetX, nestedItem.BLqPosition + offsetY, nestedItem.Width, nestedItem.Height);
+                            wipeout = new Wipeout(pricedItem.BLpPosition+offsetX, pricedItem.BLqPosition, pricedItem.Width, pricedItem.Height);
+
                             //un id progressivo per il wipeout rettangolare
-
-                            MText text = new MText(nestedItem.Id.ToString())
-                            {
-                                Position = new Vector3(nestedItem.BLpPosition + 30 + offsetX, nestedItem.BLqPosition + 70 + offsetY, 0.0),
-                                Height = (sequence.Bins.ElementAt(0).Width * sequence.Bins.ElementAt(0).Height) / 100000,
-                                Style = style
-                            };
+                            /* MText text = new MText(nestedItem.Id.ToString())
+                             {
+                                 Position = new Vector3(nestedItem.BLpPosition + 30 + offsetX, nestedItem.BLqPosition + 70 + offsetY, 0.0),
+                                 Height = 30,
+                                 Style = style
+                             };*/
                             dxf.AddEntity(wipeout);
-                            dxf.AddEntity(text);
+                            //dxf.AddEntity(text);
                         }
-       
                     }
-                    offsetX += sequence.Bins.ElementAt(0).Width/0.8; 
+                    offsetX += 4000;
                 }
-                //dato che ricomincio a disegnare i bin di una nuova iterazione, riporto offsetX = 0
-                offsetX = 0;
-                //inoltre mi sposto in basso di 25, così ho i bin del container i+1 sotto i bin del container i
-                offsetY = -25;
+                break;
             }
-
             dxf.Save(file);
-            
         }
     }
 }
