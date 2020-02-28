@@ -17,16 +17,5 @@ namespace Nesting_3
         /// </summary>
         public float Area { get; set; } = 0;
 
-        /// <summary>
-        /// coordinata p in alto a destra della superficie adiacente (in basso o sinistra) 
-        /// al nuovo item che si vuole nestare
-        /// </summary>
-        public float TRpPosition { get; set; } = 0;
-
-        /// <summary>
-        /// coordinata q in alto a destra della superficie adiacente (in basso o sinistra) 
-        /// al nuovo item che si vuole nestare
-        /// </summary>
-        public float TRqPosition { get; set; } = 0;
     }
 }

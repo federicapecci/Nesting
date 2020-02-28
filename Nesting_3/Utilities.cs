@@ -60,7 +60,9 @@ namespace Nesting_3
                          Id = temporaryPricedItem.Id,
                          Price = temporaryPricedItem.Price,
                          TLqPosition = temporaryPricedItem.Height,
-                         BRpPosition =  temporaryPricedItem.Width
+                         BRpPosition =  temporaryPricedItem.Width,
+                         TRpPosition =  temporaryPricedItem.Width,
+                         TRqPosition = temporaryPricedItem.Height
                      }
                  };
                  HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, temporaryBin.Points.ElementAt(0));
@@ -84,7 +86,9 @@ namespace Nesting_3
                             BRpPosition = feasiblePoint.Pposition + temporaryPricedItem.Width,
                             BRqPosition = feasiblePoint.Qposition,
                             TLpPosition = feasiblePoint.Pposition,
-                            TLqPosition = feasiblePoint.Qposition + temporaryPricedItem.Height         
+                            TLqPosition = feasiblePoint.Qposition + temporaryPricedItem.Height,
+                            TRpPosition = feasiblePoint.Pposition + temporaryPricedItem.Width,
+                            TRqPosition = feasiblePoint.Qposition + temporaryPricedItem.Height
                         };
                         feasiblePoint.HatchedArea = GetHatchedArea(temporaryBin, newPricedItem, feasiblePoint);
                     }
@@ -127,7 +131,9 @@ namespace Nesting_3
                         BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryPricedItem.Width,
                         BRqPosition = minHatchedAreaPoint.QfinalPosition,
                         TLpPosition = minHatchedAreaPoint.PfinalPosition,
-                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryPricedItem.Height
+                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryPricedItem.Height,
+                        TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryPricedItem.Width,
+                        TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryPricedItem.Height
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
@@ -150,7 +156,9 @@ namespace Nesting_3
                         BRpPosition = minCoordinatePoint.PfinalPosition + temporaryPricedItem.Width,
                         BRqPosition = minCoordinatePoint.QfinalPosition,
                         TLpPosition = minCoordinatePoint.PfinalPosition,
-                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryPricedItem.Height
+                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryPricedItem.Height,
+                        TRpPosition = minCoordinatePoint.PfinalPosition + temporaryPricedItem.Width,
+                        TRqPosition = minCoordinatePoint.QfinalPosition + temporaryPricedItem.Height
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
@@ -176,13 +184,14 @@ namespace Nesting_3
                                            .First();
             matchingPoint.IsUsed = true;
 
-            //controllo se non è più possibile usare dei punti in quanto sono stati "coperti" dal nuovo item nestato
+            //controllo se non è più possibile usare dei punti 
             foreach (var p in temporaryBin.Points)
             {
+                //cerco punti "coperti" dal nuovo item nestato
                 if ((p.Pposition >= sortedTemporaryPricedItem.BLpPosition && p.Pposition < sortedTemporaryPricedItem.BRpPosition &&
                    p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition) ||
                    
-                   (p.PfinalPosition == matchingPoint.PfinalPosition &&
+                   (p.PfinalPosition == matchingPoint.PfinalPosition && //cerco punti che, dopo push down and left portavano alle stesse coordinate finali
                    p.QfinalPosition == matchingPoint.QfinalPosition))
                    
                 {
@@ -346,8 +355,9 @@ namespace Nesting_3
             IList<PricedItem> leftIntersectedPricedItems = PushItemLeft(temporaryBin, newPricedItem, feasiblePoint);
 
 
-            //controllo se l'oggettto, anche essendo stato spostato in basso a sintra, sborda
-            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width))
+            //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
+            //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
+            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width) && IsOverlappingOk(newPricedItem, temporaryBin)) 
             {
                 ComputeHatchedArea(feasiblePoint, newPricedItem, downIntersectedPricedItems, leftIntersectedPricedItems);
                 //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
@@ -620,6 +630,28 @@ namespace Nesting_3
         bool IsBorderObserved(PricedItem newPricedItem, float temporaryBinHeight, float temporaryBinWidth)
         {
             return newPricedItem.TLqPosition <= temporaryBinHeight && newPricedItem.BRpPosition <= temporaryBinWidth;
+        }
+        
+        /// <summary>
+        /// metodo per controllare se nestare un nuovo item in un certo punto
+        /// comporta delle sovrapposizioni tra nuovo item e item già in soluzione
+        /// </summary>
+        /// <param name="newPricedItem"></param>
+        /// <param name="temporaryBin"></param>
+        /// <returns></returns>
+        bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
+        {
+            foreach (var pricedItem in temporaryBin.PricedItems)
+            {
+                //se la coordinata in alto a destra del nuovo item interseca item presistenti 
+                //significa che vi sono sovrapposizioni
+                if ((newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) &&
+                    (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition <= pricedItem.TLqPosition))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>

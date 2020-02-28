@@ -40,5 +40,15 @@ namespace Nesting_3
         /// </summary>
         public float BRqPosition { get; set; } = 0;
 
+        /// <summary>
+        /// coordinata p in alto a destra dell'item
+        /// </summary>
+        public float TRpPosition { get; set; } = 0;
+
+        /// <summary>
+        /// coordinata q in altto a destra dell'item
+        /// </summary>
+        public float TRqPosition { get; set; } = 0;
+
     }
 }
