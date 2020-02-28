@@ -45,14 +45,14 @@ namespace Nesting_3
                             wipeout = new Wipeout(pricedItem.BLpPosition+offsetX, pricedItem.BLqPosition, pricedItem.Width, pricedItem.Height);
 
                             //un id progressivo per il wipeout rettangolare
-                            /* MText text = new MText(nestedItem.Id.ToString())
+                            MText text = new MText(pricedItem.Id.ToString())
                              {
-                                 Position = new Vector3(nestedItem.BLpPosition + 30 + offsetX, nestedItem.BLqPosition + 70 + offsetY, 0.0),
+                                 Position = new Vector3(pricedItem.BLpPosition + 30 + offsetX, pricedItem.BLqPosition + 70 , 0.0),
                                  Height = 30,
                                  Style = style
-                             };*/
+                             };
                             dxf.AddEntity(wipeout);
-                            //dxf.AddEntity(text);
+                            dxf.AddEntity(text);
                         }
                     }
                     offsetX += 4000;
