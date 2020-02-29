@@ -57,7 +57,16 @@ namespace Nesting_3
                     }
                     offsetX += 4000;
                 }
-   
+
+                MText point = new MText("X")
+                {
+                    Position = new Vector3(1517, 959, 0.0),
+                    Height = 30,
+                    Style = style
+                };
+               
+                dxf.AddEntity(point);
+
                 break;
             }
             dxf.Save(file);
