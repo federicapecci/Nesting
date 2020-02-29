@@ -220,6 +220,7 @@ namespace Nesting_3
                     pricedItem.IsRemoved = false;
                 }
                 goto l3;
+
             }
 
         end:
