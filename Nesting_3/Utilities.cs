@@ -663,18 +663,23 @@ namespace Nesting_3
             {
                 //se la coordinata in alto a destra del nuovo item interseca item presistenti 
                 //significa che vi sono sovrapposizioni
-                if ((newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) && //A
-                    (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition <= pricedItem.TLqPosition))
-                {
-                    return false;
+                if (newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) { //A
+                    if (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition < pricedItem.TLqPosition)
+                    {
+                        return false;
+                    }else if (pricedItem.TLqPosition > newPricedItem.BLqPosition && pricedItem.TLqPosition <= newPricedItem.TLqPosition) //C
+                    {
+                        return false;
+                    }
                 }
-                if(pricedItem.BLqPosition >= newPricedItem.BLqPosition && //B
+                if (pricedItem.BLqPosition >= newPricedItem.BLqPosition && //B
                     pricedItem.TLqPosition <= newPricedItem.TLqPosition &&
                     newPricedItem.BLpPosition > pricedItem.BLpPosition && 
                     newPricedItem.BRpPosition < pricedItem.BRpPosition)
                 {
                     return false;
                 }
+              
             }
             return true;
         }
