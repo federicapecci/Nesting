@@ -57,6 +57,7 @@ namespace Nesting_3
                     }
                     offsetX += 4000;
                 }
+   
                 break;
             }
             dxf.Save(file);

@@ -41,6 +41,16 @@ namespace Nesting_3
         /// <returns></returns>
         public bool IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem)
         {
+
+            //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
+            //setto comunque l'item come removed, altrimenti la lista di item non sarà mai empty e hsolve non va avanti
+            if(temporaryPricedItem.Height > temporaryBin.Height || temporaryPricedItem.Width > temporaryBin.Width)
+            {
+                temporaryPricedItem.IsRemoved = true;
+                return false;
+            }
+
+            //item nestabile, procedo
             SetFeasiblePoints(temporaryBin);
 
             //se il bin non contiene punti
@@ -106,8 +116,12 @@ namespace Nesting_3
                     return false;
                 }
 
+                Console.WriteLine("item " + temporaryPricedItem.Id + ", coord(" + minHatchedAreaTuple.Pposition + ", " + minHatchedAreaTuple.Qposition + "), " +
+                    ", new coord(" + minHatchedAreaTuple.PfinalPosition + ", " + minHatchedAreaTuple.QfinalPosition + ")");
+
+
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
-                IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
+                IList <Tuple> minHatchedAreaPoints = new List<Tuple>();
                 foreach (var point in temporaryBin.Points)
                 {
                     if (point.HatchedArea == minHatchedAreaTuple.HatchedArea && !point.IsUsed)
@@ -137,7 +151,6 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
-                    Console.WriteLine("item ID = " + pricedItem.Id + " nested in " + "(" + pricedItem.BLpPosition + ", " + pricedItem.BLqPosition + ")");
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minHatchedAreaPoint);
                     return true;
                 }
@@ -162,7 +175,6 @@ namespace Nesting_3
                     };
 
                     temporaryBin.PricedItems.Add(pricedItem);
-                    Console.WriteLine("item ID = " + pricedItem.Id + " nested in " + "(" + pricedItem.BLpPosition + ", " + pricedItem.BLqPosition + ")");
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
                     return true;
                 }
@@ -538,6 +550,7 @@ namespace Nesting_3
                 newPricedItem.BLqPosition = 0;
                 newPricedItem.TLqPosition = newPricedItem.Height;
                 newPricedItem.BRqPosition = 0;
+                newPricedItem.TRqPosition = newPricedItem.Height;
             }
             else
             {
@@ -547,6 +560,7 @@ namespace Nesting_3
                     newPricedItem.BLqPosition -= delta;
                     newPricedItem.TLqPosition -= delta;
                     newPricedItem.BRqPosition -= delta;
+                    newPricedItem.TRqPosition -= delta;
                 }
                 else if (intersectedPricedItems.Count > 1) //N intersezioni
                 {
@@ -555,6 +569,7 @@ namespace Nesting_3
                     newPricedItem.BLqPosition -= delta;
                     newPricedItem.TLqPosition -= delta;
                     newPricedItem.BRqPosition -= delta;
+                    newPricedItem.TRqPosition -= delta;
                 }
             }
 
@@ -594,6 +609,7 @@ namespace Nesting_3
                 newPricedItem.BLpPosition = 0;
                 newPricedItem.TLpPosition = 0;
                 newPricedItem.BRpPosition = newPricedItem.Width;
+                newPricedItem.TRpPosition = newPricedItem.Width;
             }
             else
             {
@@ -603,6 +619,7 @@ namespace Nesting_3
                     newPricedItem.BLpPosition -= delta;
                     newPricedItem.TLpPosition -= delta;
                     newPricedItem.BRpPosition -= delta;
+                    newPricedItem.TRpPosition -= delta;
                 }
                 else if (intersectedPricedItems.Count > 1) //N intersezioni
                 {
@@ -611,6 +628,7 @@ namespace Nesting_3
                     newPricedItem.BLpPosition -= delta;
                     newPricedItem.TLpPosition -= delta;
                     newPricedItem.BRpPosition -= delta;
+                    newPricedItem.TRpPosition -= delta;
                 }
             }
 
