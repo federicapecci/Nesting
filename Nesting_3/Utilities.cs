@@ -663,8 +663,8 @@ namespace Nesting_3
             {
                 //se la coordinata in alto a destra del nuovo item interseca item presistenti 
                 //significa che vi sono sovrapposizioni
-                if (newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) { //A
-                    if (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition < pricedItem.TLqPosition)
+                if (newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) { 
+                    if (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition < pricedItem.TLqPosition) //A
                     {
                         return false;
                     }else if (pricedItem.TLqPosition > newPricedItem.BLqPosition && pricedItem.TLqPosition <= newPricedItem.TLqPosition) //C
@@ -672,13 +672,29 @@ namespace Nesting_3
                         return false;
                     }
                 }
-                if (pricedItem.BLqPosition >= newPricedItem.BLqPosition && //B
-                    pricedItem.TLqPosition <= newPricedItem.TLqPosition &&
-                    newPricedItem.BLpPosition > pricedItem.BLpPosition && 
-                    newPricedItem.BRpPosition < pricedItem.BRpPosition)
+
+
+
+
+                if (pricedItem.BLqPosition >= newPricedItem.BLqPosition && 
+                    pricedItem.TLqPosition <= newPricedItem.TLqPosition)
                 {
-                    return false;
+                    if(newPricedItem.BLpPosition > pricedItem.BLpPosition && //B
+                    newPricedItem.BRpPosition < pricedItem.BRpPosition)
+                    {
+                        return false;
+                    }else if (pricedItem.BRpPosition > newPricedItem.BLpPosition && //F
+                    pricedItem.BRpPosition <= newPricedItem.BRpPosition)
+                    {
+                        return false;
+                    }
+
                 }
+
+
+
+
+
                 if (pricedItem.TLqPosition > newPricedItem.BLqPosition && //D
                     pricedItem.TLqPosition < newPricedItem.TLqPosition &&
                     pricedItem.TLpPosition >= newPricedItem.BLpPosition &&
@@ -688,7 +704,11 @@ namespace Nesting_3
                 {
                     return false;
                 }
-
+                if (newPricedItem.TLpPosition >= pricedItem.BLpPosition && newPricedItem.TLpPosition < pricedItem.BRpPosition && //E
+                    newPricedItem.TLqPosition > pricedItem.BRqPosition && newPricedItem.TLqPosition < pricedItem.TRqPosition)
+                {               
+                    return false;
+                }
 
             }
             return true;
