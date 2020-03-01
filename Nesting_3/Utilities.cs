@@ -679,7 +679,17 @@ namespace Nesting_3
                 {
                     return false;
                 }
-              
+                if (pricedItem.TLqPosition > newPricedItem.BLqPosition && //D
+                    pricedItem.TLqPosition < newPricedItem.TLqPosition &&
+                    pricedItem.TLpPosition >= newPricedItem.BLpPosition &&
+                    pricedItem.TLpPosition <= newPricedItem.BRpPosition &&
+                    pricedItem.TRpPosition >= newPricedItem.BLpPosition &&
+                    pricedItem.TRpPosition <= newPricedItem.BRpPosition)
+                {
+                    return false;
+                }
+
+
             }
             return true;
         }
