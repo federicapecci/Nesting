@@ -10,7 +10,7 @@ namespace Nesting_3
     {
         float ComputeLowerBound(IList<PricedItem> pricedItems, int binWidth, int binHeight);
 
-        bool IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem);
+        Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem);
 
         void UpdatePrice(float z, IList<PricedItem> items, IList<Bin<Tuple>> bins);
 

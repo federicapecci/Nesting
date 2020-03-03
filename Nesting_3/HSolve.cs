@@ -143,19 +143,47 @@ namespace Nesting_3
                 counter += 1;
             }
 
-            //ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
-            //dato che i price sono stati aggiornati
-            var sortedTemporaryPricedItems = temporaryPricedItems.OrderByDescending(x => x.Price);
-
+            //1) ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
+            //dato che i price sono stati aggiornati;
+            //2) riattribuisco gli id agli item, così l'item col prezzo maggiore è quello che ha l'id 0 e così via
+            var sortedTemporaryPricedItems = new List<PricedItem>();
+            counter = 0;
+            foreach(var temporaryPricedItem in temporaryPricedItems.OrderByDescending(x => x.Price))
+            {
+                sortedTemporaryPricedItems.Add(temporaryPricedItem);
+                temporaryPricedItem.Id = counter;
+                counter += 1;
+            }
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
+
+            //creo un nuovo containter con tutti i bin dell'iterazione corrente
+            Sequence sequence1 = new Sequence()
+            {
+                Bins = new List<Bin<Tuple>>()
+            };
+           
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
             {
                 if (!sortedTemporaryPricedItem.IsRemoved)
                 {
                     utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);
+                    //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
+                    var tempItem = temporaryBins[i];
+                    Bin<Tuple> b = new Bin<Tuple>
+                    {
+                        Id = tempItem.Id,
+                        Height = tempItem.Height,
+                        Width = tempItem.Width,
+                        Points = new List<Tuple>(tempItem.Points),
+                        PricedItems = new List<PricedItem>(tempItem.PricedItems)
+                    };
+                    sequence1.Bins.Add(b);
                 }
             }
+
+            Sequences.Add(sequence1);
+            return Sequences;
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
@@ -203,16 +231,6 @@ namespace Nesting_3
             else
             {
                 utilities.UpdatePrice(z, pricedItems, bins);
-
-                //creo un nuovo containter con tutti i bin dell'iterazione corrente
-                Sequence sequence = new Sequence()
-                {
-                    Bins = bins
-                };
-
-                //aggiungo il container di una certa iterazione iter alla lista dei containers
-                Sequences.Add(sequence);
-
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
                 foreach (var pricedItem in pricedItems)
@@ -225,13 +243,8 @@ namespace Nesting_3
 
         end:
             //creo un nuovo containter con tutti i bin dell'iterazione corrente
-            Sequence sequence1 = new Sequence()
-            {
-                Bins = bins
-            };
 
             //aggiungo il container di una certa iterazione iter alla lista dei containers
-            Sequences.Add(sequence1);
             return Sequences;
         }
     }

@@ -41,5 +41,6 @@ namespace Nesting_3
         /// </summary>
         public IList<X> Points { get; set; } = null;
 
+        public Bin() {}
     }
 }

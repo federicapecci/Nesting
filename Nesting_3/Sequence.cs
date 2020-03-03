@@ -16,5 +16,6 @@ namespace Nesting_3
         /// </summary>
         public IList<Bin<Tuple>> Bins { get; set; } = null;
 
+
     }
 }

@@ -67,7 +67,6 @@ namespace Nesting_3
                
                 //dxf.AddEntity(point);
 
-                break;
             }
             dxf.Save(file);
         }

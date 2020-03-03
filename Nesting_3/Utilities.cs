@@ -39,7 +39,7 @@ namespace Nesting_3
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        public bool IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem)
+        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem)
         {
 
             //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
@@ -47,7 +47,7 @@ namespace Nesting_3
             if(temporaryPricedItem.Height > temporaryBin.Height || temporaryPricedItem.Width > temporaryBin.Width)
             {
                 temporaryPricedItem.IsRemoved = true;
-                return false;
+                return temporaryBin;
             }
 
             //item nestabile, procedo
@@ -56,7 +56,7 @@ namespace Nesting_3
             //se il bin non contiene punti
             if (temporaryBin.Points.Count == 0)
             {
-                return false;
+                return temporaryBin;
             }
             else if (temporaryBin.Points.Count == 1 && //se il bin contiene 1 solo punto e quel punto è (0,0)
                     temporaryBin.Points.ElementAt(0).Pposition == 0 &&
@@ -76,7 +76,7 @@ namespace Nesting_3
                      }
                  };
                  HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, temporaryBin.Points.ElementAt(0));
-                 return true;
+                 return temporaryBin;
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
@@ -113,11 +113,11 @@ namespace Nesting_3
                 //se non riesco a trovare la tupla, vuol dire che le tuple sono finite 
                 if (minHatchedAreaTuple == null)
                 {
-                    return false;
+                    return temporaryBin;
                 }
 
-                Console.WriteLine("item " + temporaryPricedItem.Id + ", coord(" + minHatchedAreaTuple.Pposition + ", " + minHatchedAreaTuple.Qposition + "), " +
-                    ", new coord(" + minHatchedAreaTuple.PfinalPosition + ", " + minHatchedAreaTuple.QfinalPosition + ")");
+                //Console.WriteLine("item " + temporaryPricedItem.Id + ", coord(" + minHatchedAreaTuple.Pposition + ", " + minHatchedAreaTuple.Qposition + "), " +
+                  //  ", new coord(" + minHatchedAreaTuple.PfinalPosition + ", " + minHatchedAreaTuple.QfinalPosition + ")");
 
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
@@ -152,7 +152,7 @@ namespace Nesting_3
 
                     temporaryBin.PricedItems.Add(pricedItem);
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minHatchedAreaPoint);
-                    return true;
+                    return temporaryBin;
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
@@ -176,10 +176,10 @@ namespace Nesting_3
 
                     temporaryBin.PricedItems.Add(pricedItem);
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
-                    return true;
+                    return temporaryBin;
                 }
             }
-            return false;
+            return temporaryBin;
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace Nesting_3
 
             //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
             //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
-            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width) && IsOverlappingOk(newPricedItem, temporaryBin)) 
+            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width)) //&& IsOverlappingOk(newPricedItem, temporaryBin)) 
             {
                 ComputeHatchedArea(feasiblePoint, newPricedItem, downIntersectedPricedItems, leftIntersectedPricedItems);
                 //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
@@ -657,7 +657,7 @@ namespace Nesting_3
         /// <param name="newPricedItem"></param>
         /// <param name="temporaryBin"></param>
         /// <returns></returns>
-        bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
+        /*bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
         {
             foreach (var pricedItem in temporaryBin.PricedItems)
             {
@@ -712,7 +712,7 @@ namespace Nesting_3
 
             }
             return true;
-        }
+        }*/
 
         /// <summary>
         /// Metodo che stabilisce un criterio per decidere quale
