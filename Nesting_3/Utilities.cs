@@ -369,7 +369,7 @@ namespace Nesting_3
 
             //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
             //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
-            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width)) //&& IsOverlappingOk(newPricedItem, temporaryBin)) 
+            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width)&& IsOverlappingOk(newPricedItem, temporaryBin)) 
             {
                 ComputeHatchedArea(feasiblePoint, newPricedItem, downIntersectedPricedItems, leftIntersectedPricedItems);
                 //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
@@ -657,62 +657,18 @@ namespace Nesting_3
         /// <param name="newPricedItem"></param>
         /// <param name="temporaryBin"></param>
         /// <returns></returns>
-        /*bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
+        bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
         {
             foreach (var pricedItem in temporaryBin.PricedItems)
             {
-                //se la coordinata in alto a destra del nuovo item interseca item presistenti 
-                //significa che vi sono sovrapposizioni
-                if (newPricedItem.TRpPosition > pricedItem.BLpPosition && newPricedItem.TRpPosition <= pricedItem.BRpPosition) { 
-                    if (newPricedItem.TRqPosition > pricedItem.BLqPosition && newPricedItem.TRqPosition < pricedItem.TLqPosition) //A
-                    {
-                        return false;
-                    }else if (pricedItem.TLqPosition > newPricedItem.BLqPosition && pricedItem.TLqPosition <= newPricedItem.TLqPosition) //C
-                    {
-                        return false;
-                    }
-                }
-
-
-
-
-                if (pricedItem.BLqPosition >= newPricedItem.BLqPosition && 
-                    pricedItem.TLqPosition <= newPricedItem.TLqPosition)
-                {
-                    if(newPricedItem.BLpPosition > pricedItem.BLpPosition && //B
-                    newPricedItem.BRpPosition < pricedItem.BRpPosition)
-                    {
-                        return false;
-                    }else if (pricedItem.BRpPosition > newPricedItem.BLpPosition && //F
-                    pricedItem.BRpPosition <= newPricedItem.BRpPosition)
-                    {
-                        return false;
-                    }
-
-                }
-
-
-
-
-
-                if (pricedItem.TLqPosition > newPricedItem.BLqPosition && //D
-                    pricedItem.TLqPosition < newPricedItem.TLqPosition &&
-                    pricedItem.TLpPosition >= newPricedItem.BLpPosition &&
-                    pricedItem.TLpPosition <= newPricedItem.BRpPosition &&
-                    pricedItem.TRpPosition >= newPricedItem.BLpPosition &&
-                    pricedItem.TRpPosition <= newPricedItem.BRpPosition)
-                {
+                //se c'è overlap
+                if (pricedItem.BLpPosition < newPricedItem.BRpPosition && pricedItem.BRpPosition > newPricedItem.BLpPosition
+                    && pricedItem.BLqPosition < newPricedItem.TLqPosition && pricedItem.TLqPosition > newPricedItem.BLqPosition) {                    
                     return false;
                 }
-                if (newPricedItem.TLpPosition >= pricedItem.BLpPosition && newPricedItem.TLpPosition < pricedItem.BRpPosition && //E
-                    newPricedItem.TLqPosition > pricedItem.BRqPosition && newPricedItem.TLqPosition < pricedItem.TRqPosition)
-                {               
-                    return false;
-                }
-
             }
             return true;
-        }*/
+        }
 
         /// <summary>
         /// Metodo che stabilisce un criterio per decidere quale

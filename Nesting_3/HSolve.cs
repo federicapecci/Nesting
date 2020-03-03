@@ -183,7 +183,7 @@ namespace Nesting_3
             }
 
             Sequences.Add(sequence1);
-            return Sequences;
+           
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
