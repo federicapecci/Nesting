@@ -226,13 +226,13 @@ namespace Nesting_3
             };
 
             //controllo se il primo nuovo punto è idoneo ad essere aggiunto perché
-            //potrebbe essere erroneaemente creato sul lato di un item già esistente
+            //potrebbe essere erroneaemente creato sul lato di un item già in soluzione
             bool isPointLyingOnItemSide = false;
             foreach (var ni in temporaryBin.PricedItems)
             {
                 if (firstPoint.Qposition == ni.BLqPosition &&
-                    firstPoint.Pposition >= ni.BLpPosition &&
-                    firstPoint.Pposition <= ni.BRpPosition)
+                    firstPoint.Pposition > ni.BLpPosition &&
+                    firstPoint.Pposition < ni.BRpPosition)
                 {
                     isPointLyingOnItemSide = true;
                     break;
@@ -268,8 +268,8 @@ namespace Nesting_3
             foreach (var ni in temporaryBin.PricedItems)
             {
                 if (secondPoint.Pposition == ni.BLpPosition &&
-                    secondPoint.Qposition >= ni.BLqPosition &&
-                    secondPoint.Qposition <= ni.TLqPosition)
+                    secondPoint.Qposition > ni.BLqPosition &&
+                    secondPoint.Qposition < ni.TLqPosition)
                 {
                     isPointLyingOnItemSide = true;
                     break;

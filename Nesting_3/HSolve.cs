@@ -161,8 +161,10 @@ namespace Nesting_3
             {
                 Bins = new List<Bin<Tuple>>()
             };         
+            
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
             {
+
                 if (!sortedTemporaryPricedItem.IsRemoved)
                 {
                     utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);
