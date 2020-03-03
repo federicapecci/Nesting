@@ -157,12 +157,10 @@ namespace Nesting_3
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
 
-            //creo un nuovo containter con tutti i bin dell'iterazione corrente
-            Sequence sequence1 = new Sequence()
+            Sequence sequence = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
-            };
-           
+            };         
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
             {
                 if (!sortedTemporaryPricedItem.IsRemoved)
@@ -178,12 +176,12 @@ namespace Nesting_3
                         Points = new List<Tuple>(tempItem.Points),
                         PricedItems = new List<PricedItem>(tempItem.PricedItems)
                     };
-                    sequence1.Bins.Add(b);
+                    sequence.Bins.Add(b);
                 }
             }
+            Sequences.Add(sequence);
 
-            Sequences.Add(sequence1);
-           
+
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
@@ -243,8 +241,8 @@ namespace Nesting_3
 
         end:
             //creo un nuovo containter con tutti i bin dell'iterazione corrente
+           
 
-            //aggiungo il container di una certa iterazione iter alla lista dei containers
             return Sequences;
         }
     }
