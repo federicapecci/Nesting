@@ -165,6 +165,7 @@ namespace Nesting_3
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
             {
 
+                
                 if (!sortedTemporaryPricedItem.IsRemoved)
                 {
                     utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);

@@ -396,7 +396,7 @@ namespace Nesting_3
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
             float partialHatchedArea;
 
-            if (downIntersectedNestedItems.Count > 0)
+            if(downIntersectedNestedItems.Count > 0)
             {
                 //definiso la green area sotto il nuovo item
                 GreenZone greenZone = new GreenZone()
@@ -516,6 +516,7 @@ namespace Nesting_3
             }
 
             feasiblePoint.HatchedArea = totalHatchedArea;
+            
         }
 
 
@@ -537,7 +538,8 @@ namespace Nesting_3
             {
                 //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if (((newPricedItem.BLpPosition >= pricedItem.BLpPosition && newPricedItem.BLpPosition < pricedItem.BRpPosition) ||
-                   (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition)) &&
+                   (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition) ||
+                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition)) &&
                     newPricedItem.BLqPosition >= pricedItem.TLqPosition)
                 {
                     intersectedPricedItems.Add(pricedItem);
@@ -596,7 +598,10 @@ namespace Nesting_3
             {
                 //cerco interesezioni orizzontali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if (((newPricedItem.BLqPosition >= pricedItem.BLqPosition && newPricedItem.BLqPosition < pricedItem.TLqPosition) ||
-                    (newPricedItem.TLqPosition > pricedItem.BLqPosition && newPricedItem.TLqPosition <= pricedItem.TLqPosition)) &&
+                    (newPricedItem.TLqPosition > pricedItem.BLqPosition && newPricedItem.TLqPosition <= pricedItem.TLqPosition) ||
+                    (newPricedItem.BLqPosition <= pricedItem.BRqPosition && newPricedItem.TLqPosition >= pricedItem.TRqPosition)
+                    
+                    ) &&
                     newPricedItem.BLpPosition >= pricedItem.BRpPosition)
                 {
                     intersectedPricedItems.Add(pricedItem);
