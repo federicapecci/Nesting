@@ -171,14 +171,30 @@ namespace Nesting_3
                     utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     var tempItem = temporaryBins[i];
-                    Bin<Tuple> b = new Bin<Tuple>
+                    Bin<Tuple> b;
+                    if (tempItem.PricedItems != null)
                     {
-                        Id = tempItem.Id,
-                        Height = tempItem.Height,
-                        Width = tempItem.Width,
-                        Points = new List<Tuple>(tempItem.Points),
-                        PricedItems = new List<PricedItem>(tempItem.PricedItems)
-                    };
+
+                        b = new Bin<Tuple>
+                        {
+                            Id = tempItem.Id,
+                            Height = tempItem.Height,
+                            Width = tempItem.Width,
+                            Points = new List<Tuple>(tempItem.Points),
+                            PricedItems = new List<PricedItem>(tempItem.PricedItems)
+                        };
+                    }
+                    else
+                    {
+                        b = new Bin<Tuple>
+                        {
+                            Id = tempItem.Id,
+                            Height = tempItem.Height,
+                            Width = tempItem.Width,
+                            Points = new List<Tuple>(tempItem.Points),
+                            PricedItems = new List<PricedItem>()
+                        };
+                    }
                     sequence.Bins.Add(b);
                 }
             }

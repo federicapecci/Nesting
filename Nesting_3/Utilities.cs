@@ -539,7 +539,9 @@ namespace Nesting_3
                 //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if (((newPricedItem.BLpPosition >= pricedItem.BLpPosition && newPricedItem.BLpPosition < pricedItem.BRpPosition) ||
                    (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition) ||
-                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition)) &&
+                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
+                   (newPricedItem.BLpPosition > pricedItem.TLpPosition && newPricedItem.BRpPosition < pricedItem.TRpPosition) //le p di NI cadono dentro le p di OI
+                   ) &&
                     newPricedItem.BLqPosition >= pricedItem.TLqPosition)
                 {
                     intersectedPricedItems.Add(pricedItem);
@@ -599,8 +601,8 @@ namespace Nesting_3
                 //cerco interesezioni orizzontali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
                 if (((newPricedItem.BLqPosition >= pricedItem.BLqPosition && newPricedItem.BLqPosition < pricedItem.TLqPosition) ||
                     (newPricedItem.TLqPosition > pricedItem.BLqPosition && newPricedItem.TLqPosition <= pricedItem.TLqPosition) ||
-                    (newPricedItem.BLqPosition <= pricedItem.BRqPosition && newPricedItem.TLqPosition >= pricedItem.TRqPosition)
-                    
+                    (newPricedItem.BLqPosition <= pricedItem.BRqPosition && newPricedItem.TLqPosition >= pricedItem.TRqPosition) || //le coord q di OI cadono entrambe dentro a NI o sono uguali
+                    (newPricedItem.BLqPosition > pricedItem.BRqPosition && newPricedItem.TLqPosition < pricedItem.TRqPosition) //le coord q di NI cadono entrambe dentro OI
                     ) &&
                     newPricedItem.BLpPosition >= pricedItem.BRpPosition)
                 {
