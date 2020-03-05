@@ -176,6 +176,9 @@ namespace Nesting_3
 
                     temporaryBin.PricedItems.Add(pricedItem);
                     HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
+
+              
+
                     return temporaryBin;
                 }
             }
@@ -204,7 +207,9 @@ namespace Nesting_3
                    p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition) ||
                    
                    (p.PfinalPosition == matchingPoint.PfinalPosition && //cerco punti che, dopo push down and left portavano alle stesse coordinate finali
-                   p.QfinalPosition == matchingPoint.QfinalPosition))
+                   p.QfinalPosition == matchingPoint.QfinalPosition &&
+                   sortedTemporaryPricedItem.BRpPosition >= p.Pposition  &&
+                   sortedTemporaryPricedItem.TLqPosition >= p.Qposition))
                    
                 {
                     p.IsUsed = true;
@@ -284,6 +289,16 @@ namespace Nesting_3
 
             //setto item a nestato
             sortedTemporaryPricedItem.IsRemoved = true;
+
+
+            /*foreach (var feasiblePoint in temporaryBin.Points)
+            {
+                if(feasiblePoint.Pposition == 2725 && feasiblePoint.Qposition == 855 && feasiblePoint.IsUsed == true)
+                {
+                    Console.WriteLine("id item " + sortedTemporaryPricedItem.Id);
+                }
+            }*/
+
         }
 
         /// <summary>
@@ -363,9 +378,11 @@ namespace Nesting_3
         /// <returns></returns>
         private float GetHatchedArea(Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
         {
-            IList<PricedItem> downIntersectedPricedItems = PushItemDown(temporaryBin, newPricedItem, feasiblePoint);
+            PushItemDown(temporaryBin, newPricedItem, feasiblePoint);
             IList<PricedItem> leftIntersectedPricedItems = PushItemLeft(temporaryBin, newPricedItem, feasiblePoint);
-
+            //conto il numero di intersezioni che ho da sotto, perché potrebbero cambiare (da quelle inzialemnte trovate con
+            //la prima invocazione di PushItemDown) dopo aver spinto l'item tutto a sinistra 
+            IList<PricedItem> downIntersectedPricedItems = CheckDownInsersectionNumber(temporaryBin, newPricedItem, feasiblePoint);
 
             //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
             //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
@@ -580,6 +597,28 @@ namespace Nesting_3
             feasiblePoint.QfinalPosition = newPricedItem.BLqPosition;
             return intersectedPricedItems;
 
+        }
+
+        private IList<PricedItem> CheckDownInsersectionNumber(Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
+        {
+            //lista delle intersezioni tra item nuovo e item già in soluzione
+            IList<PricedItem> intersectedPricedItems = new List<PricedItem>();
+
+            foreach (var pricedItem in temporaryBin.PricedItems)
+            {
+                //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
+                if (((newPricedItem.BLpPosition >= pricedItem.BLpPosition && newPricedItem.BLpPosition < pricedItem.BRpPosition) ||
+                   (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition) ||
+                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
+                   (newPricedItem.BLpPosition > pricedItem.TLpPosition && newPricedItem.BRpPosition < pricedItem.TRpPosition) //le p di NI cadono dentro le p di OI
+                   ) &&
+                    newPricedItem.BLqPosition >= pricedItem.TLqPosition)
+                {
+                    intersectedPricedItems.Add(pricedItem);
+                }
+            }
+
+            return intersectedPricedItems;
         }
 
         /// <summary>

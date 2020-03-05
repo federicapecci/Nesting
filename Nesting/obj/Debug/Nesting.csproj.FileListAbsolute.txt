@@ -143,3 +143,5 @@ C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\obj\Debug\Nesting.cspr
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.dll
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.pdb
 C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\netDxf.xml
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\Newtonsoft.Json.dll
+C:\Users\federica.pecci2\Documents\GitHub\Nesting\Nesting\bin\Debug\Newtonsoft.Json.xml
