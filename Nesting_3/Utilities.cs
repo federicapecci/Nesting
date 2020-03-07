@@ -27,7 +27,6 @@ namespace Nesting_3
             }
 
             result /= (binWidth * binHeight);
-
             return result;
         }
 
@@ -41,7 +40,6 @@ namespace Nesting_3
         /// <returns></returns>
         public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem)
         {
-
             //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
             //setto comunque l'item come removed, altrimenti la lista di item non sarà mai empty e hsolve non va avanti
             if(temporaryPricedItem.Height > temporaryBin.Height || temporaryPricedItem.Width > temporaryBin.Width)
@@ -115,10 +113,6 @@ namespace Nesting_3
                 {
                     return temporaryBin;
                 }
-
-                //Console.WriteLine("item " + temporaryPricedItem.Id + ", coord(" + minHatchedAreaTuple.Pposition + ", " + minHatchedAreaTuple.Qposition + "), " +
-                  //  ", new coord(" + minHatchedAreaTuple.PfinalPosition + ", " + minHatchedAreaTuple.QfinalPosition + ")");
-
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList <Tuple> minHatchedAreaPoints = new List<Tuple>();
@@ -289,16 +283,6 @@ namespace Nesting_3
 
             //setto item a nestato
             sortedTemporaryPricedItem.IsRemoved = true;
-
-
-            /*foreach (var feasiblePoint in temporaryBin.Points)
-            {
-                if(feasiblePoint.Pposition == 2725 && feasiblePoint.Qposition == 855 && feasiblePoint.IsUsed == true)
-                {
-                    Console.WriteLine("id item " + sortedTemporaryPricedItem.Id);
-                }
-            }*/
-
         }
 
         /// <summary>

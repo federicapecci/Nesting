@@ -58,14 +58,5 @@ namespace Nesting_3
             HatchedArea = 0;
         }
 
-        /*public Tuple(Tuple triple)
-        {
-            Pposition = triple.Pposition;
-            Qposition = triple.Qposition;
-            IsUsed = triple.IsUsed;
-            PfinalPosition = 0;
-            QfinalPosition = 0;
-            HatchedArea = 0;
-        }*/
     }
 }

@@ -38,6 +38,7 @@ namespace Nesting_3
         public IList<Sequence> ComputeHeuristic()
         {
             IUtilities utilities = new Utilities();
+            Sequence sequence = null;
 
             //================ STEP 1 - INITIALIZATION ================
 
@@ -223,14 +224,14 @@ namespace Nesting_3
         l0: zStar = z;
             bins = temporaryBins;
 
-            Sequence sequence = new Sequence()
+            sequence = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
             };
             sequence.Bins = bins;
             Sequences.Add(sequence);
-            //================ STEP 6 - CHECK OPTIMALITY ================
-            //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
+        //================ STEP 6 - CHECK OPTIMALITY ================
+        //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
             if (zStar > lowerBoundMin && zStar < lowerBoundMax)
             {
                 goto end;
@@ -256,12 +257,12 @@ namespace Nesting_3
             }
 
         end:
-            Sequence sequence1 = new Sequence()
+            sequence = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
             };
-            sequence1.Bins = bins;
-            Sequences.Add(sequence1);
+            sequence.Bins = bins;
+            Sequences.Add(sequence);
             return Sequences;
         }
     }
