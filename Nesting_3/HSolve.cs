@@ -154,23 +154,17 @@ namespace Nesting_3
                 temporaryPricedItem.Id = counter;
                 counter += 1;
             }
+
+           
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
-
-            Sequence sequence = new Sequence()
-            {
-                Bins = new List<Bin<Tuple>>()
-            };         
-            
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
-            {
-
-                
+            {                
                 if (!sortedTemporaryPricedItem.IsRemoved)
                 {
                     utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
-                    var tempItem = temporaryBins[i];
+                    /*var tempItem = temporaryBins[i];
                     Bin<Tuple> b;
                     if (tempItem.PricedItems != null)
                     {
@@ -194,13 +188,10 @@ namespace Nesting_3
                             Points = new List<Tuple>(tempItem.Points),
                             PricedItems = new List<PricedItem>()
                         };
-                    }
-                    sequence.Bins.Add(b);
+                    }*/
+                    
                 }
             }
-            Sequences.Add(sequence);
-
-
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
@@ -220,7 +211,7 @@ namespace Nesting_3
             {
                 goto l0;
             }
-            if (!isSortedTemporaryPricedItemsEmpty && (i < (zStar - 1)))
+            if (!isSortedTemporaryPricedItemsEmpty && (i < (zStar)))
             {
                 i += 1;
                 goto l1;
@@ -232,6 +223,12 @@ namespace Nesting_3
         l0: zStar = z;
             bins = temporaryBins;
 
+            Sequence sequence = new Sequence()
+            {
+                Bins = new List<Bin<Tuple>>()
+            };
+            sequence.Bins = bins;
+            Sequences.Add(sequence);
             //================ STEP 6 - CHECK OPTIMALITY ================
             //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
             if (zStar > lowerBoundMin && zStar < lowerBoundMax)
@@ -246,7 +243,7 @@ namespace Nesting_3
                 goto end;
             }
             else
-            {
+            {               
                 utilities.UpdatePrice(z, pricedItems, bins);
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
@@ -259,9 +256,12 @@ namespace Nesting_3
             }
 
         end:
-            //creo un nuovo containter con tutti i bin dell'iterazione corrente
-           
-
+            Sequence sequence1 = new Sequence()
+            {
+                Bins = new List<Bin<Tuple>>()
+            };
+            sequence1.Bins = bins;
+            Sequences.Add(sequence1);
             return Sequences;
         }
     }

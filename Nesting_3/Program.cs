@@ -23,7 +23,7 @@ namespace Nesting_3
 
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
-            dxfDrawer.WriteAllData(sequences, "output_3_hsolve_output_temp4");
+            dxfDrawer.WriteAllData(sequences, "3_hsolve_output_temp4");
 
         }
     }
