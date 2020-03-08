@@ -157,6 +157,7 @@ namespace Nesting_3
             }
 
            
+           
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
             foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)

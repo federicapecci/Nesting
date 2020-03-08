@@ -400,7 +400,7 @@ namespace Nesting_3
             if(downIntersectedNestedItems.Count > 0)
             {
                 //definiso la green area sotto il nuovo item
-                GreenZone greenZone = new GreenZone()
+                AdjacentItem adjacentItem = new AdjacentItem()
                 {
                     BRpPosition = feasiblePoint.PfinalPosition + newPricedItem.Width,
                     BRqPosition = 0,
@@ -443,7 +443,7 @@ namespace Nesting_3
                     (intersectedItem.BLpPosition < newPricedItem.BLpPosition &&  //le coordinate p del new item cadono dentro quelle p dell'intersected item
                     intersectedItem.BRpPosition > newPricedItem.BRpPosition))
                     {
-                        intersectedWidth = greenZone.Width;
+                        intersectedWidth = adjacentItem.Width;
                     }
                     else
                     {
@@ -453,14 +453,14 @@ namespace Nesting_3
                     itemsInSolutionArea += (intersectedItem.Height * intersectedWidth);
                 }
 
-                partialHatchedArea = greenZone.Area - itemsInSolutionArea;
+                partialHatchedArea = adjacentItem.Area - itemsInSolutionArea;
                 totalHatchedArea += partialHatchedArea;
             }
 
             if (leftIntersectedNestedItems.Count > 0)
             {
                 //definiso la green area a sintra del nuovo item
-                GreenZone greenZone = new GreenZone()
+                AdjacentItem adjacentItem = new AdjacentItem()
                 {
                     BRpPosition = feasiblePoint.PfinalPosition,
                     BRqPosition = feasiblePoint.QfinalPosition,
@@ -502,7 +502,7 @@ namespace Nesting_3
                        (intersectedItem.BLqPosition < newPricedItem.BLqPosition && //le coordinate q del new item cadono dentro quelle dell'intersected item 
                        intersectedItem.TLqPosition > newPricedItem.TLqPosition))
                     {
-                        intersectedHeight = greenZone.Height;
+                        intersectedHeight = adjacentItem.Height;
                     }
                     else
                     {
@@ -512,7 +512,7 @@ namespace Nesting_3
                     itemsInSolutionArea += (intersectedHeight * intersectedItem.Width);
                 }
 
-                partialHatchedArea = greenZone.Area - itemsInSolutionArea;
+                partialHatchedArea = adjacentItem.Area - itemsInSolutionArea;
                 totalHatchedArea += partialHatchedArea;
             }
 
