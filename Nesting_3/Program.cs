@@ -15,7 +15,7 @@ namespace Nesting_3
             IConfigurationIO jsonConfigurationIO = new JsonConfigurationIO();
 
             //leggo da file json come impostare i parametri dell'algortimo hsolve e li salvo nell'oggetto configuration
-            Configuration configuration = jsonConfigurationIO.ReadAllData("5_configuration");
+            Configuration configuration = jsonConfigurationIO.ReadAllData("1_configuration");
 
             //lancio l'euristica passando i parametri della configurazione
             IHSolve hsolve = new HSolve(configuration);
@@ -23,7 +23,7 @@ namespace Nesting_3
 
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
-            dxfDrawer.WriteAllData(sequences, "5_output");
+            dxfDrawer.WriteAllData(sequences, "1_output_bis");
 
         }
     }

@@ -30,14 +30,24 @@ namespace Nesting_3
             DxfDocument dxf = new DxfDocument();
             TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
             int offsetX = 0;
+            int sequenceIndex = 1;
             foreach (var sequence in sequences)
             {
+
+                MText title = new MText("ITERAZIONE N° " + sequenceIndex)
+                {
+                    Position = new Vector3(0+offsetX, 1800, 0.0),
+                    Height = 70,
+                    Style = style
+                };
+                dxf.AddEntity(title);
                 foreach (var bin in sequence.Bins)
                 {
-                    
                     if (bin.PricedItems != null)
                     {
                         //un wipeout rettangolare che contiene tutte le altre forme 
+
+                        
                         Wipeout wipeout = new Wipeout(0 + offsetX, 0, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
                         foreach (var pricedItem in bin.PricedItems)
@@ -60,6 +70,7 @@ namespace Nesting_3
                     
                 }
                 offsetX += 3000;
+                sequenceIndex += 99;
             }
             dxf.Save(file);
         }

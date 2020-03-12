@@ -38,7 +38,6 @@ namespace Nesting_3
         public IList<Sequence> ComputeHeuristic()
         {
             IUtilities utilities = new Utilities();
-            Sequence sequence = null;
 
             //================ STEP 1 - INITIALIZATION ================
 
@@ -111,7 +110,13 @@ namespace Nesting_3
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
-        l3: //creo una lista temporanea J' di item 
+        l3:
+            /*Sequence sequence = new Sequence()
+            {
+                Bins = new List<Bin<Tuple>>()
+            };*/
+
+            //creo una lista temporanea J' di item 
             IList<PricedItem> temporaryPricedItems = new List<PricedItem>();
 
             //assegno la lista di item J a J'
@@ -168,6 +173,7 @@ namespace Nesting_3
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     /*var tempItem = temporaryBins[i];
                     Bin<Tuple> b;
+                    
                     if (tempItem.PricedItems != null)
                     {
 
@@ -190,7 +196,9 @@ namespace Nesting_3
                             Points = new List<Tuple>(tempItem.Points),
                             PricedItems = new List<PricedItem>()
                         };
-                    }*/
+                    }
+                    
+                    sequence.Bins.Add(b);*/
                     
                 }
             }
@@ -211,6 +219,7 @@ namespace Nesting_3
 
             if (isSortedTemporaryPricedItemsEmpty)
             {
+                //Sequences.Add(sequence);
                 goto l0;
             }
             if (!isSortedTemporaryPricedItemsEmpty && (i < (zStar)))
@@ -225,12 +234,12 @@ namespace Nesting_3
         l0: zStar = z;
             bins = temporaryBins;
 
-            sequence = new Sequence()
+            Sequence sequence1 = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
             };
-            sequence.Bins = bins;
-            Sequences.Add(sequence);
+            sequence1.Bins = bins;
+            Sequences.Add(sequence1);
         //================ STEP 6 - CHECK OPTIMALITY ================
         //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
             if (zStar > lowerBoundMin && zStar < lowerBoundMax)
@@ -258,12 +267,20 @@ namespace Nesting_3
             }
 
         end:
-            sequence = new Sequence()
+                Sequence sequence2 = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
             };
-            sequence.Bins = bins;
-            Sequences.Add(sequence);
+            sequence2.Bins = bins;
+            Sequences.Add(sequence2);
+
+            Sequence firstSequence = Sequences.FirstOrDefault();
+            Sequence lastSequence = Sequences.LastOrDefault();
+
+            Sequences.Clear();
+            Sequences.Add(firstSequence);
+            Sequences.Add(lastSequence);
+
             return Sequences;
         }
     }
