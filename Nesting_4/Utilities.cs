@@ -17,7 +17,7 @@ namespace Nesting_4
         /// <param name="binWidth"></param>
         /// <param name="binHeight"></param>
         /// <returns></returns>
-        public float ComputeLowerBound(IList<PricedItem> pricedItems, int binWidth, int binHeight)
+        public float ComputeLowerBound(IList<Item> pricedItems, int binWidth, int binHeight)
         {
             float result = 0;
 
@@ -38,13 +38,13 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem)
+        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem)
         {
             //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
             //setto comunque l'item come removed, altrimenti la lista di item non sarà mai empty e hsolve non va avanti
-            if(temporaryPricedItem.Height > temporaryBin.Height || temporaryPricedItem.Width > temporaryBin.Width)
+            if(temporaryItem.Height > temporaryBin.Height || temporaryItem.Width > temporaryBin.Width)
             {
-                temporaryPricedItem.IsRemoved = true;
+                temporaryItem.IsRemoved = true;
                 return temporaryBin;
             }
 
@@ -60,20 +60,20 @@ namespace Nesting_4
                     temporaryBin.Points.ElementAt(0).Pposition == 0 &&
                     temporaryBin.Points.ElementAt(0).Qposition == 0)
             {
-                 temporaryBin.PricedItems = new List<PricedItem>(){
-                     new PricedItem()
+                 temporaryBin.NestedItems = new List<Item>(){
+                     new Item()
                      {
-                         Height = temporaryPricedItem.Height,
-                         Width = temporaryPricedItem.Width,
-                         Id = temporaryPricedItem.Id,
-                         Price = temporaryPricedItem.Price,
-                         TLqPosition = temporaryPricedItem.Height,
-                         BRpPosition =  temporaryPricedItem.Width,
-                         TRpPosition =  temporaryPricedItem.Width,
-                         TRqPosition = temporaryPricedItem.Height
+                         Height = temporaryItem.Height,
+                         Width = temporaryItem.Width,
+                         Id = temporaryItem.Id,
+                         Price = temporaryItem.Price,
+                         TLqPosition = temporaryItem.Height,
+                         BRpPosition =  temporaryItem.Width,
+                         TRpPosition =  temporaryItem.Width,
+                         TRqPosition = temporaryItem.Height
                      }
                  };
-                 HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, temporaryBin.Points.ElementAt(0));
+                 HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0));
                  return temporaryBin;
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
@@ -83,20 +83,20 @@ namespace Nesting_4
                     if (!feasiblePoint.IsUsed)
                     {
                         //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
-                        PricedItem newPricedItem = new PricedItem()
+                        Item newPricedItem = new Item()
                         {
-                            Height = temporaryPricedItem.Height,
-                            Width = temporaryPricedItem.Width,
-                            Id = temporaryPricedItem.Id,
-                            Price = temporaryPricedItem.Price,
+                            Height = temporaryItem.Height,
+                            Width = temporaryItem.Width,
+                            Id = temporaryItem.Id,
+                            Price = temporaryItem.Price,
                             BLpPosition = feasiblePoint.Pposition,
                             BLqPosition = feasiblePoint.Qposition,
-                            BRpPosition = feasiblePoint.Pposition + temporaryPricedItem.Width,
+                            BRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
                             BRqPosition = feasiblePoint.Qposition,
                             TLpPosition = feasiblePoint.Pposition,
-                            TLqPosition = feasiblePoint.Qposition + temporaryPricedItem.Height,
-                            TRpPosition = feasiblePoint.Pposition + temporaryPricedItem.Width,
-                            TRqPosition = feasiblePoint.Qposition + temporaryPricedItem.Height
+                            TLqPosition = feasiblePoint.Qposition + temporaryItem.Height,
+                            TRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
+                            TRqPosition = feasiblePoint.Qposition + temporaryItem.Height
                         };
                         feasiblePoint.HatchedArea = GetHatchedArea(temporaryBin, newPricedItem, feasiblePoint);
                     }
@@ -128,48 +128,48 @@ namespace Nesting_4
                 {
                     var minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
 
-                    var pricedItem = new PricedItem()
+                    var pricedItem = new Item()
                     {
-                        Height = temporaryPricedItem.Height,
-                        Width = temporaryPricedItem.Width,
-                        Id = temporaryPricedItem.Id,
-                        Price = temporaryPricedItem.Price,
+                        Height = temporaryItem.Height,
+                        Width = temporaryItem.Width,
+                        Id = temporaryItem.Id,
+                        Price = temporaryItem.Price,
                         BLpPosition = minHatchedAreaPoint.PfinalPosition,
                         BLqPosition = minHatchedAreaPoint.QfinalPosition,
-                        BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryPricedItem.Width,
+                        BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
                         BRqPosition = minHatchedAreaPoint.QfinalPosition,
                         TLpPosition = minHatchedAreaPoint.PfinalPosition,
-                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryPricedItem.Height,
-                        TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryPricedItem.Width,
-                        TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryPricedItem.Height
+                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height,
+                        TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
+                        TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
                     };
 
-                    temporaryBin.PricedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minHatchedAreaPoint);
+                    temporaryBin.NestedItems.Add(pricedItem);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint);
                     return temporaryBin;
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
                     Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints);
 
-                    var pricedItem = new PricedItem()
+                    var pricedItem = new Item()
                     {
-                        Height = temporaryPricedItem.Height,
-                        Width = temporaryPricedItem.Width,
-                        Id = temporaryPricedItem.Id,
-                        Price = temporaryPricedItem.Price,
+                        Height = temporaryItem.Height,
+                        Width = temporaryItem.Width,
+                        Id = temporaryItem.Id,
+                        Price = temporaryItem.Price,
                         BLpPosition = minCoordinatePoint.PfinalPosition,
                         BLqPosition = minCoordinatePoint.QfinalPosition,
-                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryPricedItem.Width,
+                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
                         BRqPosition = minCoordinatePoint.QfinalPosition,
                         TLpPosition = minCoordinatePoint.PfinalPosition,
-                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryPricedItem.Height,
-                        TRpPosition = minCoordinatePoint.PfinalPosition + temporaryPricedItem.Width,
-                        TRqPosition = minCoordinatePoint.QfinalPosition + temporaryPricedItem.Height
+                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height,
+                        TRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
+                        TRqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
                     };
 
-                    temporaryBin.PricedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryPricedItem, minCoordinatePoint);
+                    temporaryBin.NestedItems.Add(pricedItem);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);
 
               
 
@@ -185,7 +185,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, PricedItem sortedTemporaryPricedItem, Tuple point)
+        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item sortedTemporaryItem, Tuple point)
         {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
             var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
@@ -197,13 +197,13 @@ namespace Nesting_4
             foreach (var p in temporaryBin.Points)
             {
                 //cerco punti "coperti" dal nuovo item nestato
-                if ((p.Pposition >= sortedTemporaryPricedItem.BLpPosition && p.Pposition < sortedTemporaryPricedItem.BRpPosition &&
-                   p.Qposition >= sortedTemporaryPricedItem.BLqPosition && p.Qposition < sortedTemporaryPricedItem.TLqPosition) ||
+                if ((p.Pposition >= sortedTemporaryItem.BLpPosition && p.Pposition < sortedTemporaryItem.BRpPosition &&
+                   p.Qposition >= sortedTemporaryItem.BLqPosition && p.Qposition < sortedTemporaryItem.TLqPosition) ||
                    
                    (p.PfinalPosition == matchingPoint.PfinalPosition && //cerco punti che, dopo push down and left portavano alle stesse coordinate finali
                    p.QfinalPosition == matchingPoint.QfinalPosition &&
-                   sortedTemporaryPricedItem.BRpPosition >= p.Pposition  &&
-                   sortedTemporaryPricedItem.TLqPosition >= p.Qposition))
+                   sortedTemporaryItem.BRpPosition >= p.Pposition  &&
+                   sortedTemporaryItem.TLqPosition >= p.Qposition))
                    
                 {
                     p.IsUsed = true;
@@ -212,14 +212,14 @@ namespace Nesting_4
 
             //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points
             Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
-                                                   x.Qposition == point.QfinalPosition + sortedTemporaryPricedItem.Height &&
+                                                   x.Qposition == point.QfinalPosition + sortedTemporaryItem.Height &&
                                                    x.IsUsed == false).FirstOrDefault();
 
             //definisco il primo nuovo punto
             var firstPoint = new Tuple()
             {
                 Pposition = point.PfinalPosition,
-                Qposition = point.QfinalPosition + sortedTemporaryPricedItem.Height,
+                Qposition = point.QfinalPosition + sortedTemporaryItem.Height,
                 IsUsed = false
 
             };
@@ -227,7 +227,7 @@ namespace Nesting_4
             //controllo se il primo nuovo punto è idoneo ad essere aggiunto perché
             //potrebbe essere erroneaemente creato sul lato di un item già in soluzione
             bool isPointLyingOnItemSide = false;
-            foreach (var ni in temporaryBin.PricedItems)
+            foreach (var ni in temporaryBin.NestedItems)
             {
                 if (firstPoint.Qposition == ni.BLqPosition &&
                     firstPoint.Pposition > ni.BLpPosition &&
@@ -251,20 +251,20 @@ namespace Nesting_4
             isPointLyingOnItemSide = false;
 
             //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points
-            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + sortedTemporaryPricedItem.Width &&
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + sortedTemporaryItem.Width &&
                                                         x.Qposition == point.QfinalPosition).FirstOrDefault();
 
             //definisco il secondo nuovo punto
             var secondPoint = new Tuple()
             {
-                Pposition = point.PfinalPosition + sortedTemporaryPricedItem.Width,
+                Pposition = point.PfinalPosition + sortedTemporaryItem.Width,
                 Qposition = point.QfinalPosition,
                 IsUsed = false
             };
 
             //controllo se il secondo nuovo punto è idoneo ad essere aggiunto perché
             //potrebbe essere erroneaemente creato sul lato di un item già esistente
-            foreach (var ni in temporaryBin.PricedItems)
+            foreach (var ni in temporaryBin.NestedItems)
             {
                 if (secondPoint.Pposition == ni.BLpPosition &&
                     secondPoint.Qposition > ni.BLqPosition &&
@@ -282,7 +282,7 @@ namespace Nesting_4
             }
 
             //setto item a nestato
-            sortedTemporaryPricedItem.IsRemoved = true;
+            sortedTemporaryItem.IsRemoved = true;
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Nesting_4
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void UpdatePrice(float z, IList<PricedItem> items, IList<Bin<Tuple>> bins)
+        public void UpdatePrice(float z, IList<Item> items, IList<Bin<Tuple>> bins)
         {
             float alpha = 0.9F;
             float beta = 1.1F;
@@ -302,9 +302,9 @@ namespace Nesting_4
             {
                 foreach (var bin in bins) //scorro tutti i bins
                 {
-                    if (bin.PricedItems != null)
+                    if (bin.NestedItems != null)
                     {
-                        foreach (var nestedItem in bin.PricedItems) //e scorro tutti i nested items di ogni bin
+                        foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
                         {
                             if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
                             {
@@ -360,19 +360,19 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private float GetHatchedArea(Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
+        private float GetHatchedArea(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
-            PushItemDown(temporaryBin, newPricedItem, feasiblePoint);
-            IList<PricedItem> leftIntersectedPricedItems = PushItemLeft(temporaryBin, newPricedItem, feasiblePoint);
+            PushItemDown(temporaryBin, newItem, feasiblePoint);
+            IList<Item> leftIntersectedItems = PushItemLeft(temporaryBin, newItem, feasiblePoint);
             //conto il numero di intersezioni che ho da sotto, perché potrebbero cambiare (da quelle inzialemnte trovate con
             //la prima invocazione di PushItemDown) dopo aver spinto l'item tutto a sinistra 
-            IList<PricedItem> downIntersectedPricedItems = CheckDownInsersectionNumber(temporaryBin, newPricedItem, feasiblePoint);
+            IList<Item> downIntersectedItems = CheckDownInsersectionNumber(temporaryBin, newItem, feasiblePoint);
 
             //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
             //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
-            if (IsBorderObserved(newPricedItem, temporaryBin.Height, temporaryBin.Width)&& IsOverlappingOk(newPricedItem, temporaryBin)) 
+            if (IsBorderObserved(newItem, temporaryBin.Height, temporaryBin.Width)&& IsOverlappingOk(newItem, temporaryBin)) 
             {
-                ComputeHatchedArea(feasiblePoint, newPricedItem, downIntersectedPricedItems, leftIntersectedPricedItems);
+                ComputeHatchedArea(feasiblePoint, newItem, downIntersectedItems, leftIntersectedItems);
                 //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
                 //", new coord(" + feasiblePoint.PfinalPosition + ", " + feasiblePoint.QfinalPosition + ")");
                 return feasiblePoint.HatchedArea;
@@ -391,28 +391,28 @@ namespace Nesting_4
         /// <param name="leftIntersectedNestedItems"></param>
         /// <returns></returns>
         /// 
-        private void ComputeHatchedArea(Tuple feasiblePoint, PricedItem newPricedItem, IList<PricedItem> downIntersectedNestedItems, IList<PricedItem> leftIntersectedNestedItems)
+        private void ComputeHatchedArea(Tuple feasiblePoint, Item newItem, IList<Item> downIntersectedItems, IList<Item> leftIntersectedItems)
         {
             float totalHatchedArea = 0;
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
             float partialHatchedArea;
 
-            if(downIntersectedNestedItems.Count > 0)
+            if(downIntersectedItems.Count > 0)
             {
                 //definiso la green area sotto il nuovo item
                 AdjacentItem adjacentItem = new AdjacentItem()
                 {
-                    BRpPosition = feasiblePoint.PfinalPosition + newPricedItem.Width,
+                    BRpPosition = feasiblePoint.PfinalPosition + newItem.Width,
                     BRqPosition = 0,
-                    TRpPosition = feasiblePoint.PfinalPosition + newPricedItem.Width,
+                    TRpPosition = feasiblePoint.PfinalPosition + newItem.Width,
                     TRqPosition = feasiblePoint.QfinalPosition,
                     BLpPosition = feasiblePoint.PfinalPosition,
                     BLqPosition = 0,
                     TLpPosition = feasiblePoint.PfinalPosition,
                     TLqPosition = feasiblePoint.QfinalPosition,
-                    Height = newPricedItem.BRqPosition,
-                    Width = newPricedItem.Width,
-                    Area = newPricedItem.BRqPosition * newPricedItem.Width
+                    Height = newItem.BRqPosition,
+                    Width = newItem.Width,
+                    Area = newItem.BRqPosition * newItem.Width
                 };
 
                 //per ogni item già in posizione, che è stato intersecato, 
@@ -421,27 +421,27 @@ namespace Nesting_4
                 float itemsInSolutionArea = 0;
                 float intersectedWidth;
 
-                foreach (var intersectedItem in downIntersectedNestedItems)
+                foreach (var intersectedItem in downIntersectedItems)
                 {
                     //if else per scegliere la width dell'item in soluzione 
                     //di cui devo calcolare l'area 
                     //per fare valore assoluto Math.Abs( ... );
-                    if (newPricedItem.BLpPosition < intersectedItem.BLpPosition && //new item + a sx di interesect item
-                       newPricedItem.BRpPosition < intersectedItem.BRpPosition)
+                    if (newItem.BLpPosition < intersectedItem.BLpPosition && //new item + a sx di interesect item
+                       newItem.BRpPosition < intersectedItem.BRpPosition)
                     {
-                        intersectedWidth = newPricedItem.BRpPosition - intersectedItem.BLpPosition;
+                        intersectedWidth = newItem.BRpPosition - intersectedItem.BLpPosition;
                     }
-                    else if (intersectedItem.BLpPosition < newPricedItem.BLpPosition && //new item è + a  dx di intersected item
-                       intersectedItem.BRpPosition < newPricedItem.BRpPosition)
+                    else if (intersectedItem.BLpPosition < newItem.BLpPosition && //new item è + a  dx di intersected item
+                       intersectedItem.BRpPosition < newItem.BRpPosition)
                     {
-                        intersectedWidth = intersectedItem.BRpPosition - newPricedItem.BLpPosition;
+                        intersectedWidth = intersectedItem.BRpPosition - newItem.BLpPosition;
                     }
-                    else if ((newPricedItem.BLpPosition == intersectedItem.BLpPosition && //new item inizia come insertected item ma termina prima
-                    newPricedItem.BRpPosition < intersectedItem.BRpPosition) ||
-                    (intersectedItem.BLpPosition < newPricedItem.BLpPosition && // new item inizia dopo di insertected item ma terminano uguali
-                    intersectedItem.BRpPosition == newPricedItem.BRpPosition) ||
-                    (intersectedItem.BLpPosition < newPricedItem.BLpPosition &&  //le coordinate p del new item cadono dentro quelle p dell'intersected item
-                    intersectedItem.BRpPosition > newPricedItem.BRpPosition))
+                    else if ((newItem.BLpPosition == intersectedItem.BLpPosition && //new item inizia come insertected item ma termina prima
+                    newItem.BRpPosition < intersectedItem.BRpPosition) ||
+                    (intersectedItem.BLpPosition < newItem.BLpPosition && // new item inizia dopo di insertected item ma terminano uguali
+                    intersectedItem.BRpPosition == newItem.BRpPosition) ||
+                    (intersectedItem.BLpPosition < newItem.BLpPosition &&  //le coordinate p del new item cadono dentro quelle p dell'intersected item
+                    intersectedItem.BRpPosition > newItem.BRpPosition))
                     {
                         intersectedWidth = adjacentItem.Width;
                     }
@@ -457,7 +457,7 @@ namespace Nesting_4
                 totalHatchedArea += partialHatchedArea;
             }
 
-            if (leftIntersectedNestedItems.Count > 0)
+            if (leftIntersectedItems.Count > 0)
             {
                 //definiso la green area a sintra del nuovo item
                 AdjacentItem adjacentItem = new AdjacentItem()
@@ -465,14 +465,14 @@ namespace Nesting_4
                     BRpPosition = feasiblePoint.PfinalPosition,
                     BRqPosition = feasiblePoint.QfinalPosition,
                     TRpPosition = feasiblePoint.PfinalPosition,
-                    TRqPosition = feasiblePoint.QfinalPosition + newPricedItem.Height,
+                    TRqPosition = feasiblePoint.QfinalPosition + newItem.Height,
                     BLpPosition = 0,
                     BLqPosition = feasiblePoint.QfinalPosition,
                     TLpPosition = 0,
-                    TLqPosition = feasiblePoint.QfinalPosition + newPricedItem.Height,
-                    Height = newPricedItem.Height,
-                    Width = newPricedItem.BLpPosition,
-                    Area = newPricedItem.Height * newPricedItem.BLpPosition
+                    TLqPosition = feasiblePoint.QfinalPosition + newItem.Height,
+                    Height = newItem.Height,
+                    Width = newItem.BLpPosition,
+                    Area = newItem.Height * newItem.BLpPosition
                 };
 
                 //per ogni item già in posizione, che è stato intersecato, 
@@ -480,27 +480,27 @@ namespace Nesting_4
                 //infine sommo tale area all'area totale degli item intersecati
                 float itemsInSolutionArea = 0;
                 float intersectedHeight;
-                foreach (var intersectedItem in leftIntersectedNestedItems)
+                foreach (var intersectedItem in leftIntersectedItems)
                 {
                     //if else per scegliere la height dell'item in soluzione 
                     //di cui devo calcolare l'area 
                     //per fare valore assoluto Math.Abs( ... );
-                    if (intersectedItem.BLqPosition < newPricedItem.BLqPosition && //new item + in alto di intersected item
-                       intersectedItem.TLqPosition < newPricedItem.TLqPosition)
+                    if (intersectedItem.BLqPosition < newItem.BLqPosition && //new item + in alto di intersected item
+                       intersectedItem.TLqPosition < newItem.TLqPosition)
                     {
-                        intersectedHeight = intersectedItem.TLqPosition - newPricedItem.BLqPosition;
+                        intersectedHeight = intersectedItem.TLqPosition - newItem.BLqPosition;
                     }
-                    else if (newPricedItem.BLqPosition < intersectedItem.BLqPosition && //new item + in basso di interesect item
-                      newPricedItem.TLqPosition < intersectedItem.TLqPosition)
+                    else if (newItem.BLqPosition < intersectedItem.BLqPosition && //new item + in basso di interesect item
+                      newItem.TLqPosition < intersectedItem.TLqPosition)
                     {
-                        intersectedHeight = newPricedItem.TLqPosition - intersectedItem.BLqPosition;
+                        intersectedHeight = newItem.TLqPosition - intersectedItem.BLqPosition;
                     }
-                    else if ((newPricedItem.BLqPosition == intersectedItem.BLqPosition && //new item inizia come insertected item ma termina prima
-                       newPricedItem.TLqPosition < intersectedItem.TLqPosition) ||
-                       (intersectedItem.BLqPosition < newPricedItem.BLqPosition && // new item inizia dopo di insertected item ma terminano uguali
-                       intersectedItem.TLqPosition == newPricedItem.TLqPosition) ||
-                       (intersectedItem.BLqPosition < newPricedItem.BLqPosition && //le coordinate q del new item cadono dentro quelle dell'intersected item 
-                       intersectedItem.TLqPosition > newPricedItem.TLqPosition))
+                    else if ((newItem.BLqPosition == intersectedItem.BLqPosition && //new item inizia come insertected item ma termina prima
+                       newItem.TLqPosition < intersectedItem.TLqPosition) ||
+                       (intersectedItem.BLqPosition < newItem.BLqPosition && // new item inizia dopo di insertected item ma terminano uguali
+                       intersectedItem.TLqPosition == newItem.TLqPosition) ||
+                       (intersectedItem.BLqPosition < newItem.BLqPosition && //le coordinate q del new item cadono dentro quelle dell'intersected item 
+                       intersectedItem.TLqPosition > newItem.TLqPosition))
                     {
                         intersectedHeight = adjacentItem.Height;
                     }
@@ -530,79 +530,79 @@ namespace Nesting_4
         /// <param name="temporaryItem"></param>
         /// <param name="newNestedItem"></param>
         /// <returns></returns>
-        private IList<PricedItem> PushItemDown( Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
+        private IList<Item> PushItemDown( Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
-            IList<PricedItem> intersectedPricedItems = new List<PricedItem>();
+            IList<Item> intersectedItems = new List<Item>();
 
-            foreach (var pricedItem in temporaryBin.PricedItems)
+            foreach (var nestedItem in temporaryBin.NestedItems)
             {
                 //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
-                if (((newPricedItem.BLpPosition >= pricedItem.BLpPosition && newPricedItem.BLpPosition < pricedItem.BRpPosition) ||
-                   (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition) ||
-                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
-                   (newPricedItem.BLpPosition > pricedItem.TLpPosition && newPricedItem.BRpPosition < pricedItem.TRpPosition) //le p di NI cadono dentro le p di OI
+                if (((newItem.BLpPosition >= nestedItem.BLpPosition && newItem.BLpPosition < nestedItem.BRpPosition) ||
+                   (newItem.BRpPosition > nestedItem.BLpPosition && newItem.BRpPosition <= nestedItem.BRpPosition) ||
+                   (newItem.BLpPosition <= nestedItem.TLpPosition && newItem.BRpPosition >= nestedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
+                   (newItem.BLpPosition > nestedItem.TLpPosition && newItem.BRpPosition < nestedItem.TRpPosition) //le p di NI cadono dentro le p di OI
                    ) &&
-                    newPricedItem.BLqPosition >= pricedItem.TLqPosition)
+                    newItem.BLqPosition >= nestedItem.TLqPosition)
                 {
-                    intersectedPricedItems.Add(pricedItem);
+                    intersectedItems.Add(nestedItem);
                 }
             }
 
             //3 possibili risultati
-            if (intersectedPricedItems.Count == 0) //non ho intersezioni
+            if (intersectedItems.Count == 0) //non ho intersezioni
             {
-                newPricedItem.BLqPosition = 0;
-                newPricedItem.TLqPosition = newPricedItem.Height;
-                newPricedItem.BRqPosition = 0;
-                newPricedItem.TRqPosition = newPricedItem.Height;
+                newItem.BLqPosition = 0;
+                newItem.TLqPosition = newItem.Height;
+                newItem.BRqPosition = 0;
+                newItem.TRqPosition = newItem.Height;
             }
             else
             {
-                if (intersectedPricedItems.Count == 1) //1 sola intersezione
+                if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    float delta = feasiblePoint.Qposition - intersectedPricedItems.ElementAt(0).Height;
-                    newPricedItem.BLqPosition -= delta;
-                    newPricedItem.TLqPosition -= delta;
-                    newPricedItem.BRqPosition -= delta;
-                    newPricedItem.TRqPosition -= delta;
+                    float delta = feasiblePoint.Qposition - intersectedItems.ElementAt(0).Height;
+                    newItem.BLqPosition -= delta;
+                    newItem.TLqPosition -= delta;
+                    newItem.BRqPosition -= delta;
+                    newItem.TRqPosition -= delta;
                 }
-                else if (intersectedPricedItems.Count > 1) //N intersezioni
+                else if (intersectedItems.Count > 1) //N intersezioni
                 {
-                    float heightSum = intersectedPricedItems.OrderBy(x => x.TLqPosition).Last().TLqPosition;
+                    float heightSum = intersectedItems.OrderBy(x => x.TLqPosition).Last().TLqPosition;
                     float delta = feasiblePoint.Qposition - heightSum;
-                    newPricedItem.BLqPosition -= delta;
-                    newPricedItem.TLqPosition -= delta;
-                    newPricedItem.BRqPosition -= delta;
-                    newPricedItem.TRqPosition -= delta;
+                    newItem.BLqPosition -= delta;
+                    newItem.TLqPosition -= delta;
+                    newItem.BRqPosition -= delta;
+                    newItem.TRqPosition -= delta;
                 }
             }
 
-            feasiblePoint.QfinalPosition = newPricedItem.BLqPosition;
-            return intersectedPricedItems;
+            feasiblePoint.QfinalPosition = newItem.BLqPosition;
+            return intersectedItems;
 
         }
 
-        private IList<PricedItem> CheckDownInsersectionNumber(Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
+        private IList<Item> CheckDownInsersectionNumber(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
-            IList<PricedItem> intersectedPricedItems = new List<PricedItem>();
+            IList<Item> intersectedItems = new List<Item>();
 
-            foreach (var pricedItem in temporaryBin.PricedItems)
+            foreach (var nestedItem in temporaryBin.NestedItems)
             {
                 //cerco intersezioni verticali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
-                if (((newPricedItem.BLpPosition >= pricedItem.BLpPosition && newPricedItem.BLpPosition < pricedItem.BRpPosition) ||
-                   (newPricedItem.BRpPosition > pricedItem.BLpPosition && newPricedItem.BRpPosition <= pricedItem.BRpPosition) ||
-                   (newPricedItem.BLpPosition <= pricedItem.TLpPosition && newPricedItem.BRpPosition >= pricedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
-                   (newPricedItem.BLpPosition > pricedItem.TLpPosition && newPricedItem.BRpPosition < pricedItem.TRpPosition) //le p di NI cadono dentro le p di OI
+                if (((newItem.BLpPosition >= nestedItem.BLpPosition && newItem.BLpPosition < nestedItem.BRpPosition) ||
+                   (newItem.BRpPosition > nestedItem.BLpPosition && newItem.BRpPosition <= nestedItem.BRpPosition) ||
+                   (newItem.BLpPosition <= nestedItem.TLpPosition && newItem.BRpPosition >= nestedItem.TRpPosition) || //le p di OI cadono dentro le p di NI o le p di OI sono uguali alle p di NI
+                   (newItem.BLpPosition > nestedItem.TLpPosition && newItem.BRpPosition < nestedItem.TRpPosition) //le p di NI cadono dentro le p di OI
                    ) &&
-                    newPricedItem.BLqPosition >= pricedItem.TLqPosition)
+                    newItem.BLqPosition >= nestedItem.TLqPosition)
                 {
-                    intersectedPricedItems.Add(pricedItem);
+                    intersectedItems.Add(nestedItem);
                 }
             }
 
-            return intersectedPricedItems;
+            return intersectedItems;
         }
 
         /// <summary>
@@ -614,56 +614,56 @@ namespace Nesting_4
         /// <param name="temporaryItem"></param>
         /// <param name="newNestedItem"></param>
         /// <returns></returns>
-        private IList<PricedItem> PushItemLeft(Bin<Tuple> temporaryBin, PricedItem newPricedItem, Tuple feasiblePoint)
+        private IList<Item> PushItemLeft(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
-            IList<PricedItem> intersectedPricedItems = new List<PricedItem>();
+            IList<Item> intersectedItems = new List<Item>();
 
-            foreach (var pricedItem in temporaryBin.PricedItems)
+            foreach (var nestedItem in temporaryBin.NestedItems)
             {
                 //cerco interesezioni orizzontali tra nuovo item e item già in soluzione (HO TOLTO UGUALE DESTRA -> CHECK)
-                if (((newPricedItem.BLqPosition >= pricedItem.BLqPosition && newPricedItem.BLqPosition < pricedItem.TLqPosition) ||
-                    (newPricedItem.TLqPosition > pricedItem.BLqPosition && newPricedItem.TLqPosition <= pricedItem.TLqPosition) ||
-                    (newPricedItem.BLqPosition <= pricedItem.BRqPosition && newPricedItem.TLqPosition >= pricedItem.TRqPosition) || //le coord q di OI cadono entrambe dentro a NI o sono uguali
-                    (newPricedItem.BLqPosition > pricedItem.BRqPosition && newPricedItem.TLqPosition < pricedItem.TRqPosition) //le coord q di NI cadono entrambe dentro OI
+                if (((newItem.BLqPosition >= nestedItem.BLqPosition && newItem.BLqPosition < nestedItem.TLqPosition) ||
+                    (newItem.TLqPosition > nestedItem.BLqPosition && newItem.TLqPosition <= nestedItem.TLqPosition) ||
+                    (newItem.BLqPosition <= nestedItem.BRqPosition && newItem.TLqPosition >= nestedItem.TRqPosition) || //le coord q di OI cadono entrambe dentro a NI o sono uguali
+                    (newItem.BLqPosition > nestedItem.BRqPosition && newItem.TLqPosition < nestedItem.TRqPosition) //le coord q di NI cadono entrambe dentro OI
                     ) &&
-                    newPricedItem.BLpPosition >= pricedItem.BRpPosition)
+                    newItem.BLpPosition >= nestedItem.BRpPosition)
                 {
-                    intersectedPricedItems.Add(pricedItem);
+                    intersectedItems.Add(nestedItem);
                 }
             }
 
             //3 possibili risultati
-            if (intersectedPricedItems.Count == 0) //non ho intersezioni
+            if (intersectedItems.Count == 0) //non ho intersezioni
             {
-                newPricedItem.BLpPosition = 0;
-                newPricedItem.TLpPosition = 0;
-                newPricedItem.BRpPosition = newPricedItem.Width;
-                newPricedItem.TRpPosition = newPricedItem.Width;
+                newItem.BLpPosition = 0;
+                newItem.TLpPosition = 0;
+                newItem.BRpPosition = newItem.Width;
+                newItem.TRpPosition = newItem.Width;
             }
             else
             {
-                if (intersectedPricedItems.Count == 1) //1 sola intersezione
+                if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    float delta = feasiblePoint.Pposition - intersectedPricedItems.ElementAt(0).Width;
-                    newPricedItem.BLpPosition -= delta;
-                    newPricedItem.TLpPosition -= delta;
-                    newPricedItem.BRpPosition -= delta;
-                    newPricedItem.TRpPosition -= delta;
+                    float delta = feasiblePoint.Pposition - intersectedItems.ElementAt(0).Width;
+                    newItem.BLpPosition -= delta;
+                    newItem.TLpPosition -= delta;
+                    newItem.BRpPosition -= delta;
+                    newItem.TRpPosition -= delta;
                 }
-                else if (intersectedPricedItems.Count > 1) //N intersezioni
+                else if (intersectedItems.Count > 1) //N intersezioni
                 {
-                    float widthSum = intersectedPricedItems.OrderBy(x => x.BRpPosition).Last().BRpPosition;
+                    float widthSum = intersectedItems.OrderBy(x => x.BRpPosition).Last().BRpPosition;
                     float delta = feasiblePoint.Pposition - widthSum;
-                    newPricedItem.BLpPosition -= delta;
-                    newPricedItem.TLpPosition -= delta;
-                    newPricedItem.BRpPosition -= delta;
-                    newPricedItem.TRpPosition -= delta;
+                    newItem.BLpPosition -= delta;
+                    newItem.TLpPosition -= delta;
+                    newItem.BRpPosition -= delta;
+                    newItem.TRpPosition -= delta;
                 }
             }
 
-            feasiblePoint.PfinalPosition = newPricedItem.BLpPosition;
-            return intersectedPricedItems;
+            feasiblePoint.PfinalPosition = newItem.BLpPosition;
+            return intersectedItems;
 
         }
 
@@ -675,25 +675,25 @@ namespace Nesting_4
         /// <param name="temporaryBinHeight"></param>
         /// <param name="temporaryBinWidth"></param>
         /// <returns></returns>
-        bool IsBorderObserved(PricedItem newPricedItem, float temporaryBinHeight, float temporaryBinWidth)
+        bool IsBorderObserved(Item newItem, float temporaryBinHeight, float temporaryBinWidth)
         {
-            return newPricedItem.TLqPosition <= temporaryBinHeight && newPricedItem.BRpPosition <= temporaryBinWidth;
+            return newItem.TLqPosition <= temporaryBinHeight && newItem.BRpPosition <= temporaryBinWidth;
         }
         
         /// <summary>
         /// metodo per controllare se nestare un nuovo item in un certo punto
         /// comporta delle sovrapposizioni tra nuovo item e item già in soluzione
         /// </summary>
-        /// <param name="newPricedItem"></param>
+        /// <param name="newItem"></param>
         /// <param name="temporaryBin"></param>
         /// <returns></returns>
-        bool IsOverlappingOk(PricedItem newPricedItem, Bin<Tuple> temporaryBin)
+        bool IsOverlappingOk(Item newItem, Bin<Tuple> temporaryBin)
         {
-            foreach (var pricedItem in temporaryBin.PricedItems)
+            foreach (var nestedItem in temporaryBin.NestedItems)
             {
                 //se c'è overlap
-                if (pricedItem.BLpPosition < newPricedItem.BRpPosition && pricedItem.BRpPosition > newPricedItem.BLpPosition
-                    && pricedItem.BLqPosition < newPricedItem.TLqPosition && pricedItem.TLqPosition > newPricedItem.BLqPosition) {                    
+                if (nestedItem.BLpPosition < newItem.BRpPosition && nestedItem.BRpPosition > newItem.BLpPosition
+                    && nestedItem.BLqPosition < newItem.TLqPosition && nestedItem.TLqPosition > newItem.BLqPosition) {                    
                     return false;
                 }
             }

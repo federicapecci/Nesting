@@ -42,18 +42,18 @@ namespace Nesting_4
             //================ STEP 1 - INITIALIZATION ================
 
             //inizializzo il prezzo v associato ad ogni item j
-            IList<PricedItem> pricedItems = new List<PricedItem>();
+            IList<Item> items = new List<Item>();
             int counter = 0;
 
             foreach (var dimension in Configuration.Dimensions) { 
-                var pricedItem = new PricedItem()
+                var item = new Item()
                 {
                     Height = dimension.Height,
                     Width = dimension.Width,
                     Id = counter,
                     Price = dimension.Height * dimension.Width,
                 };
-                pricedItems.Add(pricedItem);
+                items.Add(item);
                 counter += 1;
             }
 
@@ -62,28 +62,28 @@ namespace Nesting_4
 
             //inserisco ogni item prezzato e i nuovi punti disponibili 
             //in un bin diverso
-            foreach(var pricedItem in pricedItems)
+            foreach(var item in items)
             {
                 var bin = new Bin<Tuple>()
                 {
                     Id = counter,
                     Height = Configuration.BinHeight,
                     Width = Configuration.BinWidth,
-                    PricedItems = new List<PricedItem>()
+                    NestedItems = new List<Item>()
                     {
-                        pricedItems.ElementAt(counter)
+                        items.ElementAt(counter)
                     },
                     Points = new List<Tuple>()
                     {
                         new Tuple()
                         {
                             Pposition = 0,
-                            Qposition = pricedItem.Height,
+                            Qposition = item.Height,
                             IsUsed = false
                         },
                         new Tuple()
                         {
-                            Pposition = pricedItem.Width,
+                            Pposition = item.Width,
                             Qposition = 0,
                             IsUsed = false
                         }
@@ -103,7 +103,7 @@ namespace Nesting_4
             int iter = 0;
 
             //calcolo il lower bound ed il relativo intervallo
-            float lowerBound = utilities.ComputeLowerBound(pricedItems, Configuration.BinWidth, Configuration.BinHeight);
+            float lowerBound = utilities.ComputeLowerBound(items, Configuration.BinWidth, Configuration.BinHeight);
             float lowerBoundMin = lowerBound - Configuration.LowerBoundDelta;
             float lowerBoundMax = lowerBound + Configuration.LowerBoundDelta;
             int maxIter = Configuration.MaxIter;
@@ -117,24 +117,24 @@ namespace Nesting_4
             };*/
 
             //creo una lista temporanea J' di item 
-            IList<PricedItem> temporaryPricedItems = new List<PricedItem>();
+            IList<Item> temporaryItems = new List<Item>();
 
             //assegno la lista di item J a J'
-            temporaryPricedItems = pricedItems;
+            temporaryItems = items;
 
             //setto il bin che considero al momento
             int i = 0;
 
             //creo tanti bin temporanei quanti sono gli item
             IList<Bin<Tuple>> temporaryBins = new List<Bin<Tuple>>();
-            foreach (var pricedItem in pricedItems)
+            foreach (var item in items)
             {
                 var temporaryBin = new Bin<Tuple>()
                 {
                     Id = counter,
                     Height = Configuration.BinHeight,
                     Width = Configuration.BinWidth,
-                    PricedItems = null,
+                    NestedItems = null,
                     Points = new List<Tuple>()
                     {
                         new Tuple()
@@ -152,12 +152,12 @@ namespace Nesting_4
             //1) ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
             //dato che i price sono stati aggiornati;
             //2) riattribuisco gli id agli item, così l'item col prezzo maggiore è quello che ha l'id 0 e così via
-            var sortedTemporaryPricedItems = new List<PricedItem>();
+            var sortedTemporaryItems = new List<Item>();
             counter = 0;
-            foreach(var temporaryPricedItem in temporaryPricedItems.OrderByDescending(x => x.Price))
+            foreach(var temporaryItem in temporaryItems.OrderByDescending(x => x.Price))
             {
-                sortedTemporaryPricedItems.Add(temporaryPricedItem);
-                temporaryPricedItem.Id = counter;
+                sortedTemporaryItems.Add(temporaryItem);
+                temporaryItem.Id = counter;
                 counter += 1;
             }
 
@@ -165,11 +165,11 @@ namespace Nesting_4
            
         //================ STEP 3 - FILLING UP BIN i ================
         l1://cerco la posizione migliore per ogni item j'
-            foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
+            foreach (var sortedTemporaryItem in sortedTemporaryItems)
             {                
-                if (!sortedTemporaryPricedItem.IsRemoved)
+                if (!sortedTemporaryItem.IsRemoved)
                 {
-                    utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryPricedItem);
+                    utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     /*var tempItem = temporaryBins[i];
                     Bin<Tuple> b;
@@ -205,24 +205,24 @@ namespace Nesting_4
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
-            bool isSortedTemporaryPricedItemsEmpty = true;
+            bool isSortedTemporaryItemsEmpty = true;
 
             //controllo se tutta la lista è stata svuotata
-            foreach (var sortedTemporaryPricedItem in sortedTemporaryPricedItems)
+            foreach (var sortedTemporaryItem in sortedTemporaryItems)
             {
-                if (sortedTemporaryPricedItem.IsRemoved == false)
+                if (sortedTemporaryItem.IsRemoved == false)
                 {
-                    isSortedTemporaryPricedItemsEmpty = false;
+                    isSortedTemporaryItemsEmpty = false;
                     break;
                 }
             }
 
-            if (isSortedTemporaryPricedItemsEmpty)
+            if (isSortedTemporaryItemsEmpty)
             {
                 //Sequences.Add(sequence);
                 goto l0;
             }
-            if (!isSortedTemporaryPricedItemsEmpty && (i < (zStar)))
+            if (!isSortedTemporaryItemsEmpty && (i < (zStar)))
             {
                 i += 1;
                 goto l1;
@@ -255,12 +255,12 @@ namespace Nesting_4
             }
             else
             {               
-                utilities.UpdatePrice(z, pricedItems, bins);
+                utilities.UpdatePrice(z, items, bins);
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
-                foreach (var pricedItem in pricedItems)
+                foreach (var item in items)
                 {
-                    pricedItem.IsRemoved = false;
+                    item.IsRemoved = false;
                 }
                 goto l3;
 

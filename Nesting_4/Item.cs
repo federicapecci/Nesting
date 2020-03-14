@@ -9,7 +9,7 @@ namespace Nesting_4
     /// iterazioni  dell'algoritmo hsolve
     /// </summary>
 
-    public class PricedItem : BasicItem
+    public class Item : Base
     {
         /// <summary>
         /// identificativo dell'item nelle iterazioni

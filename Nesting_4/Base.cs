@@ -4,49 +4,45 @@ using System.Text;
 
 namespace Nesting_4
 {
-    /// <summary>
-    /// classe che rappresenta un item nel 
-    /// contesto di un piano cartesiano
-    /// </summary>
-    public class BasicItem : Dimension
+    public class Base: Dimension
     {
         /// <summary>
-        /// coordinata p in basso a sinitra dell'item
+        /// coordinata P in basso a sinitra della green area
         /// </summary>
         public float BLpPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata q in basso a sinistra dell'item
+        /// coordinata Q in basso a sinistra della green area
         /// </summary>
         public float BLqPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata p in alto a sinistra dell'item
+        /// coordinata P in alto a sinistra della green area
         /// </summary>
         public float TLpPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata q in alto a sinistra dell'item
+        /// coordinata Q in alto a sinistra della green area
         /// </summary>
         public float TLqPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata p in basso a destra dell'item
+        /// coordinata in basso a destra della green area
         /// </summary>
         public float BRpPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata q in basso a destra dell'item
+        /// coordinata in basso a destra della green area
         /// </summary>
         public float BRqPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata p in alto a destra dell'item
+        /// coordinata in basso a destra della green area
         /// </summary>
         public float TRpPosition { get; set; } = 0;
 
         /// <summary>
-        /// coordinata q in altto a destra dell'item
+        /// coordinata in basso a destra della green area
         /// </summary>
         public float TRqPosition { get; set; } = 0;
 

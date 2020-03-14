@@ -8,11 +8,11 @@ namespace Nesting_4
 {
     interface IUtilities
     {
-        float ComputeLowerBound(IList<PricedItem> pricedItems, int binWidth, int binHeight);
+        float ComputeLowerBound(IList<Item> pricedItems, int binWidth, int binHeight);
 
-        Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, PricedItem temporaryPricedItem);
+        Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryPricedItem);
 
-        void UpdatePrice(float z, IList<PricedItem> items, IList<Bin<Tuple>> bins);
+        void UpdatePrice(float z, IList<Item> items, IList<Bin<Tuple>> bins);
 
     }
 }

@@ -43,14 +43,14 @@ namespace Nesting_4
                 dxf.AddEntity(title);
                 foreach (var bin in sequence.Bins)
                 {
-                    if (bin.PricedItems != null)
+                    if (bin.NestedItems != null)
                     {
                         //un wipeout rettangolare che contiene tutte le altre forme 
 
                         
                         Wipeout wipeout = new Wipeout(0 + offsetX, 0, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
-                        foreach (var pricedItem in bin.PricedItems)
+                        foreach (var pricedItem in bin.NestedItems)
                         {
                             //un wipeout rettangolare che rappresenta una forma
                             wipeout = new Wipeout(pricedItem.BLpPosition+offsetX, pricedItem.BLqPosition, pricedItem.Width, pricedItem.Height);

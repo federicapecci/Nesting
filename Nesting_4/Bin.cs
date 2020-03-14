@@ -32,7 +32,7 @@ namespace Nesting_4
         /// <summary>
         /// lista di item nestati all'interno del bin
         /// </summary>
-        public IList<PricedItem> PricedItems { get; set; } = null;
+        public IList<Item> NestedItems { get; set; } = null;
 
         /// <summary>
         /// lista di punti contenuti nel bin 
