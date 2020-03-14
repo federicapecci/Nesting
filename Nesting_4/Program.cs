@@ -17,13 +17,13 @@ namespace Nesting_4
             //leggo da file json come impostare i parametri dell'algortimo hsolve e li salvo nell'oggetto configuration
             Configuration configuration = jsonConfigurationIO.ReadAllData("1_configuration");
 
-            //lancio l'euristica passando i parametri della configurazione
-            IHSolve hsolve = new HSolve(configuration);
-            IList<Sequence> sequences = hsolve.ComputeHeuristic();
+            //lancio l'algoritmo passando i parametri della configurazione
+            HBP hbp = new HBP(configuration);
+            hbp.ComputeAlgorithm();
 
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
-            dxfDrawer.WriteAllData(sequences, "1_output_refactoring");
+            dxfDrawer.WriteAllData(hbp.Sequences, "1_output_refactoring");
 
         }
     }

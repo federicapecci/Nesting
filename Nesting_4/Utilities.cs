@@ -38,7 +38,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem)
+        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem, string itemAllocationMethod)
         {
             //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
             //setto comunque l'item come removed, altrimenti la lista di item non sarà mai empty e hsolve non va avanti
@@ -150,7 +150,7 @@ namespace Nesting_4
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
-                    Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints);
+                    Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints, itemAllocationMethod);
 
                     var pricedItem = new Item()
                     {
@@ -283,52 +283,6 @@ namespace Nesting_4
 
             //setto item a nestato
             sortedTemporaryItem.IsRemoved = true;
-        }
-
-        /// <summary>
-        /// questo metodo aggiorna il prezzo di ogni item 
-        /// </summary>
-        /// <param name="z"></param>
-        /// <param name="items"></param>
-        /// <param name="temporaryBin"></param>
-        public void UpdatePrice(float z, IList<Item> items, IList<Bin<Tuple>> bins)
-        {
-            float alpha = 0.9F;
-            float beta = 1.1F;
-            bool isItemFound = false;
-
-            //dato un certo item
-            foreach (var item in items)
-            {
-                foreach (var bin in bins) //scorro tutti i bins
-                {
-                    if (bin.NestedItems != null)
-                    {
-                        foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
-                        {
-                            if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
-                            {
-                                //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
-                                if (bin.Id <= (0.5 * z))
-                                {
-                                    item.Price = alpha * item.Price;
-                                }
-                                else if (bin.Id > (0.5 * z))
-                                {
-                                    item.Price = beta * item.Price;
-                                }
-                                isItemFound = true;
-                                break;
-                            }
-                        }
-                        if (isItemFound)
-                        {
-                            isItemFound = false;
-                            break;
-                        }
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -710,39 +664,79 @@ namespace Nesting_4
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
-        private Tuple ApplyRule(IList<Tuple> minHatchedAreaTuples)
+        private Tuple ApplyRule(IList<Tuple> minHatchedAreaTuples, string itemAllocationMethod)
         {
             Tuple result = null;
-            IList<Tuple> pMinTuples = new List<Tuple>();
 
-            float minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
-
-            foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
+            if (itemAllocationMethod == "AC1")
             {
-                if (minHatchedAreaTuple.PfinalPosition == minFinalP)
+                IList<Tuple> pMinTuples = new List<Tuple>();
+                float minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
+
+                foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
                 {
-                    pMinTuples.Add(minHatchedAreaTuple);
+                    if (minHatchedAreaTuple.PfinalPosition == minFinalP)
+                    {
+                        pMinTuples.Add(minHatchedAreaTuple);
+                    }
+                }
+
+                if (pMinTuples.Count == 1)
+                {
+                    result = pMinTuples.ElementAt(0);
+                }
+                else
+                {
+                    IList<Tuple> qMinTuples = new List<Tuple>();
+                    float minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
+                    foreach (var qMinTuple in pMinTuples)
+                    {
+                        if (qMinTuple.QfinalPosition == minFinalQ)
+                        {
+                            qMinTuples.Add(qMinTuple);
+                        }
+                    }
+                    result = qMinTuples.ElementAt(0);
                 }
             }
-
-            if (pMinTuples.Count == 1)
+            else if (itemAllocationMethod == "AC2")
             {
-                result = pMinTuples.ElementAt(0);
+
+                IList<Tuple> qMinTuples = new List<Tuple>();
+                float minFinalQ = minHatchedAreaTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
+
+                foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
+                {
+                    if (minHatchedAreaTuple.QfinalPosition == minFinalQ)
+                    {
+                        qMinTuples.Add(minHatchedAreaTuple);
+                    }
+                }
+
+                if (qMinTuples.Count == 1)
+                {
+                    result = qMinTuples.ElementAt(0);
+                }
+                else
+                {
+                    IList<Tuple> pMinTuples = new List<Tuple>();
+                    float minFinalP = qMinTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
+                    foreach (var pMinTuple in qMinTuples)
+                    {
+                        if (pMinTuple.QfinalPosition == minFinalQ)
+                        {
+                            qMinTuples.Add(pMinTuple);
+                        }
+                    }
+                    result = pMinTuples.ElementAt(0);
+                }
             }
             else
             {
-                IList<Tuple> qMinTuples = new List<Tuple>();
-                float minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
-                foreach (var qMinTuple in pMinTuples)
-                {
-                    if (qMinTuple.QfinalPosition == minFinalQ)
-                    {
-                        qMinTuples.Add(qMinTuple);
-                    }
-                }
-                result = qMinTuples.ElementAt(0);
+                Console.WriteLine("L'item allocation method non è stato settato");
             }
             return result;
+
         }
     }
 }

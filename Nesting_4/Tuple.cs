@@ -10,7 +10,7 @@ namespace Nesting_4
     /// classe che rappresenta i punti in cui è 
     /// possibile nestare un nuovo item 
     /// </summary>
-    class Tuple 
+    public class Tuple 
     {
         /// <summary>
         /// campo che rappresenta la coordinata p iniziale

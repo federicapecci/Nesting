@@ -10,48 +10,37 @@ namespace Nesting_4
     /// </summary>
     class HSolve : IHSolve
     {
-        /// <summary>
-        /// la configurazione contenwnte i parametri con 
-        /// cui lanciare l'algortimo hsolve
-        /// </summary>
-        public Configuration Configuration { get; set; } = null;
+        public IUtilities Utilities { get; set; } = null;
 
-        /// <summary>
-        /// ogni container appartente a containers contiene
-        /// gli n bin di una certa iterazione
-        /// </summary>
-        public IList<Sequence> Sequences { get; set; } = null;
+        public IPricingUtilities PricingUtilities { get; set; } = null;
 
-        /// <summary>
-        /// costruttore in cui setto la configuration di hsolve
-        /// </summary>
-        /// <param name="configuration"></param>
-        public HSolve(Configuration configuration)
+        public HSolve()
         {
-            Configuration = configuration;
-            Sequences = new List<Sequence>();
+            Utilities = new Utilities();
+            PricingUtilities = new PricingUtilities();
         }
-
+       
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public IList<Sequence> ComputeHeuristic()
+        public IList<Sequence> ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
+                            string pricingRule, string priceUpdatingRule)
         {
-            IUtilities utilities = new Utilities();
 
+            IList<Sequence> sequences = new List<Sequence>();
             //================ STEP 1 - INITIALIZATION ================
 
             //inizializzo il prezzo v associato ad ogni item j
             IList<Item> items = new List<Item>();
             int counter = 0;
 
-            foreach (var dimension in Configuration.Dimensions) { 
+            foreach (var dimension in configuration.Dimensions) {
                 var item = new Item()
                 {
                     Height = dimension.Height,
                     Width = dimension.Width,
                     Id = counter,
-                    Price = dimension.Height * dimension.Width,
+                    Price = PricingUtilities.ComputePricingRule(pricingRule, dimension.Height, dimension.Width) //dimension.Height * dimension.Width,
                 };
                 items.Add(item);
                 counter += 1;
@@ -67,8 +56,8 @@ namespace Nesting_4
                 var bin = new Bin<Tuple>()
                 {
                     Id = counter,
-                    Height = Configuration.BinHeight,
-                    Width = Configuration.BinWidth,
+                    Height = configuration.BinHeight,
+                    Width = configuration.BinWidth,
                     NestedItems = new List<Item>()
                     {
                         items.ElementAt(counter)
@@ -98,15 +87,15 @@ namespace Nesting_4
             counter = 0;
             //inizializzo il costo della soluzione con il numero degli elementi
             int zStar = itemNumber;
-
+            
             //inizializzo il numero di iterazioni
             int iter = 0;
 
             //calcolo il lower bound ed il relativo intervallo
-            float lowerBound = utilities.ComputeLowerBound(items, Configuration.BinWidth, Configuration.BinHeight);
-            float lowerBoundMin = lowerBound - Configuration.LowerBoundDelta;
-            float lowerBoundMax = lowerBound + Configuration.LowerBoundDelta;
-            int maxIter = Configuration.MaxIter;
+            float lowerBound = Utilities.ComputeLowerBound(items, configuration.BinWidth, configuration.BinHeight);
+            float lowerBoundMin = lowerBound - configuration.LowerBoundDelta;
+            float lowerBoundMax = lowerBound + configuration.LowerBoundDelta;
+            int maxIter = configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
@@ -132,8 +121,8 @@ namespace Nesting_4
                 var temporaryBin = new Bin<Tuple>()
                 {
                     Id = counter,
-                    Height = Configuration.BinHeight,
-                    Width = Configuration.BinWidth,
+                    Height = configuration.BinHeight,
+                    Width = configuration.BinWidth,
                     NestedItems = null,
                     Points = new List<Tuple>()
                     {
@@ -169,7 +158,7 @@ namespace Nesting_4
             {                
                 if (!sortedTemporaryItem.IsRemoved)
                 {
-                    utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem);
+                    Utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem, itemAllocationMethod);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     /*var tempItem = temporaryBins[i];
                     Bin<Tuple> b;
@@ -239,7 +228,7 @@ namespace Nesting_4
                 Bins = new List<Bin<Tuple>>()
             };
             sequence1.Bins = bins;
-            Sequences.Add(sequence1);
+            sequences.Add(sequence1);
         //================ STEP 6 - CHECK OPTIMALITY ================
         //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
             if (zStar > lowerBoundMin && zStar < lowerBoundMax)
@@ -254,8 +243,8 @@ namespace Nesting_4
                 goto end;
             }
             else
-            {               
-                utilities.UpdatePrice(z, items, bins);
+            {
+                PricingUtilities.ComputePricingUpdateRule(z, items, bins, priceUpdatingRule);
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
                 foreach (var item in items)
@@ -272,16 +261,16 @@ namespace Nesting_4
                 Bins = new List<Bin<Tuple>>()
             };
             sequence2.Bins = bins;
-            Sequences.Add(sequence2);
+            sequences.Add(sequence2);
 
-            Sequence firstSequence = Sequences.FirstOrDefault();
-            Sequence lastSequence = Sequences.LastOrDefault();
+            Sequence firstSequence = sequences.FirstOrDefault();
+            Sequence lastSequence = sequences.LastOrDefault();
 
-            Sequences.Clear();
-            Sequences.Add(firstSequence);
-            Sequences.Add(lastSequence);
+            sequences.Clear();
+            sequences.Add(firstSequence);
+            sequences.Add(lastSequence);
 
-            return Sequences;
+            return sequences;
         }
     }
 }
