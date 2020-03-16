@@ -25,6 +25,7 @@ namespace Nesting_4
             IDrawer dxfDrawer = new DxfDrawer();
             dxfDrawer.WriteAllData(hbp.Sequences, "1_output_refactoring");
 
+            Console.WriteLine("ciao");
         }
     }
 }

@@ -30,13 +30,12 @@ namespace Nesting_4
             DxfDocument dxf = new DxfDocument();
             TextStyle style = new TextStyle("MyStyle", "Helvetica", FontStyle.Italic | FontStyle.Bold);
             int offsetX = 0;
-            int sequenceIndex = 1;
             foreach (var sequence in sequences)
             {
 
-                MText title = new MText("ITERAZIONE N° " + sequenceIndex)
+                MText title = new MText("ITERAZIONE N° " + sequence.IteratioNumber)
                 {
-                    Position = new Vector3(0+offsetX, 1800, 0.0),
+                    Position = new Vector3(0 + offsetX, 1800, 0.0),
                     Height = 70,
                     Style = style
                 };
@@ -45,15 +44,13 @@ namespace Nesting_4
                 {
                     if (bin.NestedItems != null)
                     {
-                        //un wipeout rettangolare che contiene tutte le altre forme 
-
-                        
+                        //un wipeout rettangolare che contiene tutte le altre forme                         
                         Wipeout wipeout = new Wipeout(0 + offsetX, 0, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
                         foreach (var pricedItem in bin.NestedItems)
                         {
                             //un wipeout rettangolare che rappresenta una forma
-                            wipeout = new Wipeout(pricedItem.BLpPosition+offsetX, pricedItem.BLqPosition, pricedItem.Width, pricedItem.Height);
+                            wipeout = new Wipeout(pricedItem.BLpPosition + offsetX, pricedItem.BLqPosition, pricedItem.Width, pricedItem.Height);
 
                             //un id progressivo per il wipeout rettangolare
                             MText text = new MText(pricedItem.Id.ToString())
@@ -70,7 +67,6 @@ namespace Nesting_4
                     
                 }
                 offsetX += 3000;
-                sequenceIndex += 99;
             }
             dxf.Save(file);
         }

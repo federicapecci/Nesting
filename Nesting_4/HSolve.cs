@@ -40,7 +40,7 @@ namespace Nesting_4
                     Height = dimension.Height,
                     Width = dimension.Width,
                     Id = counter,
-                    Price = PricingUtilities.ComputePricingRule(pricingRule, dimension.Height, dimension.Width) //dimension.Height * dimension.Width,
+                    Price = PricingUtilities.ComputePricingRule(pricingRule, dimension.Height, dimension.Width)
                 };
                 items.Add(item);
                 counter += 1;
@@ -208,7 +208,6 @@ namespace Nesting_4
 
             if (isSortedTemporaryItemsEmpty)
             {
-                //Sequences.Add(sequence);
                 goto l0;
             }
             if (!isSortedTemporaryItemsEmpty && (i < (zStar)))
@@ -223,14 +222,24 @@ namespace Nesting_4
         l0: zStar = z;
             bins = temporaryBins;
 
+            //aggiungo la sequenza di un certa iterazione
             Sequence sequence1 = new Sequence()
             {
-                Bins = new List<Bin<Tuple>>()
+                Bins = new List<Bin<Tuple>>(),
+                IteratioNumber = iter,
+                Criterias = new List<string>
+                {
+                    itemAllocationMethod,
+                    pricingRule,
+                    priceUpdatingRule
+                }
             };
             sequence1.Bins = bins;
             sequences.Add(sequence1);
-        //================ STEP 6 - CHECK OPTIMALITY ================
-        //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
+            //============================================
+
+            //================ STEP 6 - CHECK OPTIMALITY ================
+            //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
             if (zStar > lowerBoundMin && zStar < lowerBoundMax)
             {
                 goto end;
@@ -256,12 +265,21 @@ namespace Nesting_4
             }
 
         end:
-                Sequence sequence2 = new Sequence()
-            {
-                Bins = new List<Bin<Tuple>>()
-            };
+            //aggiungo la sequenza dell'ultima iterazione
+            Sequence sequence2 = new Sequence()
+             {
+                 Bins = new List<Bin<Tuple>>(),
+                 IteratioNumber = iter,
+                 Criterias = new List<string>
+                 {
+                    itemAllocationMethod,
+                    pricingRule,
+                    priceUpdatingRule
+                 }
+             };
             sequence2.Bins = bins;
             sequences.Add(sequence2);
+            //===========================================
 
             Sequence firstSequence = sequences.FirstOrDefault();
             Sequence lastSequence = sequences.LastOrDefault();

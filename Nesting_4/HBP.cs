@@ -57,12 +57,14 @@ namespace Nesting_4
                 {
                     foreach (var priceUpdatingRule in priceUpdatingRules)
                     {
+                        //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
                         IList<Sequence> sequences = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
+
                         foreach(var sequence in sequences)
                         {
                             Sequences.Add(sequence);
-                        }
+                        }                       
                     }
                 }
             }

@@ -721,11 +721,11 @@ namespace Nesting_4
                 {
                     IList<Tuple> pMinTuples = new List<Tuple>();
                     float minFinalP = qMinTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
-                    foreach (var pMinTuple in qMinTuples)
+                    foreach (var pMinTuple in qMinTuples)//_____________
                     {
-                        if (pMinTuple.QfinalPosition == minFinalQ)
+                        if (pMinTuple.PfinalPosition == minFinalP)
                         {
-                            qMinTuples.Add(pMinTuple);
+                            pMinTuples.Add(pMinTuple);
                         }
                     }
                     result = pMinTuples.ElementAt(0);

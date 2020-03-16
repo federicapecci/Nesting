@@ -11,6 +11,18 @@ namespace Nesting_4
     class Sequence
     {
         /// <summary>
+        /// progressivo per indicare la sequenza a che
+        /// iterazione appartiene
+        /// </summary>
+        public int IteratioNumber { get; set; } = -1;
+
+        /// <summary>
+        /// criteri adottati per generare una
+        /// certa sequenza
+        /// </summary>
+        public IList<string> Criterias { get; set; } = null;
+
+        /// <summary>
         /// lista di bin relativi ad una certa sequenza.
         /// ogni sequenza è generata ad una certa iterazione
         /// </summary>
