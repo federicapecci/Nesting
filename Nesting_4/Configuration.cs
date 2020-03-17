@@ -32,7 +32,7 @@ namespace Nesting_4
         /// <summary>
         /// variazione concessa per limite inferiore e superiore del lower bound
         /// </summary>
-        public float LowerBoundDelta { get; set; } = 0;
+        public double LowerBoundDelta { get; set; } = 0;
 
     }
 }

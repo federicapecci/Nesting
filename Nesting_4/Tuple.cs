@@ -16,13 +16,13 @@ namespace Nesting_4
         /// campo che rappresenta la coordinata p iniziale
         /// dove si nesta inizialmente un item
         /// </summary>
-        public float Pposition { get; set; } = 0;
+        public double Pposition { get; set; } = 0;
 
         /// <summary>
         /// campo che rappresenta la coordinata q iniziale
         /// dove si nesta inizialmente un item
         /// </summary>
-        public float Qposition { get; set; } = 0;
+        public double Qposition { get; set; } = 0;
 
         /// <summary>
         /// campo che stabilisce se un punto è stato già usato 
@@ -34,19 +34,19 @@ namespace Nesting_4
         /// campo che rappresenta la coordinata p dell'item
         /// dopo aver cercato di compattare gli item
         /// </summary>
-        public float PfinalPosition { get; set; } = 0;
+        public double PfinalPosition { get; set; } = 0;
 
         /// <summary>
         /// campo che rappresenta la coordinata q dell'item
         /// dopo aver cercato di compattare gli item
         /// </summary>
-        public float QfinalPosition { get; set; } = 0;
+        public double QfinalPosition { get; set; } = 0;
 
         /// <summary>
         /// campo che rappresenta lo scarto potenziale in basso e a sinistra dell'item, 
         /// dopo che si è cercato di compattare la soluzione
         /// </summary>
-        public float HatchedArea { get; set; } = 0;
+        public double HatchedArea { get; set; } = 0;
 
         public Tuple() 
         {

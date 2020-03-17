@@ -6,9 +6,9 @@ namespace Nesting_4
 {
     interface IPricingUtilities
     {
-        float ComputePricingRule(string pricingRule, float height, float width);
+        double ComputePricingRule(string pricingRule, double height, double width);
 
-        void ComputePricingUpdateRule(float z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule);
+        void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule);
 
     }
 }

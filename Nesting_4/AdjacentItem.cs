@@ -14,6 +14,6 @@ namespace Nesting_4
         /// <summary>
         /// superficie di estensione della green area
         /// </summary>
-        public float Area { get; set; } = 0;
+        public double Area { get; set; } = 0;
     }
 }

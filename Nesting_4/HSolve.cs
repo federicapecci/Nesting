@@ -92,9 +92,9 @@ namespace Nesting_4
             int iter = 0;
 
             //calcolo il lower bound ed il relativo intervallo
-            float lowerBound = Utilities.ComputeLowerBound(items, configuration.BinWidth, configuration.BinHeight);
-            float lowerBoundMin = lowerBound - configuration.LowerBoundDelta;
-            float lowerBoundMax = lowerBound + configuration.LowerBoundDelta;
+            double lowerBound = Utilities.ComputeLowerBound(items, configuration.BinWidth, configuration.BinHeight);
+            double lowerBoundMin = lowerBound - configuration.LowerBoundDelta;
+            double lowerBoundMax = lowerBound + configuration.LowerBoundDelta;
             int maxIter = configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================

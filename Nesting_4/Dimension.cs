@@ -12,11 +12,11 @@ namespace Nesting_4
         /// <summary>
         /// altezza dell'item
         /// </summary>
-        public float Height { get; set; } = 0;
+        public double Height { get; set; } = 0;
 
         /// <summary>
         /// ampiezza dell'item
         /// </summary>
-        public float Width { get; set; } = 0;
+        public double Width { get; set; } = 0;
     }
 }

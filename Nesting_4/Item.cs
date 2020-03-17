@@ -19,7 +19,7 @@ namespace Nesting_4
         /// <summary>
         /// costo v dell'item nelle iterazioni
         /// </summary>
-        public float Price { get; set; } = 0;
+        public double Price { get; set; } = 0;
 
         /// <summary>
         /// campo per marcare come eliminato 

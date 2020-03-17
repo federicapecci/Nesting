@@ -6,7 +6,7 @@ namespace Nesting_4
 {
     public class PricingUtilities: IPricingUtilities
     {
-        public float ComputePricingRule(string pricingRule, float height, float width)
+        public double ComputePricingRule(string pricingRule, double height, double width)
         {
             switch (pricingRule)
             {
@@ -33,7 +33,7 @@ namespace Nesting_4
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void ComputePricingUpdateRule(float z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule)
+        public void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule)
         {
             if (priceUpdatingRule == "PU1")
             {
@@ -99,11 +99,11 @@ namespace Nesting_4
                                     if (bin.Id <= (0.5 * z))
                                     {
                                       
-                                        item.Price = (float)alpha * item.Price;
+                                        item.Price = alpha * item.Price;
                                     }
                                     else if (bin.Id > (0.5 * z))
                                     {
-                                        item.Price = (float)beta * item.Price;
+                                        item.Price = beta * item.Price;
                                     }
                                     isItemFound = true;
                                     break;

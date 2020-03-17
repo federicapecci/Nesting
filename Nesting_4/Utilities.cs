@@ -17,9 +17,9 @@ namespace Nesting_4
         /// <param name="binWidth"></param>
         /// <param name="binHeight"></param>
         /// <returns></returns>
-        public float ComputeLowerBound(IList<Item> pricedItems, int binWidth, int binHeight)
+        public double ComputeLowerBound(IList<Item> pricedItems, int binWidth, int binHeight)
         {
-            float result = 0;
+            double result = 0;
 
             foreach (var pricedItem in pricedItems)
             {
@@ -210,6 +210,7 @@ namespace Nesting_4
                                                        x.QfinalPosition == point.QfinalPosition)
                                            .FirstOrDefault();
 
+            //gestisco il fatto che ci possano essere più punti che portano alle stesse coordinate finali
             if (matchingPoint != null)
             {
                 matchingPoint.IsUsed = true;
@@ -221,6 +222,7 @@ namespace Nesting_4
                                            .FirstOrDefault();
                 matchingPoint.IsUsed = true;
             }
+            //===============================================
 
             //controllo se non è più possibile usare dei punti 
             foreach (var p in temporaryBin.Points)
@@ -343,7 +345,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private float GetHatchedArea(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private double GetHatchedArea(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
             PushItemDown(temporaryBin, newItem, feasiblePoint);
             IList<Item> leftIntersectedItems = PushItemLeft(temporaryBin, newItem, feasiblePoint);
@@ -376,9 +378,9 @@ namespace Nesting_4
         /// 
         private void ComputeHatchedArea(Tuple feasiblePoint, Item newItem, IList<Item> downIntersectedItems, IList<Item> leftIntersectedItems)
         {
-            float totalHatchedArea = 0;
+            double totalHatchedArea = 0;
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
-            float partialHatchedArea;
+            double partialHatchedArea;
 
             if(downIntersectedItems.Count > 0)
             {
@@ -401,8 +403,8 @@ namespace Nesting_4
                 //per ogni item già in posizione, che è stato intersecato, 
                 //calcolo quanta parte di area di esso rientra nella green area e 
                 //infine sommo tale area all'area totale degli item intersecati
-                float itemsInSolutionArea = 0;
-                float intersectedWidth;
+                double itemsInSolutionArea = 0;
+                double intersectedWidth;
 
                 foreach (var intersectedItem in downIntersectedItems)
                 {
@@ -461,8 +463,8 @@ namespace Nesting_4
                 //per ogni item già in posizione, che è stato intersecato, 
                 //calcolo quanta parte di area di esso rientra nella green area e 
                 //infine sommo tale area all'area totale degli item intersecati
-                float itemsInSolutionArea = 0;
-                float intersectedHeight;
+                double itemsInSolutionArea = 0;
+                double intersectedHeight;
                 foreach (var intersectedItem in leftIntersectedItems)
                 {
                     //if else per scegliere la height dell'item in soluzione 
@@ -544,7 +546,7 @@ namespace Nesting_4
             {
                 if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    float delta = feasiblePoint.Qposition - intersectedItems.ElementAt(0).Height;
+                    double delta = feasiblePoint.Qposition - intersectedItems.ElementAt(0).Height;
                     newItem.BLqPosition -= delta;
                     newItem.TLqPosition -= delta;
                     newItem.BRqPosition -= delta;
@@ -552,8 +554,8 @@ namespace Nesting_4
                 }
                 else if (intersectedItems.Count > 1) //N intersezioni
                 {
-                    float heightSum = intersectedItems.OrderBy(x => x.TLqPosition).Last().TLqPosition;
-                    float delta = feasiblePoint.Qposition - heightSum;
+                    double heightSum = intersectedItems.OrderBy(x => x.TLqPosition).Last().TLqPosition;
+                    double delta = feasiblePoint.Qposition - heightSum;
                     newItem.BLqPosition -= delta;
                     newItem.TLqPosition -= delta;
                     newItem.BRqPosition -= delta;
@@ -628,7 +630,7 @@ namespace Nesting_4
             {
                 if (intersectedItems.Count == 1) //1 sola intersezione
                 {
-                    float delta = feasiblePoint.Pposition - intersectedItems.ElementAt(0).Width;
+                    double delta = feasiblePoint.Pposition - intersectedItems.ElementAt(0).Width;
                     newItem.BLpPosition -= delta;
                     newItem.TLpPosition -= delta;
                     newItem.BRpPosition -= delta;
@@ -636,8 +638,8 @@ namespace Nesting_4
                 }
                 else if (intersectedItems.Count > 1) //N intersezioni
                 {
-                    float widthSum = intersectedItems.OrderBy(x => x.BRpPosition).Last().BRpPosition;
-                    float delta = feasiblePoint.Pposition - widthSum;
+                    double widthSum = intersectedItems.OrderBy(x => x.BRpPosition).Last().BRpPosition;
+                    double delta = feasiblePoint.Pposition - widthSum;
                     newItem.BLpPosition -= delta;
                     newItem.TLpPosition -= delta;
                     newItem.BRpPosition -= delta;
@@ -658,7 +660,7 @@ namespace Nesting_4
         /// <param name="temporaryBinHeight"></param>
         /// <param name="temporaryBinWidth"></param>
         /// <returns></returns>
-        bool IsBorderObserved(Item newItem, float temporaryBinHeight, float temporaryBinWidth)
+        bool IsBorderObserved(Item newItem, double temporaryBinHeight, double temporaryBinWidth)
         {
             return newItem.TLqPosition <= temporaryBinHeight && newItem.BRpPosition <= temporaryBinWidth;
         }
@@ -700,7 +702,7 @@ namespace Nesting_4
             if (itemAllocationMethod == "AC1")
             {
                 IList<Tuple> pMinTuples = new List<Tuple>();
-                float minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
+                double minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
 
                 foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
                 {
@@ -717,7 +719,7 @@ namespace Nesting_4
                 else
                 {
                     IList<Tuple> qMinTuples = new List<Tuple>();
-                    float minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
+                    double minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
                     foreach (var qMinTuple in pMinTuples)
                     {
                         if (qMinTuple.QfinalPosition == minFinalQ)
@@ -732,7 +734,7 @@ namespace Nesting_4
             {
 
                 IList<Tuple> qMinTuples = new List<Tuple>();
-                float minFinalQ = minHatchedAreaTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
+                double minFinalQ = minHatchedAreaTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
 
                 foreach (var minHatchedAreaTuple in minHatchedAreaTuples)
                 {
@@ -749,7 +751,7 @@ namespace Nesting_4
                 else
                 {
                     IList<Tuple> pMinTuples = new List<Tuple>();
-                    float minFinalP = qMinTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
+                    double minFinalP = qMinTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
                     foreach (var pMinTuple in qMinTuples)//_____________
                     {
                         if (pMinTuple.PfinalPosition == minFinalP)
