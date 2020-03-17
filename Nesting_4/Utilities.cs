@@ -78,10 +78,25 @@ namespace Nesting_4
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
+                /*foreach (var p in temporaryBin.Points)
+                {
+
+                    if (temporaryItem.Id == 66 && temporaryBin.Id == 1)
+                    {
+
+
+                        Console.WriteLine(p.Pposition + ", " + p.Qposition + ", " + p.IsUsed);
+
+                    }
+                }*/
+
+
                 foreach (var feasiblePoint in temporaryBin.Points)
                 {
                     if (!feasiblePoint.IsUsed)
                     {
+
+
                         //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
                         Item newPricedItem = new Item()
                         {
@@ -109,6 +124,7 @@ namespace Nesting_4
                                                                .FirstOrDefault();
 
                 //se non riesco a trovare la tupla, vuol dire che le tuple sono finite 
+                
                 if (minHatchedAreaTuple == null)
                 {
                     return temporaryBin;
@@ -188,10 +204,23 @@ namespace Nesting_4
         private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item sortedTemporaryItem, Tuple point)
         {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
-            var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
-                                                       x.Qposition == point.Qposition)
-                                           .First();
-            matchingPoint.IsUsed = true;
+            var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
+                                                       x.Qposition == point.QfinalPosition &&
+                                                       x.PfinalPosition == point.PfinalPosition &&
+                                                       x.QfinalPosition == point.QfinalPosition)
+                                           .FirstOrDefault();
+
+            if (matchingPoint != null)
+            {
+                matchingPoint.IsUsed = true;
+            }
+            else
+            {
+                matchingPoint = temporaryBin.Points.Where(x => x.PfinalPosition == point.PfinalPosition &&
+                                                       x.QfinalPosition == point.QfinalPosition)
+                                           .FirstOrDefault();
+                matchingPoint.IsUsed = true;
+            }
 
             //controllo se non è più possibile usare dei punti 
             foreach (var p in temporaryBin.Points)

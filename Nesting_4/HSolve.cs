@@ -158,6 +158,7 @@ namespace Nesting_4
             {                
                 if (!sortedTemporaryItem.IsRemoved)
                 {
+                    
                     Utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem, itemAllocationMethod);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     /*var tempItem = temporaryBins[i];
