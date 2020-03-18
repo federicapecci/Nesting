@@ -78,25 +78,10 @@ namespace Nesting_4
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
-                /*foreach (var p in temporaryBin.Points)
-                {
-
-                    if (temporaryItem.Id == 66 && temporaryBin.Id == 1)
-                    {
-
-
-                        Console.WriteLine(p.Pposition + ", " + p.Qposition + ", " + p.IsUsed);
-
-                    }
-                }*/
-
-
                 foreach (var feasiblePoint in temporaryBin.Points)
                 {
                     if (!feasiblePoint.IsUsed)
                     {
-
-
                         //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
                         Item newPricedItem = new Item()
                         {

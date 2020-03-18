@@ -47,7 +47,7 @@ namespace Nesting_4
             };
             IList<string> priceUpdatingRules = new List<string>
             {
-                "PU1",
+                //"PU1",
                 "PU2"
             };
 

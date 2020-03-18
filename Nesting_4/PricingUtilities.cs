@@ -78,7 +78,6 @@ namespace Nesting_4
                 double alpha;
                 double beta;
                 double rnd;
-                bool isItemFound = false;
 
                 //dato un certo item
                 foreach (var item in items)
@@ -91,28 +90,21 @@ namespace Nesting_4
                             {
                                 if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
                                 {
-                                    //https://stackoverflow.com/questions/41924871/how-do-i-generate-random-number-between-0-and-1-in-c
                                     rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
-                                    alpha = 1 - rnd;
-                                    beta = 1 - rnd;
                                     //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
                                     if (bin.Id <= (0.5 * z))
                                     {
-                                      
-                                        item.Price = alpha * item.Price;
+                                        alpha = 1 - rnd;
+                                        item.Price = alpha * nestedItem.Price;
+                                        
                                     }
                                     else if (bin.Id > (0.5 * z))
                                     {
-                                        item.Price = beta * item.Price;
+                                        beta = 1 + rnd;
+                                        item.Price = beta * nestedItem.Price;
                                     }
-                                    isItemFound = true;
                                     break;
                                 }
-                            }
-                            if (isItemFound)
-                            {
-                                isItemFound = false;
-                                break;
                             }
                         }
                     }

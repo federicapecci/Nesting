@@ -150,10 +150,12 @@ namespace Nesting_4
                 counter += 1;
             }
 
-           
+            
            
         //================ STEP 3 - FILLING UP BIN i ================
-        l1://cerco la posizione migliore per ogni item j'
+        l1: Console.WriteLine("ciao");
+
+            //cerco la posizione migliore per ogni item j'
             foreach (var sortedTemporaryItem in sortedTemporaryItems)
             {                
                 if (!sortedTemporaryItem.IsRemoved)
@@ -254,7 +256,7 @@ namespace Nesting_4
             }
             else
             {
-                PricingUtilities.ComputePricingUpdateRule(z, items, bins, priceUpdatingRule);
+                PricingUtilities.ComputePricingUpdateRule(z, items, temporaryBins, priceUpdatingRule);
                 iter += 1;
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
                 foreach (var item in items)
@@ -268,26 +270,54 @@ namespace Nesting_4
         end:
             //aggiungo la sequenza dell'ultima iterazione
             Sequence sequence2 = new Sequence()
-             {
-                 Bins = new List<Bin<Tuple>>(),
-                 IteratioNumber = iter,
-                 Criterias = new List<string>
+            {
+                Bins = new List<Bin<Tuple>>(),
+                IteratioNumber = iter,
+                Criterias = new List<string>
                  {
                     itemAllocationMethod,
                     pricingRule,
                     priceUpdatingRule
                  }
-             };
-            sequence2.Bins = bins;
+            };
+            sequence2.Bins = temporaryBins;
             sequences.Add(sequence2);
             //===========================================
 
             Sequence firstSequence = sequences.FirstOrDefault();
+
+            foreach(var bin in firstSequence.Bins)
+            {
+                if (bin.NestedItems != null)
+                {
+                    foreach (var nestedItem in bin.NestedItems)
+                    {
+                        Console.WriteLine(nestedItem.Price);
+                    }
+                }
+            }
+
+            Console.WriteLine("===============");
+
+
             Sequence lastSequence = sequences.LastOrDefault();
+
+            foreach (var bin in lastSequence.Bins)
+            {
+                if (bin.NestedItems != null)
+                {
+                    foreach (var nestedItem in bin.NestedItems)
+                    {
+                        Console.WriteLine(nestedItem.Price);
+                    }
+                }
+            }
 
             sequences.Clear();
             sequences.Add(firstSequence);
             sequences.Add(lastSequence);
+
+            Console.WriteLine("\niterazioni fatte " + iter);
 
             return sequences;
         }
