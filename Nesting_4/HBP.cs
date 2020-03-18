@@ -33,6 +33,7 @@ namespace Nesting_4
 
         public void ComputeAlgorithm()
         {
+            int upperBound = int.MaxValue;
             IList<string> itemAllocationMethods = new List<string>
             {
                 "AC1",
@@ -64,10 +65,16 @@ namespace Nesting_4
                         foreach(var sequence in sequences)
                         {
                             Sequences.Add(sequence);
-                        }                       
+                        }
+
+                        if (Sequences[Sequences.Count - 1].Zstar < upperBound)
+                        {
+                            upperBound = Sequences[Sequences.Count - 1].Zstar;
+                        }
                     }
                 }
             }
+            Console.WriteLine(upperBound + 1);
         }
     }              
 }

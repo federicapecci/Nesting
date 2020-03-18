@@ -10,6 +10,7 @@ namespace Nesting_4
     /// </summary>
     class Sequence
     {
+        public int Zstar { get; set; } = -1;
         /// <summary>
         /// progressivo per indicare la sequenza a che
         /// iterazione appartiene

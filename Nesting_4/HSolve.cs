@@ -228,6 +228,7 @@ namespace Nesting_4
             //aggiungo la sequenza di un certa iterazione
             Sequence sequence1 = new Sequence()
             {
+                Zstar = zStar,
                 Bins = new List<Bin<Tuple>>(),
                 IteratioNumber = iter,
                 Criterias = new List<string>
@@ -271,6 +272,7 @@ namespace Nesting_4
             //aggiungo la sequenza dell'ultima iterazione
             Sequence sequence2 = new Sequence()
             {
+                Zstar = zStar,
                 Bins = new List<Bin<Tuple>>(),
                 IteratioNumber = iter,
                 Criterias = new List<string>
