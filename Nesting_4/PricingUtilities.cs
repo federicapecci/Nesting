@@ -37,9 +37,8 @@ namespace Nesting_4
         {
             if (priceUpdatingRule == "PU1")
             {
-                float alpha = 0.9F;
-                float beta = 1.1F;
-                bool isItemFound = false;
+                double alpha = 0.9;
+                double beta = 1.1;
 
                 //dato un certo item
                 foreach (var item in items)
@@ -55,20 +54,14 @@ namespace Nesting_4
                                     //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
                                     if (bin.Id <= (0.5 * z))
                                     {
-                                        item.Price = alpha * item.Price;
+                                        item.Price = alpha * nestedItem.Price;
                                     }
                                     else if (bin.Id > (0.5 * z))
                                     {
-                                        item.Price = beta * item.Price;
+                                        item.Price = beta * nestedItem.Price;
                                     }
-                                    isItemFound = true;
                                     break;
                                 }
-                            }
-                            if (isItemFound)
-                            {
-                                isItemFound = false;
-                                break;
                             }
                         }
                     }

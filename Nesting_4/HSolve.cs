@@ -153,7 +153,7 @@ namespace Nesting_4
             
            
         //================ STEP 3 - FILLING UP BIN i ================
-        l1: Console.WriteLine("ciao");
+        l1: //Console.WriteLine("ciao");
 
             //cerco la posizione migliore per ogni item j'
             foreach (var sortedTemporaryItem in sortedTemporaryItems)
@@ -286,7 +286,7 @@ namespace Nesting_4
 
             Sequence firstSequence = sequences.FirstOrDefault();
 
-            foreach(var bin in firstSequence.Bins)
+            /*foreach(var bin in firstSequence.Bins)
             {
                 if (bin.NestedItems != null)
                 {
@@ -297,12 +297,12 @@ namespace Nesting_4
                 }
             }
 
-            Console.WriteLine("===============");
+            Console.WriteLine("===============");*/
 
 
             Sequence lastSequence = sequences.LastOrDefault();
 
-            foreach (var bin in lastSequence.Bins)
+            /*foreach (var bin in lastSequence.Bins)
             {
                 if (bin.NestedItems != null)
                 {
@@ -311,13 +311,13 @@ namespace Nesting_4
                         Console.WriteLine(nestedItem.Price);
                     }
                 }
-            }
+            }*/
 
             sequences.Clear();
             sequences.Add(firstSequence);
             sequences.Add(lastSequence);
 
-            Console.WriteLine("\niterazioni fatte " + iter);
+            //Console.WriteLine("\niterazioni fatte " + iter);
 
             return sequences;
         }

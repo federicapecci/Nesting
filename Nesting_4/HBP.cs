@@ -36,18 +36,18 @@ namespace Nesting_4
             IList<string> itemAllocationMethods = new List<string>
             {
                 "AC1",
-                //"AC2"
+                "AC2"
             };
             IList<string> pricingRules = new List<string>
             {
                 "IP1",
-                //"IP2",
-                //"IP3",
-                //"IP4"
+                "IP2",
+                "IP3",
+                "IP4"
             };
             IList<string> priceUpdatingRules = new List<string>
             {
-                //"PU1",
+                "PU1",
                 "PU2"
             };
 
