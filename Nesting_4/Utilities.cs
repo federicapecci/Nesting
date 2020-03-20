@@ -40,13 +40,15 @@ namespace Nesting_4
         /// <returns></returns>
         public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem, string itemAllocationMethod)
         {
+
+
             //se l'item non è nestabile (ovvero le sue dimensioni eccedano quelle del bin)
             //setto comunque l'item come removed, altrimenti la lista di item non sarà mai empty e hsolve non va avanti
-            if(temporaryItem.Height > temporaryBin.Height || temporaryItem.Width > temporaryBin.Width)
+            /*if(temporaryItem.Height > temporaryBin.Height || temporaryItem.Width > temporaryBin.Width)
             {
                 temporaryItem.IsRemoved = true;
                 return temporaryBin;
-            }
+            }*/
 
             //item nestabile, procedo
             SetFeasiblePoints(temporaryBin);
@@ -59,21 +61,53 @@ namespace Nesting_4
             else if (temporaryBin.Points.Count == 1 && //se il bin contiene 1 solo punto e quel punto è (0,0)
                     temporaryBin.Points.ElementAt(0).Pposition == 0 &&
                     temporaryBin.Points.ElementAt(0).Qposition == 0)
-            {
-                 temporaryBin.NestedItems = new List<Item>(){
-                     new Item()
+            {                
+                 var pricedItem = new Item()
+                 {
+                    Height = temporaryItem.Height,
+                    Width = temporaryItem.Width,
+                    Id = temporaryItem.Id,
+                    Price = temporaryItem.Price,
+                    TLqPosition = temporaryItem.Height,
+                    BRpPosition = temporaryItem.Width,
+                    TRpPosition = temporaryItem.Width,
+                    TRqPosition = temporaryItem.Height
+                 };
+                 if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
+                 {
+                    temporaryBin.NestedItems = new List<Item>
+                    {
+                        pricedItem
+                    };
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), pricedItem);
+                 }
+                 else
+                 {
+                     pricedItem = new Item()
                      {
-                         Height = temporaryItem.Height,
-                         Width = temporaryItem.Width,
+                         Height = temporaryItem.Width,
+                         Width = temporaryItem.Height,
                          Id = temporaryItem.Id,
                          Price = temporaryItem.Price,
-                         TLqPosition = temporaryItem.Height,
-                         BRpPosition =  temporaryItem.Width,
-                         TRpPosition =  temporaryItem.Width,
-                         TRqPosition = temporaryItem.Height
+                         TLqPosition = temporaryItem.Width,
+                         BRpPosition = temporaryItem.Height,
+                         TRpPosition = temporaryItem.Height,
+                         TRqPosition = temporaryItem.Width
+                     };
+                     if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
+                     {
+                         temporaryBin.NestedItems = new List<Item>
+                         {
+                             pricedItem
+                         };
+                         HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), pricedItem);
                      }
-                 };
-                 HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0));
+                 }
+
+                 
+                 //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in "
+                  //      + temporaryBin.Points.ElementAt(0).PfinalPosition + ", " +
+                      //  temporaryBin.Points.ElementAt(0).QfinalPosition + ", " + temporaryBin.Points.ElementAt(0).Rposition + " BIN " + temporaryBin.Id);
                  return temporaryBin;
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
@@ -82,22 +116,43 @@ namespace Nesting_4
                 {
                     if (!feasiblePoint.IsUsed)
                     {
-                        //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
-                        Item newPricedItem = new Item()
+                        Item newPricedItem = null;
+                        if (feasiblePoint.Rposition == 0)
                         {
-                            Height = temporaryItem.Height,
-                            Width = temporaryItem.Width,
-                            Id = temporaryItem.Id,
-                            Price = temporaryItem.Price,
-                            BLpPosition = feasiblePoint.Pposition,
-                            BLqPosition = feasiblePoint.Qposition,
-                            BRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
-                            BRqPosition = feasiblePoint.Qposition,
-                            TLpPosition = feasiblePoint.Pposition,
-                            TLqPosition = feasiblePoint.Qposition + temporaryItem.Height,
-                            TRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
-                            TRqPosition = feasiblePoint.Qposition + temporaryItem.Height
-                        };
+                            //assegno le coordinate di partenza al nuovo item da nestare, poi inzio a muoverlo
+                            newPricedItem = new Item()
+                            {
+                                Height = temporaryItem.Height,
+                                Width = temporaryItem.Width,
+                                Id = temporaryItem.Id,
+                                Price = temporaryItem.Price,
+                                BLpPosition = feasiblePoint.Pposition,
+                                BLqPosition = feasiblePoint.Qposition,
+                                BRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
+                                BRqPosition = feasiblePoint.Qposition,
+                                TLpPosition = feasiblePoint.Pposition,
+                                TLqPosition = feasiblePoint.Qposition + temporaryItem.Height,
+                                TRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
+                                TRqPosition = feasiblePoint.Qposition + temporaryItem.Height
+                            };
+                        }else if (feasiblePoint.Rposition == 1)
+                        {
+                            newPricedItem = new Item()
+                            {
+                                Height = temporaryItem.Width,
+                                Width = temporaryItem.Height,
+                                Id = temporaryItem.Id,
+                                Price = temporaryItem.Price,
+                                BLpPosition = feasiblePoint.Pposition,
+                                BLqPosition = feasiblePoint.Qposition,
+                                BRpPosition = feasiblePoint.Pposition + temporaryItem.Height,
+                                BRqPosition = feasiblePoint.Qposition,
+                                TLpPosition = feasiblePoint.Pposition,
+                                TLqPosition = feasiblePoint.Qposition + temporaryItem.Width,
+                                TRpPosition = feasiblePoint.Pposition + temporaryItem.Height,
+                                TRqPosition = feasiblePoint.Qposition + temporaryItem.Width
+                            };
+                        }
                         feasiblePoint.HatchedArea = GetHatchedArea(temporaryBin, newPricedItem, feasiblePoint);
                     }
                 }
@@ -128,51 +183,96 @@ namespace Nesting_4
                 if (minHatchedAreaPoints.Count == 1)
                 {
                     var minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
-
-                    var pricedItem = new Item()
+                    Item pricedItem = null;
+                    if (minHatchedAreaPoint.Rposition == 0)
                     {
-                        Height = temporaryItem.Height,
-                        Width = temporaryItem.Width,
-                        Id = temporaryItem.Id,
-                        Price = temporaryItem.Price,
-                        BLpPosition = minHatchedAreaPoint.PfinalPosition,
-                        BLqPosition = minHatchedAreaPoint.QfinalPosition,
-                        BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
-                        BRqPosition = minHatchedAreaPoint.QfinalPosition,
-                        TLpPosition = minHatchedAreaPoint.PfinalPosition,
-                        TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height,
-                        TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
-                        TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
-                    };
+                        pricedItem = new Item()
+                        {
+                            Height = temporaryItem.Height,
+                            Width = temporaryItem.Width,
+                            Id = temporaryItem.Id,
+                            Price = temporaryItem.Price,
+                            BLpPosition = minHatchedAreaPoint.PfinalPosition,
+                            BLqPosition = minHatchedAreaPoint.QfinalPosition,
+                            BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
+                            BRqPosition = minHatchedAreaPoint.QfinalPosition,
+                            TLpPosition = minHatchedAreaPoint.PfinalPosition,
+                            TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height,
+                            TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
+                            TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
+                        };
+                    }else if (minHatchedAreaPoint.Rposition == 1)
+                    {
+                        pricedItem = new Item()
+                        {
+                            Height = temporaryItem.Width,
+                            Width = temporaryItem.Height,
+                            Id = temporaryItem.Id,
+                            Price = temporaryItem.Price,
+                            BLpPosition = minHatchedAreaPoint.PfinalPosition,
+                            BLqPosition = minHatchedAreaPoint.QfinalPosition,
+                            BRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Height,
+                            BRqPosition = minHatchedAreaPoint.QfinalPosition,
+                            TLpPosition = minHatchedAreaPoint.PfinalPosition,
+                            TLqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Width,
+                            TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Height,
+                            TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Width
+                        };
+                    }
+                    //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in "
+                      //  + minHatchedAreaPoint.PfinalPosition + ", " +
+                        //minHatchedAreaPoint.QfinalPosition + ", " + minHatchedAreaPoint.Rposition + " BIN " + temporaryBin.Id);
 
                     temporaryBin.NestedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint);
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint, pricedItem);
                     return temporaryBin;
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
                     Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints, itemAllocationMethod);
-
-                    var pricedItem = new Item()
+                    Item pricedItem = null;
+                    if (minCoordinatePoint.Rposition == 0)
                     {
-                        Height = temporaryItem.Height,
-                        Width = temporaryItem.Width,
-                        Id = temporaryItem.Id,
-                        Price = temporaryItem.Price,
-                        BLpPosition = minCoordinatePoint.PfinalPosition,
-                        BLqPosition = minCoordinatePoint.QfinalPosition,
-                        BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
-                        BRqPosition = minCoordinatePoint.QfinalPosition,
-                        TLpPosition = minCoordinatePoint.PfinalPosition,
-                        TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height,
-                        TRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
-                        TRqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
-                    };
+                        pricedItem = new Item()
+                        {
+                            Height = temporaryItem.Height,
+                            Width = temporaryItem.Width,
+                            Id = temporaryItem.Id,
+                            Price = temporaryItem.Price,
+                            BLpPosition = minCoordinatePoint.PfinalPosition,
+                            BLqPosition = minCoordinatePoint.QfinalPosition,
+                            BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
+                            BRqPosition = minCoordinatePoint.QfinalPosition,
+                            TLpPosition = minCoordinatePoint.PfinalPosition,
+                            TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height,
+                            TRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
+                            TRqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
+                        };
+                    }else if(minCoordinatePoint.Rposition == 1)
+                    {
+                        pricedItem = new Item()
+                        {
+                            Height = temporaryItem.Width,
+                            Width = temporaryItem.Height,
+                            Id = temporaryItem.Id,
+                            Price = temporaryItem.Price,
+                            BLpPosition = minCoordinatePoint.PfinalPosition,
+                            BLqPosition = minCoordinatePoint.QfinalPosition,
+                            BRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Height,
+                            BRqPosition = minCoordinatePoint.QfinalPosition,
+                            TLpPosition = minCoordinatePoint.PfinalPosition,
+                            TLqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Width,
+                            TRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Height,
+                            TRqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Width
+                        };
+                    }
+
+                    //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in " 
+                      //  + minCoordinatePoint.PfinalPosition + ", " +
+                        //minCoordinatePoint.QfinalPosition + ", " + minCoordinatePoint.Rposition + " BIN " + temporaryBin.Id);
 
                     temporaryBin.NestedItems.Add(pricedItem);
-                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint);
-
-              
+                    HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint, pricedItem);
 
                     return temporaryBin;
                 }
@@ -186,56 +286,64 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item sortedTemporaryItem, Tuple point)
+        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item sortedTemporaryItem, Tuple point, Item pricedItem)
         {
-            //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
-            var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
+            //recupero il punto dalla lista usando l'id. tale punto lo setterò poi ad usato
+            var matchingPoints = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
                                                        x.Qposition == point.QfinalPosition &&
                                                        x.PfinalPosition == point.PfinalPosition &&
-                                                       x.QfinalPosition == point.QfinalPosition)
-                                           .FirstOrDefault();
+                                                       x.QfinalPosition == point.QfinalPosition);
+                                                   //.FirstOrDefault();
 
             //gestisco il fatto che ci possano essere più punti che portano alle stesse coordinate finali
-            if (matchingPoint != null)
+            if (matchingPoints != null)
             {
-                matchingPoint.IsUsed = true;
+                foreach (var matchingPoint in matchingPoints)
+                {
+                    matchingPoint.IsUsed = true;
+                }
             }
             else
             {
-                matchingPoint = temporaryBin.Points.Where(x => x.PfinalPosition == point.PfinalPosition &&
-                                                       x.QfinalPosition == point.QfinalPosition)
-                                           .FirstOrDefault();
-                matchingPoint.IsUsed = true;
+                matchingPoints = temporaryBin.Points.Where(x => x.PfinalPosition == point.PfinalPosition &&
+                                                       x.QfinalPosition == point.QfinalPosition);
+                //.FirstOrDefault();
+                foreach (var matchingPoint in matchingPoints)
+                {
+                    matchingPoint.IsUsed = true;
+                }
             }
             //===============================================
 
             //controllo se non è più possibile usare dei punti 
             foreach (var p in temporaryBin.Points)
             {
-                //cerco punti "coperti" dal nuovo item nestato
-                if ((p.Pposition >= sortedTemporaryItem.BLpPosition && p.Pposition < sortedTemporaryItem.BRpPosition &&
-                   p.Qposition >= sortedTemporaryItem.BLqPosition && p.Qposition < sortedTemporaryItem.TLqPosition) ||
-                   
-                   (p.PfinalPosition == matchingPoint.PfinalPosition && //cerco punti che, dopo push down and left portavano alle stesse coordinate finali
-                   p.QfinalPosition == matchingPoint.QfinalPosition &&
-                   sortedTemporaryItem.BRpPosition >= p.Pposition  &&
-                   sortedTemporaryItem.TLqPosition >= p.Qposition))
-                   
-                {
-                    p.IsUsed = true;
+                foreach (var matchingPoint in matchingPoints) { 
+                    //cerco punti "coperti" dal nuovo item nestato
+                    if ((p.Pposition >= pricedItem.BLpPosition && p.Pposition < pricedItem.BRpPosition &&
+                    p.Qposition >= pricedItem.BLqPosition && p.Qposition < pricedItem.TLqPosition) ||
+
+                    (p.PfinalPosition == matchingPoint.PfinalPosition && //cerco punti che, dopo push down and left portavano alle stesse coordinate finali
+                    p.QfinalPosition == matchingPoint.QfinalPosition &&
+                    pricedItem.BRpPosition >= p.Pposition &&
+                    pricedItem.TLqPosition >= p.Qposition))
+                    {
+                        p.IsUsed = true;
+                    }
                 }
             }
 
             //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points
             Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
-                                                   x.Qposition == point.QfinalPosition + sortedTemporaryItem.Height &&
+                                                   x.Qposition == point.QfinalPosition + pricedItem.Height &&
                                                    x.IsUsed == false).FirstOrDefault();
 
             //definisco il primo nuovo punto
             var firstPoint = new Tuple()
             {
                 Pposition = point.PfinalPosition,
-                Qposition = point.QfinalPosition + sortedTemporaryItem.Height,
+                Qposition = point.QfinalPosition + pricedItem.Height,
+                Rposition = 0,
                 IsUsed = false
 
             };
@@ -258,6 +366,17 @@ namespace Nesting_4
             if (pointFound == null && !isPointLyingOnItemSide)
             {
                 temporaryBin.Points.Add(firstPoint);
+
+                firstPoint = new Tuple()
+                {
+                    Pposition = point.PfinalPosition,
+                    Qposition = point.QfinalPosition + pricedItem.Height,
+                    Rposition = 1,
+                    IsUsed = false
+
+                };
+
+                temporaryBin.Points.Add(firstPoint);
             }
             else
             {
@@ -267,14 +386,15 @@ namespace Nesting_4
             isPointLyingOnItemSide = false;
 
             //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points
-            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + sortedTemporaryItem.Width &&
+            pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + pricedItem.Width &&
                                                         x.Qposition == point.QfinalPosition).FirstOrDefault();
 
             //definisco il secondo nuovo punto
             var secondPoint = new Tuple()
             {
-                Pposition = point.PfinalPosition + sortedTemporaryItem.Width,
+                Pposition = point.PfinalPosition + pricedItem.Width,
                 Qposition = point.QfinalPosition,
+                Rposition = 0,
                 IsUsed = false
             };
 
@@ -294,6 +414,16 @@ namespace Nesting_4
             //aggiungo il secondo nuovo punto
             if (pointFound == null && !isPointLyingOnItemSide)
             {
+                temporaryBin.Points.Add(secondPoint);
+
+                secondPoint = new Tuple()
+                {
+                    Pposition = point.PfinalPosition + pricedItem.Width,
+                    Qposition = point.QfinalPosition,
+                    Rposition = 1,
+                    IsUsed = false
+                };
+
                 temporaryBin.Points.Add(secondPoint);
             }
 
@@ -712,7 +842,14 @@ namespace Nesting_4
                             qMinTuples.Add(qMinTuple);
                         }
                     }
-                    result = qMinTuples.ElementAt(0);
+                    if (qMinTuples.Count == 1)
+                    {
+                        result = qMinTuples.ElementAt(0);
+                    }
+                    else
+                    {
+                        result = qMinTuples.OrderBy(x => x.Rposition).First();
+                    }
                 }
             }
             else if (itemAllocationMethod == "AC2")
@@ -744,7 +881,14 @@ namespace Nesting_4
                             pMinTuples.Add(pMinTuple);
                         }
                     }
-                    result = pMinTuples.ElementAt(0);
+                    if (qMinTuples.Count == 1)
+                    {
+                        result = qMinTuples.ElementAt(0);
+                    }
+                    else
+                    {
+                        result = qMinTuples.OrderBy(x => x.Rposition).First();
+                    }
                 }
             }
             else

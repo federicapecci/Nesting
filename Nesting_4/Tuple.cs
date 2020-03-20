@@ -24,6 +24,8 @@ namespace Nesting_4
         /// </summary>
         public double Qposition { get; set; } = 0;
 
+        public double Rposition { get; set; } = 0;
+
         /// <summary>
         /// campo che stabilisce se un punto è stato già usato 
         /// per nestare un item oppure no
@@ -52,6 +54,7 @@ namespace Nesting_4
         {
             Pposition = 0;
             Qposition = 0;
+            Rposition = 0;
             IsUsed = false;
             PfinalPosition = 0;
             QfinalPosition = 0;

@@ -75,7 +75,7 @@ namespace Nesting_4
                             //un id progressivo per il wipeout rettangolare
                             MText text = new MText(pricedItem.Id.ToString())
                              {
-                                 Position = new Vector3(pricedItem.BLpPosition + 30 + offsetX, pricedItem.BLqPosition + 45 + offsetY, 0.0),
+                                 Position = new Vector3(pricedItem.BLpPosition + 10 + offsetX, pricedItem.BLqPosition + 45 + offsetY, 0.0),
                                  Height = 30,
                                  Style = style
                              };

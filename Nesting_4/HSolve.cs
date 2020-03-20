@@ -68,12 +68,28 @@ namespace Nesting_4
                         {
                             Pposition = 0,
                             Qposition = item.Height,
+                            Rposition = 0,
+                            IsUsed = false
+                        },
+                        new Tuple()
+                        {
+                            Pposition = 0,
+                            Qposition = item.Height,
+                            Rposition = 1,
                             IsUsed = false
                         },
                         new Tuple()
                         {
                             Pposition = item.Width,
                             Qposition = 0,
+                            Rposition = 0,
+                            IsUsed = false
+                        },
+                        new Tuple()
+                        {
+                            Pposition = item.Width,
+                            Qposition = 0,
+                            Rposition = 1,
                             IsUsed = false
                         }
                     }
@@ -100,10 +116,10 @@ namespace Nesting_4
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
         l3:
-            /*Sequence sequence = new Sequence()
+            Sequence sequence = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
-            };*/
+            };
 
             //creo una lista temporanea J' di item 
             IList<Item> temporaryItems = new List<Item>();
@@ -130,6 +146,7 @@ namespace Nesting_4
                         {
                             Pposition = 0,
                             Qposition = 0,
+                            Rposition = 0,
                             IsUsed = false
                         }
                     }
@@ -150,8 +167,6 @@ namespace Nesting_4
                 counter += 1;
             }
 
-            
-           
         //================ STEP 3 - FILLING UP BIN i ================
         l1: //Console.WriteLine("ciao");
 
@@ -159,41 +174,38 @@ namespace Nesting_4
             foreach (var sortedTemporaryItem in sortedTemporaryItems)
             {                
                 if (!sortedTemporaryItem.IsRemoved)
-                {
-                    
+                {                   
                     Utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem, itemAllocationMethod);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
-                    /*var tempItem = temporaryBins[i];
+                    /*var tempBin = temporaryBins[i];
                     Bin<Tuple> b;
                     
-                    if (tempItem.PricedItems != null)
+                    if (tempBin.NestedItems != null)
                     {
-
                         b = new Bin<Tuple>
                         {
-                            Id = tempItem.Id,
-                            Height = tempItem.Height,
-                            Width = tempItem.Width,
-                            Points = new List<Tuple>(tempItem.Points),
-                            PricedItems = new List<PricedItem>(tempItem.PricedItems)
+                            Id = tempBin.Id,
+                            Height = tempBin.Height,
+                            Width = tempBin.Width,
+                            Points = new List<Tuple>(tempBin.Points),
+                            NestedItems = new List<Item>(tempBin.NestedItems)
                         };
+                        sequence.Bins.Add(b);
                     }
                     else
                     {
                         b = new Bin<Tuple>
                         {
-                            Id = tempItem.Id,
-                            Height = tempItem.Height,
-                            Width = tempItem.Width,
-                            Points = new List<Tuple>(tempItem.Points),
-                            PricedItems = new List<PricedItem>()
-                        };
-                    }
-                    
-                    sequence.Bins.Add(b);*/
-                    
+                            Id = tempBin.Id,
+                            Height = tempBin.Height,
+                            Width = tempBin.Width,
+                            Points = new List<Tuple>(tempBin.Points),
+                            NestedItems = new List<Item>()
+                        }
+                    }*/
                 }
             }
+
 
             //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
@@ -287,39 +299,11 @@ namespace Nesting_4
             //===========================================
 
             Sequence firstSequence = sequences.FirstOrDefault();
-
-            /*foreach(var bin in firstSequence.Bins)
-            {
-                if (bin.NestedItems != null)
-                {
-                    foreach (var nestedItem in bin.NestedItems)
-                    {
-                        Console.WriteLine(nestedItem.Price);
-                    }
-                }
-            }
-
-            Console.WriteLine("===============");*/
-
-
             Sequence lastSequence = sequences.LastOrDefault();
-
-            /*foreach (var bin in lastSequence.Bins)
-            {
-                if (bin.NestedItems != null)
-                {
-                    foreach (var nestedItem in bin.NestedItems)
-                    {
-                        Console.WriteLine(nestedItem.Price);
-                    }
-                }
-            }*/
-
             sequences.Clear();
             sequences.Add(firstSequence);
             sequences.Add(lastSequence);
-
-            //Console.WriteLine("\niterazioni fatte " + iter);
+        
 
             return sequences;
         }
