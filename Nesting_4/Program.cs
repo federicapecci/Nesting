@@ -23,7 +23,7 @@ namespace Nesting_4
 
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
-            dxfDrawer.WriteAllData(hbp.Sequences, "1_output");
+            dxfDrawer.WriteAllData(hbp.Sequences, "output_part_3");
 
         }
     }

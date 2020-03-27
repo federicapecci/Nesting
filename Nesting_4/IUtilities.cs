@@ -12,5 +12,6 @@ namespace Nesting_4
 
         Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryPricedItem, string itemAllocationMethod);
 
+        void CheckSolution(IList<Item> items, IList<Bin<Tuple>> bins, int iter);
     }
 }

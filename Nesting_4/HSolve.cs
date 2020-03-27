@@ -252,6 +252,7 @@ namespace Nesting_4
             };
             sequence1.Bins = bins;
             sequences.Add(sequence1);
+            Utilities.CheckSolution(items, bins, iter);
             //============================================
 
             //================ STEP 6 - CHECK OPTIMALITY ================
@@ -282,7 +283,7 @@ namespace Nesting_4
 
         end:
             //aggiungo la sequenza dell'ultima iterazione
-            Sequence sequence2 = new Sequence()
+            /*Sequence sequence2 = new Sequence()
             {
                 Zstar = zStar,
                 Bins = new List<Bin<Tuple>>(),
@@ -295,16 +296,17 @@ namespace Nesting_4
                  }
             };
             sequence2.Bins = temporaryBins;
-            sequences.Add(sequence2);
+            sequences.Add(sequence2);*/
             //===========================================
 
-            Sequence firstSequence = sequences.FirstOrDefault();
+            //Utilities.CheckSolution(items, temporaryBins, iter);
+
+            //Sequence firstSequence = sequences.FirstOrDefault();
             Sequence lastSequence = sequences.LastOrDefault();
             sequences.Clear();
-            sequences.Add(firstSequence);
+            //sequences.Add(firstSequence);
             sequences.Add(lastSequence);
         
-
             return sequences;
         }
     }

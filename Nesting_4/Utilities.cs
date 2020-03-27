@@ -61,9 +61,9 @@ namespace Nesting_4
             else if (temporaryBin.Points.Count == 1 && //se il bin contiene 1 solo punto e quel punto è (0,0)
                     temporaryBin.Points.ElementAt(0).Pposition == 0 &&
                     temporaryBin.Points.ElementAt(0).Qposition == 0)
-            {                
-                 var pricedItem = new Item()
-                 {
+            {
+                var pricedItem = new Item()
+                {
                     Height = temporaryItem.Height,
                     Width = temporaryItem.Width,
                     Id = temporaryItem.Id,
@@ -72,43 +72,43 @@ namespace Nesting_4
                     BRpPosition = temporaryItem.Width,
                     TRpPosition = temporaryItem.Width,
                     TRqPosition = temporaryItem.Height
-                 };
-                 if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
-                 {
+                };
+                if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
+                {
                     temporaryBin.NestedItems = new List<Item>
                     {
                         pricedItem
                     };
                     HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), pricedItem);
-                 }
-                 else
-                 {
-                     pricedItem = new Item()
-                     {
-                         Height = temporaryItem.Width,
-                         Width = temporaryItem.Height,
-                         Id = temporaryItem.Id,
-                         Price = temporaryItem.Price,
-                         TLqPosition = temporaryItem.Width,
-                         BRpPosition = temporaryItem.Height,
-                         TRpPosition = temporaryItem.Height,
-                         TRqPosition = temporaryItem.Width
-                     };
-                     if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
-                     {
-                         temporaryBin.NestedItems = new List<Item>
+                }
+                else
+                {
+                    pricedItem = new Item()
+                    {
+                        Height = temporaryItem.Width,
+                        Width = temporaryItem.Height,
+                        Id = temporaryItem.Id,
+                        Price = temporaryItem.Price,
+                        TLqPosition = temporaryItem.Width,
+                        BRpPosition = temporaryItem.Height,
+                        TRpPosition = temporaryItem.Height,
+                        TRqPosition = temporaryItem.Width
+                    };
+                    if (IsBorderObserved(pricedItem, temporaryBin.Height, temporaryBin.Width))
+                    {
+                        temporaryBin.NestedItems = new List<Item>
                          {
                              pricedItem
                          };
-                         HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), pricedItem);
-                     }
-                 }
+                        HandleOperationsPostNestedItem(temporaryBin, temporaryItem, temporaryBin.Points.ElementAt(0), pricedItem);
+                    }
+                }
 
-                 
-                 //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in "
-                  //      + temporaryBin.Points.ElementAt(0).PfinalPosition + ", " +
-                      //  temporaryBin.Points.ElementAt(0).QfinalPosition + ", " + temporaryBin.Points.ElementAt(0).Rposition + " BIN " + temporaryBin.Id);
-                 return temporaryBin;
+
+                //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in "
+                //      + temporaryBin.Points.ElementAt(0).PfinalPosition + ", " +
+                //  temporaryBin.Points.ElementAt(0).QfinalPosition + ", " + temporaryBin.Points.ElementAt(0).Rposition + " BIN " + temporaryBin.Id);
+                return temporaryBin;
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
@@ -135,7 +135,8 @@ namespace Nesting_4
                                 TRpPosition = feasiblePoint.Pposition + temporaryItem.Width,
                                 TRqPosition = feasiblePoint.Qposition + temporaryItem.Height
                             };
-                        }else if (feasiblePoint.Rposition == 1)
+                        }
+                        else if (feasiblePoint.Rposition == 1)
                         {
                             newPricedItem = new Item()
                             {
@@ -164,14 +165,14 @@ namespace Nesting_4
                                                                .FirstOrDefault();
 
                 //se non riesco a trovare la tupla, vuol dire che le tuple sono finite 
-                
+
                 if (minHatchedAreaTuple == null)
                 {
                     return temporaryBin;
                 }
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
-                IList <Tuple> minHatchedAreaPoints = new List<Tuple>();
+                IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
                 foreach (var point in temporaryBin.Points)
                 {
                     if (point.HatchedArea == minHatchedAreaTuple.HatchedArea && !point.IsUsed)
@@ -201,7 +202,8 @@ namespace Nesting_4
                             TRpPosition = minHatchedAreaPoint.PfinalPosition + temporaryItem.Width,
                             TRqPosition = minHatchedAreaPoint.QfinalPosition + temporaryItem.Height
                         };
-                    }else if (minHatchedAreaPoint.Rposition == 1)
+                    }
+                    else if (minHatchedAreaPoint.Rposition == 1)
                     {
                         pricedItem = new Item()
                         {
@@ -220,8 +222,8 @@ namespace Nesting_4
                         };
                     }
                     //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in "
-                      //  + minHatchedAreaPoint.PfinalPosition + ", " +
-                        //minHatchedAreaPoint.QfinalPosition + ", " + minHatchedAreaPoint.Rposition + " BIN " + temporaryBin.Id);
+                    //  + minHatchedAreaPoint.PfinalPosition + ", " +
+                    //minHatchedAreaPoint.QfinalPosition + ", " + minHatchedAreaPoint.Rposition + " BIN " + temporaryBin.Id);
 
                     temporaryBin.NestedItems.Add(pricedItem);
                     HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minHatchedAreaPoint, pricedItem);
@@ -248,7 +250,8 @@ namespace Nesting_4
                             TRpPosition = minCoordinatePoint.PfinalPosition + temporaryItem.Width,
                             TRqPosition = minCoordinatePoint.QfinalPosition + temporaryItem.Height
                         };
-                    }else if(minCoordinatePoint.Rposition == 1)
+                    }
+                    else if (minCoordinatePoint.Rposition == 1)
                     {
                         pricedItem = new Item()
                         {
@@ -268,8 +271,8 @@ namespace Nesting_4
                     }
 
                     //Console.WriteLine("item " + pricedItem.Id + "(" + pricedItem.Height + ", " + pricedItem.Width + ") nested in " 
-                      //  + minCoordinatePoint.PfinalPosition + ", " +
-                        //minCoordinatePoint.QfinalPosition + ", " + minCoordinatePoint.Rposition + " BIN " + temporaryBin.Id);
+                    //  + minCoordinatePoint.PfinalPosition + ", " +
+                    //minCoordinatePoint.QfinalPosition + ", " + minCoordinatePoint.Rposition + " BIN " + temporaryBin.Id);
 
                     temporaryBin.NestedItems.Add(pricedItem);
                     HandleOperationsPostNestedItem(temporaryBin, temporaryItem, minCoordinatePoint, pricedItem);
@@ -293,7 +296,7 @@ namespace Nesting_4
                                                        x.Qposition == point.QfinalPosition &&
                                                        x.PfinalPosition == point.PfinalPosition &&
                                                        x.QfinalPosition == point.QfinalPosition);
-                                                   //.FirstOrDefault();
+            //.FirstOrDefault();
 
             //gestisco il fatto che ci possano essere più punti che portano alle stesse coordinate finali
             if (matchingPoints != null)
@@ -318,7 +321,8 @@ namespace Nesting_4
             //controllo se non è più possibile usare dei punti 
             foreach (var p in temporaryBin.Points)
             {
-                foreach (var matchingPoint in matchingPoints) { 
+                foreach (var matchingPoint in matchingPoints)
+                {
                     //cerco punti "coperti" dal nuovo item nestato
                     if ((p.Pposition >= pricedItem.BLpPosition && p.Pposition < pricedItem.BRpPosition &&
                     p.Qposition >= pricedItem.BLqPosition && p.Qposition < pricedItem.TLqPosition) ||
@@ -470,7 +474,7 @@ namespace Nesting_4
 
             //controllo se l'oggetto, anche essendo stato spostato in basso a sintra, sborderebbe e
             //se la posizione in cui deve essere nestato il nuovo item comporterebbe delle sovrapposizioni con item già in soluzione
-            if (IsBorderObserved(newItem, temporaryBin.Height, temporaryBin.Width)&& IsOverlappingOk(newItem, temporaryBin)) 
+            if (IsBorderObserved(newItem, temporaryBin.Height, temporaryBin.Width) && IsOverlappingOk(newItem, temporaryBin))
             {
                 ComputeHatchedArea(feasiblePoint, newItem, downIntersectedItems, leftIntersectedItems);
                 //Console.WriteLine("(" + feasiblePoint.Pposition + ", " + feasiblePoint.Qposition + "), HR = " + feasiblePoint.HatchedArea +
@@ -497,7 +501,7 @@ namespace Nesting_4
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
             double partialHatchedArea;
 
-            if(downIntersectedItems.Count > 0)
+            if (downIntersectedItems.Count > 0)
             {
                 //definiso la green area sotto il nuovo item
                 AdjacentItem adjacentItem = new AdjacentItem()
@@ -617,7 +621,7 @@ namespace Nesting_4
             }
 
             feasiblePoint.HatchedArea = totalHatchedArea;
-            
+
         }
 
 
@@ -630,7 +634,7 @@ namespace Nesting_4
         /// <param name="temporaryItem"></param>
         /// <param name="newNestedItem"></param>
         /// <returns></returns>
-        private IList<Item> PushItemDown( Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private IList<Item> PushItemDown(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<Item> intersectedItems = new List<Item>();
@@ -779,7 +783,7 @@ namespace Nesting_4
         {
             return newItem.TLqPosition <= temporaryBinHeight && newItem.BRpPosition <= temporaryBinWidth;
         }
-        
+
         /// <summary>
         /// metodo per controllare se nestare un nuovo item in un certo punto
         /// comporta delle sovrapposizioni tra nuovo item e item già in soluzione
@@ -793,7 +797,8 @@ namespace Nesting_4
             {
                 //se c'è overlap
                 if (nestedItem.BLpPosition < newItem.BRpPosition && nestedItem.BRpPosition > newItem.BLpPosition
-                    && nestedItem.BLqPosition < newItem.TLqPosition && nestedItem.TLqPosition > newItem.BLqPosition) {                    
+                    && nestedItem.BLqPosition < newItem.TLqPosition && nestedItem.TLqPosition > newItem.BLqPosition)
+                {
                     return false;
                 }
             }
@@ -897,6 +902,25 @@ namespace Nesting_4
             }
             return result;
 
+        }
+
+        public void CheckSolution(IList<Item> items, IList<Bin<Tuple>> bins, int iter)
+        {
+            int nestedItemSum = 0;
+
+            foreach (var bin in bins)
+            {
+                if (bin.NestedItems != null)
+                {
+                    nestedItemSum += bin.NestedItems.Count;
+                }
+            }
+
+            Console.WriteLine("iter " + iter + ": nestedItemSum " + nestedItemSum + " - " + "items " + items.Count);
+            if(nestedItemSum != items.Count) {
+                Console.WriteLine("===========================================================================");
+                Environment.Exit(1);
+            }
         }
     }
 }
