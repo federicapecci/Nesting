@@ -23,11 +23,11 @@ namespace Nesting_4
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public IList<Sequence> ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
+        public Sequence ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
                             string pricingRule, string priceUpdatingRule)
         {
 
-            IList<Sequence> sequences = new List<Sequence>();
+            Sequence sequence = new Sequence();
             //================ STEP 1 - INITIALIZATION ================
 
             //inizializzo il prezzo v associato ad ogni item j
@@ -100,7 +100,7 @@ namespace Nesting_4
             }
 
             int itemNumber = counter + 1;
-            counter = 0;
+            
             //inizializzo il costo della soluzione con il numero degli elementi
             int zStar = itemNumber;
             
@@ -115,11 +115,11 @@ namespace Nesting_4
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
-        l3:
-            Sequence sequence = new Sequence()
+        l3: counter = 0;
+            /*Sequence sequence = new Sequence()
             {
                 Bins = new List<Bin<Tuple>>()
-            };
+            };*/
 
             //creo una lista temporanea J' di item 
             IList<Item> temporaryItems = new List<Item>();
@@ -158,24 +158,27 @@ namespace Nesting_4
             //1) ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
             //dato che i price sono stati aggiornati;
             //2) riattribuisco gli id agli item, così l'item col prezzo maggiore è quello che ha l'id 0 e così via
-            var sortedTemporaryItems = new List<Item>();
+            /*var sortedTemporaryItems = new List<Item>();
             counter = 0;
             foreach(var temporaryItem in temporaryItems.OrderByDescending(x => x.Price))
             {
                 sortedTemporaryItems.Add(temporaryItem);
                 temporaryItem.Id = counter;
                 counter += 1;
-            }
+            }*/
+
+            temporaryItems = temporaryItems.OrderByDescending(x => x.Price).ToList();
+
 
         //================ STEP 3 - FILLING UP BIN i ================
         l1: //Console.WriteLine("ciao");
 
             //cerco la posizione migliore per ogni item j'
-            foreach (var sortedTemporaryItem in sortedTemporaryItems)
+            foreach (var temporaryItem in temporaryItems)
             {                
-                if (!sortedTemporaryItem.IsRemoved)
+                if (!temporaryItem.IsRemoved)
                 {                   
-                    Utilities.IsBestPositionFound(temporaryBins.ElementAt(i), sortedTemporaryItem, itemAllocationMethod);
+                    Utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem, itemAllocationMethod);
                     //salvo un bin nuovo ogni volta che  viene aggiunto un elemento
                     /*var tempBin = temporaryBins[i];
                     Bin<Tuple> b;
@@ -212,9 +215,9 @@ namespace Nesting_4
             bool isSortedTemporaryItemsEmpty = true;
 
             //controllo se tutta la lista è stata svuotata
-            foreach (var sortedTemporaryItem in sortedTemporaryItems)
+            foreach (var temporaryItem in temporaryItems)
             {
-                if (sortedTemporaryItem.IsRemoved == false)
+                if (temporaryItem.IsRemoved == false)
                 {
                     isSortedTemporaryItemsEmpty = false;
                     break;
@@ -237,8 +240,9 @@ namespace Nesting_4
         l0: zStar = z;
             bins = temporaryBins;
 
+            Utilities.CheckSolution(items, bins, iter);
             //aggiungo la sequenza di un certa iterazione
-            Sequence sequence1 = new Sequence()
+            Sequence s = new Sequence()
             {
                 Zstar = zStar,
                 Bins = new List<Bin<Tuple>>(),
@@ -250,17 +254,17 @@ namespace Nesting_4
                     priceUpdatingRule
                 }
             };
-            sequence1.Bins = bins;
-            sequences.Add(sequence1);
-            Utilities.CheckSolution(items, bins, iter);
+            s.Bins = bins;
+            sequence = s;
+           
             //============================================
 
-            //================ STEP 6 - CHECK OPTIMALITY ================
-            //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
-            if (zStar > lowerBoundMin && zStar < lowerBoundMax)
-            {
-                goto end;
-            }
+        //================ STEP 6 - CHECK OPTIMALITY ================
+        //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
+        if (zStar > lowerBoundMin && zStar < lowerBoundMax)
+        {
+            goto end;
+        }
 
         //================ STEP 7 - UPDATE THE ITEM PRICES ================
 
@@ -272,6 +276,7 @@ namespace Nesting_4
             {
                 PricingUtilities.ComputePricingUpdateRule(z, items, temporaryBins, priceUpdatingRule);
                 iter += 1;
+                
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
                 foreach (var item in items)
                 {
@@ -282,32 +287,8 @@ namespace Nesting_4
             }
 
         end:
-            //aggiungo la sequenza dell'ultima iterazione
-            /*Sequence sequence2 = new Sequence()
-            {
-                Zstar = zStar,
-                Bins = new List<Bin<Tuple>>(),
-                IteratioNumber = iter,
-                Criterias = new List<string>
-                 {
-                    itemAllocationMethod,
-                    pricingRule,
-                    priceUpdatingRule
-                 }
-            };
-            sequence2.Bins = temporaryBins;
-            sequences.Add(sequence2);*/
-            //===========================================
-
-            //Utilities.CheckSolution(items, temporaryBins, iter);
-
-            //Sequence firstSequence = sequences.FirstOrDefault();
-            Sequence lastSequence = sequences.LastOrDefault();
-            sequences.Clear();
-            //sequences.Add(firstSequence);
-            sequences.Add(lastSequence);
-        
-            return sequences;
+                  
+            return sequence;
         }
     }
 }

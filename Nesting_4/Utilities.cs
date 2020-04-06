@@ -337,7 +337,7 @@ namespace Nesting_4
                 }
             }
 
-            //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points
+            //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points e non è statao usato
             Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
                                                    x.Qposition == point.QfinalPosition + pricedItem.Height &&
                                                    x.IsUsed == false).FirstOrDefault();
@@ -389,9 +389,10 @@ namespace Nesting_4
 
             isPointLyingOnItemSide = false;
 
-            //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points
+            //controllo se il secondo nuovo punto (BR) da aggiungere è già presente nella lista temporaryBin.Points e non è statao usato
             pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition + pricedItem.Width &&
-                                                        x.Qposition == point.QfinalPosition).FirstOrDefault();
+                                                        x.Qposition == point.QfinalPosition &&
+                                                        x.IsUsed == false).FirstOrDefault();
 
             //definisco il secondo nuovo punto
             var secondPoint = new Tuple()
@@ -886,13 +887,13 @@ namespace Nesting_4
                             pMinTuples.Add(pMinTuple);
                         }
                     }
-                    if (qMinTuples.Count == 1)
+                    if (pMinTuples.Count == 1)
                     {
-                        result = qMinTuples.ElementAt(0);
+                        result = pMinTuples.ElementAt(0);
                     }
                     else
                     {
-                        result = qMinTuples.OrderBy(x => x.Rposition).First();
+                        result = pMinTuples.OrderBy(x => x.Rposition).First();
                     }
                 }
             }
@@ -919,7 +920,7 @@ namespace Nesting_4
             Console.WriteLine("iter " + iter + ": nestedItemSum " + nestedItemSum + " - " + "items " + items.Count);
             if(nestedItemSum != items.Count) {
                 Console.WriteLine("===========================================================================");
-                Environment.Exit(1);
+                //Environment.Exit(1);
             }
         }
     }

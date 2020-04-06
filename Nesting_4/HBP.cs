@@ -41,15 +41,28 @@ namespace Nesting_4
             };
             IList<string> pricingRules = new List<string>
             {
-                //"IP1",
-                //"IP2",
+                "IP1",
+                "IP2",
                 "IP3",
-                //"IP4"
+                "IP4"
             };
             IList<string> priceUpdatingRules = new List<string>
             {
                 "PU1",
-                "PU2"
+                "PU2",
+                "PU3",
+
+                //"PU001",
+                //"PU002",
+                //"PU005",
+                //"PU02",
+                //"PU05",
+
+                //"PU001R",
+                //"PU002R",
+                //"PU005R",
+                //"PU02R",
+                //"PU05R"
             };
 
             foreach (var itemAllocationMethod in itemAllocationMethods)
@@ -59,13 +72,10 @@ namespace Nesting_4
                     foreach (var priceUpdatingRule in priceUpdatingRules)
                     {
                         //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
-                        IList<Sequence> sequences = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
+                        Sequence sequence = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
 
-                        foreach(var sequence in sequences)
-                        {
-                            Sequences.Add(sequence);
-                        }
+                        Sequences.Add(sequence);
 
                         if (Sequences[Sequences.Count - 1].Zstar < upperBound)
                         {
