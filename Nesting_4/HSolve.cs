@@ -8,7 +8,7 @@ namespace Nesting_4
     /// <summary>
     /// classe che implementa l'euristica 
     /// </summary>
-    class HSolve : IHSolve
+     class HSolve : IHSolve
     {
         public IUtilities Utilities { get; set; } = null;
 
@@ -209,8 +209,7 @@ namespace Nesting_4
                 }
             }
 
-
-            //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
+        //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
             int z = i;
             bool isSortedTemporaryItemsEmpty = true;
 
@@ -240,28 +239,54 @@ namespace Nesting_4
         l0: zStar = z;
             bins = temporaryBins;
 
-            Utilities.CheckSolution(items, bins, iter);
-            //aggiungo la sequenza di un certa iterazione
-            Sequence s = new Sequence()
+            if (Utilities.IsSolutionCorrect(items, bins, iter) && Utilities.IsNewBestWidthFound(bins[i].NestedItems))
             {
-                Zstar = zStar,
-                Bins = new List<Bin<Tuple>>(),
-                IteratioNumber = iter,
-                Criterias = new List<string>
+
+                //aggiungo la sequenza di un certa iterazione
+                Sequence s = new Sequence()
                 {
-                    itemAllocationMethod,
-                    pricingRule,
-                    priceUpdatingRule
+                    Zstar = zStar,
+                    Bins = new List<Bin<Tuple>>(),
+                    IteratioNumber = iter,
+                    Criterias = new List<string>
+                    {
+                        itemAllocationMethod,
+                        pricingRule,
+                        priceUpdatingRule
+                    },
+                    WidthCovered = Utilities.GetBestWidthFound(),
+                    UsedAreaAbsoluteValue = Utilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
+                    UsedAreaPercentageValue = Utilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
+                };
+
+                s.Bins = bins.Where(x => x.NestedItems != null).ToList();
+                sequence = s;
+
+                //per debuggare  ampiezza item in ultimo bin
+                /*foreach(var nestedItem in bins[i].NestedItems)
+                {
+                    if(nestedItem.BLqPosition == 0)
+                    {
+                        Console.WriteLine("lunghezza item " + nestedItem.Width + " con id " + nestedItem.Id);
+                    }
                 }
-            };
-            s.Bins = bins;
-            sequence = s;
-           
+
+                //per debuggare area item in ultimo bin
+                foreach (var nestedItem in bins[i].NestedItems)
+                {
+                    double area = nestedItem.Height * nestedItem.Width;
+                    Console.WriteLine("item area " + area);
+                    
+                }*/
+
+            }
+
+
             //============================================
 
-        //================ STEP 6 - CHECK OPTIMALITY ================
-        //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
-        if (zStar > lowerBoundMin && zStar < lowerBoundMax)
+            //================ STEP 6 - CHECK OPTIMALITY ================
+            //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
+            if (zStar > lowerBoundMin && zStar < lowerBoundMax)
         {
             goto end;
         }

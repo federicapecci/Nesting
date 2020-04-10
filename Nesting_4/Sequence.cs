@@ -29,6 +29,20 @@ namespace Nesting_4
         /// </summary>
         public IList<Bin<Tuple>> Bins { get; set; } = null;
 
+        /// <summary>
+        /// campo in cui salvo la lunghezza massima coperta dagli item
+        /// nell'ultimo bin
+        /// </summary>
+        public double WidthCovered { get; set; } = double.MaxValue;
 
+        /// <summary>
+        /// area in valore assoluto utilizzata nell'ultimo bin
+        /// </summary>
+        public double UsedAreaAbsoluteValue { get; set; } = -1;
+
+        /// <summary>
+        /// area in percentuale utilizzata nell'ultimo bin
+        /// </summary>
+        public double UsedAreaPercentageValue { get; set; } = -1;
     }
 }

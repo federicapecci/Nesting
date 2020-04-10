@@ -33,7 +33,14 @@ namespace Nesting_4
 
         public void ComputeAlgorithm()
         {
-            int upperBound = int.MaxValue;
+            //int upperBound = int.MaxValue;
+            double widthCovered = double.MaxValue;
+
+            //IList<string> optimizationCriterias = new List<string>
+            //{
+            //    "WM"
+            //};
+
             IList<string> itemAllocationMethods = new List<string>
             {
                 "AC1",
@@ -52,18 +59,20 @@ namespace Nesting_4
                 "PU2",
                 "PU3",
 
-                //"PU001",
-                //"PU002",
-                //"PU005",
-                //"PU02",
-                //"PU05",
+                "PU001",
+                "PU002",
+                "PU005",
+                "PU02",
+                "PU05",
 
-                //"PU001R",
-                //"PU002R",
-                //"PU005R",
-                //"PU02R",
-                //"PU05R"
+                "PU001R",
+                "PU002R",
+                "PU005R",
+                "PU02R",
+                "PU05R"
             };
+
+
 
             foreach (var itemAllocationMethod in itemAllocationMethods)
             {
@@ -74,17 +83,33 @@ namespace Nesting_4
                         //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
                         Sequence sequence = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
+                        
+                        //controllo se la lunghezza coperta dall'ultimo bin della soluzione è 
+                        //minore rispetto alle sequenze precedentemente trovate 
+                        if (sequence.WidthCovered < widthCovered)
+                        {
+                            widthCovered = sequence.WidthCovered;
+                            Console.WriteLine("widthCovered " + widthCovered + ", " + itemAllocationMethod + " " +
+                                pricingRule + " " + priceUpdatingRule);
+                            Sequences.Clear();
+                            Sequences.Add(sequence);
+                        }
 
-                        Sequences.Add(sequence);
-
-                        if (Sequences[Sequences.Count - 1].Zstar < upperBound)
+                        /*if (Sequences[Sequences.Count - 1].Zstar < upperBound)
                         {
                             upperBound = Sequences[Sequences.Count - 1].Zstar;
-                        }
+                        }*/
                     }
                 }
             }
-            Console.WriteLine(upperBound + 1);
+            Console.WriteLine("\n");
+            Console.WriteLine("numero bin " + Sequences[0].Bins.Count);
+            Console.WriteLine("lunghezza coperta ultimo bin "+ Sequences[0].WidthCovered);
+            Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[0].UsedAreaAbsoluteValue);
+            Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[0].UsedAreaPercentageValue + "%");
+            //Console.WriteLine(upperBound + 1);
+
+
         }
     }              
 }

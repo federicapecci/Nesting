@@ -10,6 +10,9 @@ namespace Nesting_4
     /// </summary>
     class Utilities : IUtilities
     {
+
+        public double CurrentBestWidth { get; set; } = double.MaxValue;
+
         /// <summary>
         /// metodo per calcolare il lower bound
         /// </summary>
@@ -905,10 +908,9 @@ namespace Nesting_4
 
         }
 
-        public void CheckSolution(IList<Item> items, IList<Bin<Tuple>> bins, int iter)
+        public bool IsSolutionCorrect(IList<Item> items, IList<Bin<Tuple>> bins, int iter)
         {
             int nestedItemSum = 0;
-
             foreach (var bin in bins)
             {
                 if (bin.NestedItems != null)
@@ -917,11 +919,75 @@ namespace Nesting_4
                 }
             }
 
-            Console.WriteLine("iter " + iter + ": nestedItemSum " + nestedItemSum + " - " + "items " + items.Count);
-            if(nestedItemSum != items.Count) {
-                Console.WriteLine("===========================================================================");
-                //Environment.Exit(1);
+            //Console.WriteLine("iter " + iter + ": nestedItemSum " + nestedItemSum + " - " + "items " + items.Count);
+            
+            if (nestedItemSum != items.Count)
+            {
+                Console.WriteLine("==================================== ERROR =======================================");
+                return false;
             }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// questo metodo calcola in un bin la massima lunghezza occupata dagli un item
+        /// </summary>
+        /// <param name="bins"></param>
+        /// <returns></returns>
+        public bool IsNewBestWidthFound(IList<Item> nestedItems) {           
+            double currentWidth = double.MinValue;
+
+
+            foreach (var nestedItem in nestedItems)
+            {
+                if (nestedItem.BRpPosition > currentWidth)
+                {
+                    currentWidth = nestedItem.BRpPosition;
+                }
+            }
+          
+
+            if (currentWidth < CurrentBestWidth)
+            {
+                CurrentBestWidth = currentWidth;
+                return true;
+            }
+            return false;
+                         
+        }
+
+        public double GetBestWidthFound()
+        {
+            return CurrentBestWidth;
+        }
+
+        public double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems)
+        {
+            double usedArea = 0; 
+            foreach(var nestedItem in nestedItems)
+            {
+                usedArea += nestedItem.Height * nestedItem.Width;
+            }
+            return usedArea;
+        }
+
+        public double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth)
+        {
+            double usedArea = 0;
+            double percentage;
+            foreach (var nestedItem in nestedItems)
+            {
+                usedArea += nestedItem.Height * nestedItem.Width;
+            }
+
+            //x : 100 = area usata: area totale
+            percentage = usedArea * 100 / (binHeight * binWidth);
+            percentage = Math.Round(percentage, 2, MidpointRounding.AwayFromZero);
+
+            return percentage;
         }
     }
 }

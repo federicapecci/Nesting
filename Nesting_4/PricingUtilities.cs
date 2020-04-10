@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Nesting_4
 {
-    public class PricingUtilities: IPricingUtilities
+    class PricingUtilities: IPricingUtilities
     {
         public double ComputePricingRule(string pricingRule, double height, double width)
         {
