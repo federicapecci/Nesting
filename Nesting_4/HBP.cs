@@ -119,13 +119,24 @@ namespace Nesting_4
             Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[0].UsedAreaAbsoluteValue);
             Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[0].UsedAreaPercentageValue + "%");
 
+            foreach(var item in Sequences[0].Bins[1].NestedItems)
+            {
+                Console.WriteLine(item.Height * item.Width);
+            }
+
             Console.WriteLine("\n SEQUENZA W// MIN AREA");
             Console.WriteLine("numero bin " + Sequences[1].Bins.Count);
             Console.WriteLine("Area coperta ultimo bin " + Sequences[1].AreaCovered);
+            Console.WriteLine("lunghezza coperta ultimo bin " + Sequences[1].WidthCovered);
             Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[1].UsedAreaAbsoluteValue);
             Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[1].UsedAreaPercentageValue + "%");
             foreach (var criteria in Sequences[1].Criterias) {
                 Console.WriteLine(criteria);
+            }
+
+            foreach (var item in Sequences[1].Bins[1].NestedItems)
+            {
+                Console.WriteLine(item.Height * item.Width);
             }
 
             //Console.WriteLine(upperBound + 1);

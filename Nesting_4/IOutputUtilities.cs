@@ -18,5 +18,7 @@ namespace Nesting_4
          bool IsNewBestAreaFound(IList<Item> nestedItems);
 
          double GetBestAreaFound();
+
+        double ComputeWidthLastBin(IList<Item> nestedItems);
     }
 }

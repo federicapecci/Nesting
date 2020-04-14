@@ -287,6 +287,7 @@ namespace Nesting_4
                         pricingRule,
                         priceUpdatingRule
                     },
+                    WidthCovered = OutputUtilities.ComputeWidthLastBin(bins[i].NestedItems),
                     AreaCovered = OutputUtilities.GetBestAreaFound(),
                     UsedAreaAbsoluteValue = OutputUtilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
                     UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)

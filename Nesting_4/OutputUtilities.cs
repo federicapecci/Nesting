@@ -91,5 +91,20 @@ namespace Nesting_4
             return CurrentBestArea;
         }
 
+        public double ComputeWidthLastBin(IList<Item> nestedItems)
+        {
+            double currentWidth = double.MinValue;
+
+            foreach (var nestedItem in nestedItems)
+            {
+                if (nestedItem.BRpPosition > currentWidth)
+                {
+                    currentWidth = nestedItem.BRpPosition;
+                }
+            }
+
+            return currentWidth;
+        }
+
     }
 }
