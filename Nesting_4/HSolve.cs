@@ -26,11 +26,14 @@ namespace Nesting_4
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
-        public Sequence ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
+        public IList<Sequence> ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
                             string pricingRule, string priceUpdatingRule)
         {
 
-            Sequence sequence = new Sequence();
+            IList<Sequence> sequences = new List<Sequence>();
+
+            sequences.Add(new Sequence());
+            sequences.Add(new Sequence());
             //================ STEP 1 - INITIALIZATION ================
 
             //inizializzo il prezzo v associato ad ogni item j
@@ -265,7 +268,35 @@ namespace Nesting_4
 
                 //per mettere in sequence solo i bin che hanno elementi e non quelli dove nestedItems = null
                 s.Bins = bins.Where(x => x.NestedItems != null).ToList();
-                sequence = s;
+
+                sequences.RemoveAt(0);
+                sequences.Insert(0, s);
+            }
+
+            if (OutputUtilities.IsNewBestAreaFound(bins[i].NestedItems))
+            {
+                //aggiungo la sequenza di un certa iterazione
+                Sequence s = new Sequence()
+                {
+                    Zstar = zStar,
+                    Bins = new List<Bin<Tuple>>(),
+                    IteratioNumber = iter,
+                    Criterias = new List<string>
+                    {
+                        itemAllocationMethod,
+                        pricingRule,
+                        priceUpdatingRule
+                    },
+                    AreaCovered = OutputUtilities.GetBestAreaFound(),
+                    UsedAreaAbsoluteValue = OutputUtilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
+                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
+                };
+
+                //per mettere in sequence solo i bin che hanno elementi e non quelli dove nestedItems = null
+                s.Bins = bins.Where(x => x.NestedItems != null).ToList();
+
+                sequences.RemoveAt(1);
+                sequences.Insert(1, s);
             }
 
             //================ STEP 6 - CHECK OPTIMALITY ================
@@ -297,7 +328,7 @@ namespace Nesting_4
 
         end:
                   
-            return sequence;
+            return sequences;
         }
     }
 }

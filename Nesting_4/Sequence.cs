@@ -44,5 +44,7 @@ namespace Nesting_4
         /// area in percentuale utilizzata nell'ultimo bin
         /// </summary>
         public double UsedAreaPercentageValue { get; set; } = -1;
+
+        public double AreaCovered { get; set; } = double.MaxValue;
     }
 }

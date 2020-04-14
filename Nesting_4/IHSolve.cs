@@ -8,7 +8,7 @@ namespace Nesting_4
 {
     interface IHSolve
     {
-        Sequence ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
+        IList<Sequence> ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
                             string pricingRule, string priceUpdatingRule);
     }
 }

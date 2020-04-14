@@ -35,6 +35,7 @@ namespace Nesting_4
         {
             //int upperBound = int.MaxValue;
             double widthCovered = double.MaxValue;
+            double areaCovered = double.MaxValue;
 
             IList<string> itemAllocationMethods = new List<string>
             {
@@ -67,7 +68,8 @@ namespace Nesting_4
                 "PU05R"
             };
 
-
+            Sequences.Add(new Sequence());
+            Sequences.Add(new Sequence());
 
             foreach (var itemAllocationMethod in itemAllocationMethods)
             {
@@ -76,32 +78,56 @@ namespace Nesting_4
                     foreach (var priceUpdatingRule in priceUpdatingRules)
                     {
                         //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
-                        Sequence sequence = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
+                        IList<Sequence> sequences = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
                         
                         //controllo se la lunghezza coperta dall'ultimo bin della soluzione è 
-                        //minore rispetto alle sequenze precedentemente trovate 
-                        if (sequence.WidthCovered < widthCovered)
+                        //minore rispetto alla lunghezza trovata nelle sequenze precedentementi 
+                        if (sequences[0].WidthCovered < widthCovered)
                         {
-                            widthCovered = sequence.WidthCovered;
-                            Console.WriteLine("widthCovered " + widthCovered + ", " + itemAllocationMethod + " " +
+                            widthCovered = sequences[0].WidthCovered;
+                            Console.WriteLine("LUNGHEZZA UPDATE -> widthCovered " + widthCovered + ", " + itemAllocationMethod + " " +
                                 pricingRule + " " + priceUpdatingRule);
-                            Sequences.Clear();
-                            Sequences.Add(sequence);
+                            Sequences.RemoveAt(0);
+                            Sequences.Insert(0,sequences[0]);
+                        }
+
+                        //controllo se l'area coperta dall'ultimo bin della soluzione è 
+                        //minore rispetto all'area trovata nelle sequenze precedentementi 
+                        if (sequences[1].AreaCovered < areaCovered)
+                        {
+                            areaCovered = sequences[1].AreaCovered;
+                            Console.WriteLine("AREA UPDATE -> areaCovered " + areaCovered + ", " + itemAllocationMethod + " " +
+                                pricingRule + " " + priceUpdatingRule);
+                            Sequences.RemoveAt(1);
+                            Sequences.Insert(1, sequences[1]);
                         }
 
                         /*if (Sequences[Sequences.Count - 1].Zstar < upperBound)
                         {
                             upperBound = Sequences[Sequences.Count - 1].Zstar;
                         }*/
+
+                        //Console.WriteLine("ciao");
                     }
                 }
             }
-            Console.WriteLine("\n");
+
+            Console.WriteLine("\n SEQUENZA W// MIN LUNGHEZZA");
             Console.WriteLine("numero bin " + Sequences[0].Bins.Count);
             Console.WriteLine("lunghezza coperta ultimo bin "+ Sequences[0].WidthCovered);
             Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[0].UsedAreaAbsoluteValue);
             Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[0].UsedAreaPercentageValue + "%");
+
+            Console.WriteLine("\n SEQUENZA W// MIN AREA");
+            Console.WriteLine("numero bin " + Sequences[1].Bins.Count);
+            Console.WriteLine("Area coperta ultimo bin " + Sequences[1].AreaCovered);
+            Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[1].UsedAreaAbsoluteValue);
+            Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[1].UsedAreaPercentageValue + "%");
+            foreach (var criteria in Sequences[1].Criterias) {
+                Console.WriteLine(criteria);
+            }
+
             //Console.WriteLine(upperBound + 1);
 
 

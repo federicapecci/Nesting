@@ -9,12 +9,14 @@ namespace Nesting_4
 
         public double CurrentBestWidth { get; set; } = double.MaxValue;
 
+        public double CurrentBestArea { get; set; } = double.MaxValue;
+
         /// <summary>
         /// questo metodo calcola in un bin la massima lunghezza occupata dagli item
         /// </summary>
         /// <param name="bins"></param>
         /// <returns></returns>
-        public bool IsNewBestWidthFound(IList<Item> nestedItems) //
+        public bool IsNewBestWidthFound(IList<Item> nestedItems) 
         {
             double currentWidth = double.MinValue;
 
@@ -35,12 +37,12 @@ namespace Nesting_4
 
         }
 
-        public double GetBestWidthFound() //
+        public double GetBestWidthFound() 
         {
             return CurrentBestWidth;
         }
 
-        public double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems) //
+        public double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems) 
         {
             double usedArea = 0;
             foreach (var nestedItem in nestedItems)
@@ -50,7 +52,7 @@ namespace Nesting_4
             return usedArea;
         }
 
-        public double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth) //
+        public double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth) 
         {
             double usedArea = 0;
             double percentage;
@@ -64,6 +66,29 @@ namespace Nesting_4
             percentage = Math.Round(percentage, 2, MidpointRounding.AwayFromZero);
 
             return percentage;
+        }
+
+        public bool IsNewBestAreaFound(IList<Item> nestedItems)
+        {
+            double currentArea = 0;
+
+            foreach (var nestedItem in nestedItems)
+            {
+                currentArea += nestedItem.Height * nestedItem.Width;
+            }
+
+            if (currentArea < CurrentBestArea)
+            {
+                CurrentBestArea = currentArea;
+                return true;
+            }
+            return false;
+
+        }
+
+        public double GetBestAreaFound()
+        {
+            return CurrentBestArea;
         }
 
     }
