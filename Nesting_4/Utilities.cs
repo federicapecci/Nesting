@@ -11,7 +11,7 @@ namespace Nesting_4
     class Utilities : IUtilities
     {
 
-        public double CurrentBestWidth { get; set; } = double.MaxValue;
+        //public double CurrentBestWidth { get; set; } = double.MaxValue;
 
         /// <summary>
         /// metodo per calcolare il lower bound
@@ -933,11 +933,11 @@ namespace Nesting_4
         }
 
         /// <summary>
-        /// questo metodo calcola in un bin la massima lunghezza occupata dagli un item
+        /// questo metodo calcola in un bin la massima lunghezza occupata dagli item
         /// </summary>
         /// <param name="bins"></param>
         /// <returns></returns>
-        public bool IsNewBestWidthFound(IList<Item> nestedItems) {           
+        /*public bool IsNewBestWidthFound(IList<Item> nestedItems) {           
             double currentWidth = double.MinValue;
 
 
@@ -988,7 +988,7 @@ namespace Nesting_4
             percentage = Math.Round(percentage, 2, MidpointRounding.AwayFromZero);
 
             return percentage;
-        }
+        }*/
     }
 }
 

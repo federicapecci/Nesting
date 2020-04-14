@@ -14,12 +14,5 @@ namespace Nesting_4
 
         bool IsSolutionCorrect(IList<Item> items, IList<Bin<Tuple>> bins, int iter);
 
-        bool IsNewBestWidthFound(IList<Item> nestedItems);
-
-        double GetBestWidthFound();
-
-        double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems);
-
-        double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth);
     }
 }

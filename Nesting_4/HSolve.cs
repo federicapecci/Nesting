@@ -14,10 +14,13 @@ namespace Nesting_4
 
         public IPricingUtilities PricingUtilities { get; set; } = null;
 
+        public IOutputUtilities OutputUtilities { get; set; } = null;
+
         public HSolve()
         {
             Utilities = new Utilities();
             PricingUtilities = new PricingUtilities();
+            OutputUtilities = new OutputUtilities();
         }
        
         /// <summary>
@@ -239,9 +242,10 @@ namespace Nesting_4
         l0: zStar = z;
             bins = temporaryBins;
 
-            if (Utilities.IsSolutionCorrect(items, bins, iter) && Utilities.IsNewBestWidthFound(bins[i].NestedItems))
-            {
+            Utilities.IsSolutionCorrect(items, bins, iter);
 
+            if (OutputUtilities.IsNewBestWidthFound(bins[i].NestedItems)) 
+            {
                 //aggiungo la sequenza di un certa iterazione
                 Sequence s = new Sequence()
                 {
@@ -254,35 +258,15 @@ namespace Nesting_4
                         pricingRule,
                         priceUpdatingRule
                     },
-                    WidthCovered = Utilities.GetBestWidthFound(),
-                    UsedAreaAbsoluteValue = Utilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
-                    UsedAreaPercentageValue = Utilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
+                    WidthCovered = OutputUtilities.GetBestWidthFound(),
+                    UsedAreaAbsoluteValue = OutputUtilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
+                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
                 };
 
+                //per mettere in sequence solo i bin che hanno elementi e non quelli dove nestedItems = null
                 s.Bins = bins.Where(x => x.NestedItems != null).ToList();
                 sequence = s;
-
-                //per debuggare  ampiezza item in ultimo bin
-                /*foreach(var nestedItem in bins[i].NestedItems)
-                {
-                    if(nestedItem.BLqPosition == 0)
-                    {
-                        Console.WriteLine("lunghezza item " + nestedItem.Width + " con id " + nestedItem.Id);
-                    }
-                }
-
-                //per debuggare area item in ultimo bin
-                foreach (var nestedItem in bins[i].NestedItems)
-                {
-                    double area = nestedItem.Height * nestedItem.Width;
-                    Console.WriteLine("item area " + area);
-                    
-                }*/
-
             }
-
-
-            //============================================
 
             //================ STEP 6 - CHECK OPTIMALITY ================
             //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 

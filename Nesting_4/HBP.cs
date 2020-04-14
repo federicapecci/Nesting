@@ -36,11 +36,6 @@ namespace Nesting_4
             //int upperBound = int.MaxValue;
             double widthCovered = double.MaxValue;
 
-            //IList<string> optimizationCriterias = new List<string>
-            //{
-            //    "WM"
-            //};
-
             IList<string> itemAllocationMethods = new List<string>
             {
                 "AC1",
