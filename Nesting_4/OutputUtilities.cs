@@ -11,28 +11,35 @@ namespace Nesting_4
 
         public double CurrentBestArea { get; set; } = double.MaxValue;
 
+        public int BinWidthId { get; set; } = int.MaxValue;
+
+        public int BinAreaId { get; set; } = int.MaxValue;
+
         /// <summary>
         /// questo metodo calcola in un bin la massima lunghezza occupata dagli item
         /// </summary>
         /// <param name="bins"></param>
         /// <returns></returns>
-        public bool IsNewBestWidthFound(IList<Item> nestedItems) 
+        public bool IsNewBestWidthFound(Bin<Tuple> bin) 
         {
-            double currentWidth = double.MinValue;
+           
+                double currentWidth = double.MinValue;
 
-            foreach (var nestedItem in nestedItems)
-            {
-                if (nestedItem.BRpPosition > currentWidth)
+                foreach (var nestedItem in bin.NestedItems)
                 {
-                    currentWidth = nestedItem.BRpPosition;
+                    if (nestedItem.BRpPosition > currentWidth)
+                    {
+                        currentWidth = nestedItem.BRpPosition;
+                    }
                 }
-            }
 
-            if (currentWidth < CurrentBestWidth)
-            {
-                CurrentBestWidth = currentWidth;
-                return true;
-            }
+                if (currentWidth < CurrentBestWidth && bin.Id <= BinWidthId)
+                {
+                    CurrentBestWidth = currentWidth;
+                    BinWidthId = bin.Id;
+                    return true;
+                }
+            
             return false;
 
         }
@@ -68,18 +75,19 @@ namespace Nesting_4
             return percentage;
         }
 
-        public bool IsNewBestAreaFound(IList<Item> nestedItems)
+        public bool IsNewBestAreaFound(Bin<Tuple> bin)
         {
             double currentArea = 0;
 
-            foreach (var nestedItem in nestedItems)
+            foreach (var nestedItem in bin.NestedItems)
             {
                 currentArea += nestedItem.Height * nestedItem.Width;
             }
 
-            if (currentArea < CurrentBestArea)
+            if (currentArea < CurrentBestArea && bin.Id <= BinAreaId)
             {
                 CurrentBestArea = currentArea;
+                BinAreaId = bin.Id;
                 return true;
             }
             return false;

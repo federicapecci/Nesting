@@ -70,6 +70,7 @@ namespace Nesting_4
 
             Sequences.Add(new Sequence());
             Sequences.Add(new Sequence());
+            int counter = 0;
 
             foreach (var itemAllocationMethod in itemAllocationMethods)
             {
@@ -102,6 +103,9 @@ namespace Nesting_4
                             Sequences.RemoveAt(1);
                             Sequences.Insert(1, sequences[1]);
                         }
+
+                        Console.WriteLine("check " + counter);
+                        counter += 1;
 
                         /*if (Sequences[Sequences.Count - 1].Zstar < upperBound)
                         {

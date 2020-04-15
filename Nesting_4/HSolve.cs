@@ -247,7 +247,7 @@ namespace Nesting_4
 
             Utilities.IsSolutionCorrect(items, bins, iter);
 
-            if (OutputUtilities.IsNewBestWidthFound(bins[i].NestedItems)) 
+            if (OutputUtilities.IsNewBestWidthFound(bins[i])) 
             {
                 //aggiungo la sequenza di un certa iterazione
                 Sequence s = new Sequence()
@@ -273,7 +273,7 @@ namespace Nesting_4
                 sequences.Insert(0, s);
             }
 
-            if (OutputUtilities.IsNewBestAreaFound(bins[i].NestedItems))
+            if (OutputUtilities.IsNewBestAreaFound(bins[i]))
             {
                 //aggiungo la sequenza di un certa iterazione
                 Sequence s = new Sequence()
