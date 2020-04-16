@@ -23,7 +23,7 @@ namespace Nesting_4
 				throw new ArgumentException(nameof(fileName));
 			}
 
-			var jsonSerializer = new JsonSerializer
+            JsonSerializer jsonSerializer = new JsonSerializer
 			{
 				Formatting = Formatting.Indented
 			};
@@ -52,12 +52,12 @@ namespace Nesting_4
 				throw new ArgumentException(nameof(fileName));
 			}
 
-			var jsonSerializer = new JsonSerializer
+            JsonSerializer jsonSerializer = new JsonSerializer
 			{
 				Formatting = Formatting.Indented
 			};
 
-			using (var streamWriter = new StreamWriter(fileName))
+			using (StreamWriter streamWriter = new StreamWriter(fileName))
 			{
 				using (JsonWriter jsonWriter = new JsonTextWriter(streamWriter))
 				{

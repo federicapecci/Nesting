@@ -39,7 +39,7 @@ namespace Nesting
             //alloco ogni item j in un bin diverso
             for (int k = 0; k < itemNumber; k++)
             {
-                var bin = new Bin<Tuple>()
+                Bin<Tuple> bin = new Bin<Tuple>()
                 {
                     Id = k,
                     Height = 5,
@@ -94,7 +94,7 @@ namespace Nesting
 
             for (int k = 0; k < itemNumber; k++)
             {
-                var temporaryBin = new Bin<Tuple>()
+                Bin<Tuple> temporaryBin = new Bin<Tuple>()
                 {
                     Id = k,
                     Height = 5,
@@ -115,7 +115,7 @@ namespace Nesting
 
         //================ STEP 3 - FILLING UP BIN i ================
 
-        l1: foreach (var temporaryItem in temporaryItems)
+        l1: foreach (Item  temporaryItem in temporaryItems)
             {
                 //TO DO -> FIND THE TRIPLE (p,q,r) FOR PLACING ITEM j IN BIN i 
                 bool isBestPositionFound = utilities.IsBestPositionFound(temporaryBins.ElementAt(i), temporaryItem);

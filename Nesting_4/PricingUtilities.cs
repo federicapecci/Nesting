@@ -136,14 +136,14 @@ namespace Nesting_4
         {
             bool itemFound = false;
             //dato un certo item
-            foreach (var item in items)
+            foreach (Item item in items)
             {
                 
-                foreach (var bin in bins) //scorro tutti i bins
+                foreach (Bin<Tuple> bin in bins) //scorro tutti i bins
                 {
                     if (bin.NestedItems != null)
                     {
-                        foreach (var nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
+                        foreach (Item nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
                         {
                             if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
                             {

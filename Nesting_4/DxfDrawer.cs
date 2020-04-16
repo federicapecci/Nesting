@@ -32,12 +32,12 @@ namespace Nesting_4
             int offsetX = 0;
             int offsetY = 0;
             int offsetCriteria = 0;
-            foreach (var sequence in sequences)
+            foreach (Sequence sequence in sequences)
             {
 
                 MText criteria = null;
 
-                foreach (var c in sequence.Criterias)
+                foreach (string c in sequence.Criterias)
                 {
                     criteria = new MText(c)
                     {
@@ -58,14 +58,14 @@ namespace Nesting_4
                     Style = style
                 };
                 dxf.AddEntity(title);
-                foreach (var bin in sequence.Bins)
+                foreach (Bin<Tuple> bin in sequence.Bins)
                 {
                     if (bin.NestedItems != null)
                     {
                         //un wipeout rettangolare che contiene tutte le altre forme                         
                         Wipeout wipeout = new Wipeout(0 + offsetX, 0 + offsetY, sequence.Bins.ElementAt(0).Width, sequence.Bins.ElementAt(0).Height);
                         dxf.AddEntity(wipeout);
-                        foreach (var pricedItem in bin.NestedItems)
+                        foreach (Item pricedItem in bin.NestedItems)
                         {
                             //un wipeout rettangolare che rappresenta una forma
                             wipeout = new Wipeout(pricedItem.BLpPosition + offsetX, pricedItem.BLqPosition + offsetY, pricedItem.Width, pricedItem.Height);

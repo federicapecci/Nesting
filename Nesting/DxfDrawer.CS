@@ -32,7 +32,7 @@ namespace Nesting
 
             if (Bin.NestedItems.Count >= 1)
             {
-                foreach (var nestedItem in Bin.NestedItems)
+                foreach (Item nestedItem in Bin.NestedItems)
                 {
                     wipeout = new Wipeout(nestedItem.BLpPosition, nestedItem.BLqPosition, nestedItem.Width, nestedItem.Height);
                     dxf.AddEntity(wipeout);

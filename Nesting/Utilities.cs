@@ -20,7 +20,7 @@ namespace Nesting
         {
             float result = 0;
 
-            foreach (var item in items)
+            foreach (Item item in items)
             {
                 result += item.Price;
             }
@@ -70,7 +70,7 @@ namespace Nesting
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
-                foreach (var feasiblePoint in temporaryBin.Points)
+                foreach (Tuple feasiblePoint in temporaryBin.Points)
                 {
                     if (!feasiblePoint.IsUsed)
                     {
@@ -96,7 +96,7 @@ namespace Nesting
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
                 IList<Tuple> minHatchedRegionPoints = new List<Tuple>();
-                foreach (var point in temporaryBin.Points)
+                foreach (Tuple point in temporaryBin.Points)
                 {
                     if (point.HatchedRegion == minHatchedRegionTuple.HatchedRegion && !point.IsUsed)
                     {
@@ -106,7 +106,7 @@ namespace Nesting
 
                 if (minHatchedRegionPoints.Count == 1)
                 {
-                    var minHatchedRegionPoint = minHatchedRegionPoints.ElementAt(0);
+                    Tuple minHatchedRegionPoint = minHatchedRegionPoints.ElementAt(0);
 
                     temporaryBin.NestedItems.Add(new NestedItem(temporaryItem)
                     {
@@ -151,7 +151,7 @@ namespace Nesting
         private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item temporaryItem, Tuple point)
         {
             //setto il punto ad usato, per recuparare il punto dalla lista uso l'id
-            var matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
+            Tuple matchingPoint = temporaryBin.Points.Where(x => x.Pposition == point.Pposition &&
                                                        x.Qposition == point.Qposition)
                                            .First();
             matchingPoint.IsUsed = true;
@@ -203,7 +203,7 @@ namespace Nesting
             float alpha = 0.9F;
             float beta = 1.1F;
 
-            foreach (var item in items)
+            foreach (Item item in items)
             {
                 /*if(temporaryBin.OrientedItemNumber <= (0.5*z))
                 {

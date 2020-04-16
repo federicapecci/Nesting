@@ -25,7 +25,7 @@ namespace Nesting_4
            
                 double currentWidth = double.MinValue;
 
-                foreach (var nestedItem in bin.NestedItems)
+                foreach (Item nestedItem in bin.NestedItems)
                 {
                     if (nestedItem.BRpPosition > currentWidth)
                     {
@@ -52,7 +52,7 @@ namespace Nesting_4
         public double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems) 
         {
             double usedArea = 0;
-            foreach (var nestedItem in nestedItems)
+            foreach (Item nestedItem in nestedItems)
             {
                 usedArea += nestedItem.Height * nestedItem.Width;
             }
@@ -63,7 +63,7 @@ namespace Nesting_4
         {
             double usedArea = 0;
             double percentage;
-            foreach (var nestedItem in nestedItems)
+            foreach (Item nestedItem in nestedItems)
             {
                 usedArea += nestedItem.Height * nestedItem.Width;
             }
@@ -79,7 +79,7 @@ namespace Nesting_4
         {
             double currentArea = 0;
 
-            foreach (var nestedItem in bin.NestedItems)
+            foreach (Item nestedItem in bin.NestedItems)
             {
                 currentArea += nestedItem.Height * nestedItem.Width;
             }
@@ -103,7 +103,7 @@ namespace Nesting_4
         {
             double currentWidth = double.MinValue;
 
-            foreach (var nestedItem in nestedItems)
+            foreach (Item nestedItem in nestedItems)
             {
                 if (nestedItem.BRpPosition > currentWidth)
                 {

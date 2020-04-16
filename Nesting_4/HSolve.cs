@@ -40,8 +40,8 @@ namespace Nesting_4
             IList<Item> items = new List<Item>();
             int counter = 0;
 
-            foreach (var dimension in configuration.Dimensions) {
-                var item = new Item()
+            foreach (Dimension dimension in configuration.Dimensions) {
+                Item item = new Item()
                 {
                     Height = dimension.Height,
                     Width = dimension.Width,
@@ -57,9 +57,9 @@ namespace Nesting_4
 
             //inserisco ogni item prezzato e i nuovi punti disponibili 
             //in un bin diverso
-            foreach(var item in items)
+            foreach(Item item in items)
             {
-                var bin = new Bin<Tuple>()
+                Bin<Tuple> bin = new Bin<Tuple>()
                 {
                     Id = counter,
                     Height = configuration.BinHeight,
@@ -138,9 +138,9 @@ namespace Nesting_4
 
             //creo tanti bin temporanei quanti sono gli item
             IList<Bin<Tuple>> temporaryBins = new List<Bin<Tuple>>();
-            foreach (var item in items)
+            foreach (Item item in items)
             {
-                var temporaryBin = new Bin<Tuple>()
+                Bin<Tuple> temporaryBin = new Bin<Tuple>()
                 {
                     Id = counter,
                     Height = configuration.BinHeight,
@@ -180,7 +180,7 @@ namespace Nesting_4
         l1: //Console.WriteLine("ciao");
 
             //cerco la posizione migliore per ogni item j'
-            foreach (var temporaryItem in temporaryItems)
+            foreach (Item temporaryItem in temporaryItems)
             {                
                 if (!temporaryItem.IsRemoved)
                 {                   
@@ -220,7 +220,7 @@ namespace Nesting_4
             bool isSortedTemporaryItemsEmpty = true;
 
             //controllo se tutta la lista è stata svuotata
-            foreach (var temporaryItem in temporaryItems)
+            foreach (Item temporaryItem in temporaryItems)
             {
                 if (temporaryItem.IsRemoved == false)
                 {
@@ -319,7 +319,7 @@ namespace Nesting_4
                 iter += 1;
                 
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione
-                foreach (var item in items)
+                foreach (Item item in items)
                 {
                     item.IsRemoved = false;
                 }
