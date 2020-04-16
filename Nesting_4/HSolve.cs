@@ -161,18 +161,6 @@ namespace Nesting_4
                 counter += 1;
             }
 
-            //1) ogni volta che inizio una nuova iterazione iter devo riordinare gli item per price decrescente
-            //dato che i price sono stati aggiornati;
-            //2) riattribuisco gli id agli item, così l'item col prezzo maggiore è quello che ha l'id 0 e così via
-            /*var sortedTemporaryItems = new List<Item>();
-            counter = 0;
-            foreach(var temporaryItem in temporaryItems.OrderByDescending(x => x.Price))
-            {
-                sortedTemporaryItems.Add(temporaryItem);
-                temporaryItem.Id = counter;
-                counter += 1;
-            }*/
-
             temporaryItems = temporaryItems.OrderByDescending(x => x.Price).ToList();
 
 

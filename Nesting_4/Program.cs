@@ -11,6 +11,8 @@ namespace Nesting_4
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+
+            GC.Collect();
             //dichiaro oggetto per manipolare la configurazione dell'algortimo hsolve   
             IConfigurationIO jsonConfigurationIO = new JsonConfigurationIO();
 
