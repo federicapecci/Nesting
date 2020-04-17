@@ -80,6 +80,8 @@ namespace Nesting_4
                 {
                     foreach (string priceUpdatingRule in priceUpdatingRules)
                     {
+                        System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+
                         //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
                         IList<Sequence> sequences = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
@@ -106,8 +108,14 @@ namespace Nesting_4
                             Sequences.Insert(1, sequences[1]);
                         }
 
+                        watch.Stop();
+                        long elapsedMs = watch.ElapsedMilliseconds;
+                        Console.WriteLine("elapsedMs " + elapsedMs);
+
                         Console.WriteLine("check " + counter);
                         counter += 1;
+
+                        
 
                         /*if (Sequences[Sequences.Count - 1].Zstar < upperBound)
                         {
