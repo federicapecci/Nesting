@@ -11,8 +11,9 @@ namespace Nesting_4
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            //aggiungo un timer
+            System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
 
-            GC.Collect();
             //dichiaro oggetto per manipolare la configurazione dell'algortimo hsolve   
             IConfigurationIO jsonConfigurationIO = new JsonConfigurationIO();
 
@@ -26,6 +27,11 @@ namespace Nesting_4
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
             dxfDrawer.WriteAllData(hbp.Sequences, "1_output_all_criterias_bis");
+
+            //leggo risultato timer
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("elapsedMs " + elapsedMs);
 
         }
     }

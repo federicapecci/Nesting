@@ -44,8 +44,8 @@ namespace Nesting_4
             }
             else if (priceUpdatingRule == "PU2")
             {
-                
-                double rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
+                //double rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
+                double rnd = GetRandomDouble(0, 1);//new Random().NextDouble(); //double rnd tra [0,1
                 double alpha = 1 - rnd;
                 double beta = 1 + rnd;
 
@@ -54,9 +54,9 @@ namespace Nesting_4
             else if (priceUpdatingRule == "PU3")
             {
 
-                double rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
+                double rnd = GetRandomDouble(0, 1); // (0.001, 0.999 + double.Epsilon);
                 double alpha = 1 - rnd;
-                rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
+                rnd = GetRandomDouble(0, 1); // (0.001, 0.999 + double.Epsilon);
                 double beta = 1 + rnd;
 
                 UpdateItemPrice(z, items, bins, alpha, beta);
@@ -101,19 +101,19 @@ namespace Nesting_4
                  switch (priceUpdatingRule)
                  {
                     case "PU001R":
-                        rnd = GetRandomDouble(0, 0.01 + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.01); // + double.Epsilon);
                         break;
                     case "PU002R":
-                        rnd = GetRandomDouble(0, 0.02 + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.02); // + double.Epsilon);
                         break;
                     case "PU005R":
-                        rnd = GetRandomDouble(0, 0.05 + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.05); // + double.Epsilon);
                         break;
                     case "PU02R":
-                        rnd = GetRandomDouble(0, 0.2 + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.2); // + double.Epsilon);
                         break;
                     case "PU05R":
-                        rnd = GetRandomDouble(0, 0.5 + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.5); // + double.Epsilon);
                         break;
                     default:
                         Console.WriteLine("Valore x non settato");
@@ -170,10 +170,16 @@ namespace Nesting_4
             }
         }
 
-        private double GetRandomDouble(double minimum, double maximum)
+        /*private double GetRandomDouble(double minimum, double maximum)
         {
             Random rand = new Random();
             return rand.NextDouble() * (maximum - minimum) + minimum;
+        }*/
+
+        private double GetRandomDouble(double minimum, double maximum)
+        {
+            Random random = new Random((int)DateTime.Now.Ticks);
+            return random.NextDouble() * (maximum - minimum) + minimum;
         }
 
     }

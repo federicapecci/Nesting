@@ -30,10 +30,12 @@ namespace Nesting_4
                             string pricingRule, string priceUpdatingRule)
         {
 
-            IList<Sequence> sequences = new List<Sequence>();
+            IList<Sequence> sequences = new List<Sequence>
+            {
+                new Sequence(),
+                new Sequence()
+            };
 
-            sequences.Add(new Sequence());
-            sequences.Add(new Sequence());
             //================ STEP 1 - INITIALIZATION ================
 
             //inizializzo il prezzo v associato ad ogni item j
@@ -122,10 +124,6 @@ namespace Nesting_4
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
         l3: counter = 0;
-            /*Sequence sequence = new Sequence()
-            {
-                Bins = new List<Bin<Tuple>>()
-            };*/
 
             //creo una lista temporanea J' di item 
             IList<Item> temporaryItems = new List<Item>();
@@ -233,7 +231,7 @@ namespace Nesting_4
         l0: zStar = z;
             bins = temporaryBins;
 
-            Utilities.IsSolutionCorrect(items, bins, iter);
+            //Utilities.IsSolutionCorrect(items, bins, iter);
 
             if (OutputUtilities.IsNewBestWidthFound(bins[i])) 
             {
@@ -251,7 +249,7 @@ namespace Nesting_4
                     },
                     WidthCovered = OutputUtilities.GetBestWidthFound(),
                     UsedAreaAbsoluteValue = OutputUtilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
-                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
+                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].Height, bins[i].Width)
                 };
 
                 //per mettere in sequence solo i bin che hanno elementi e non quelli dove nestedItems = null
@@ -278,7 +276,7 @@ namespace Nesting_4
                     WidthCovered = OutputUtilities.ComputeWidthLastBin(bins[i].NestedItems),
                     AreaCovered = OutputUtilities.GetBestAreaFound(),
                     UsedAreaAbsoluteValue = OutputUtilities.ComputeUsedAreaAbsoluteValue(bins[i].NestedItems),
-                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].NestedItems, bins[i].Height, bins[i].Width)
+                    UsedAreaPercentageValue = OutputUtilities.ComputeUsedAreaPercentageValue(bins[i].Height, bins[i].Width)
                 };
 
                 //per mettere in sequence solo i bin che hanno elementi e non quelli dove nestedItems = null

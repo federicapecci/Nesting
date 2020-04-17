@@ -35,7 +35,6 @@ namespace Nesting_4
 
         public void ComputeAlgorithm()
         {
-            //int upperBound = int.MaxValue;
             double widthCovered = double.MaxValue;
             double areaCovered = double.MaxValue;
 
@@ -57,35 +56,33 @@ namespace Nesting_4
                 "PU2",
                 //"PU3",
 
-                "PU001",
-                "PU002",
-                "PU005",
-                "PU02",
+                "PU001", //
+                "PU002", //
+                "PU005", //
+                "PU02", //
                 //"PU05",
 
-                "PU001R",
+                "PU001R", //
                 //"PU002R",
-                "PU005R",
+                "PU005R",//
                 //"PU02R",
-                "PU05R"
+                "PU05R"//
             };
 
             Sequences.Add(new Sequence());
             Sequences.Add(new Sequence());
-            int counter = 0;
 
+            int counter = 0;
             foreach (string itemAllocationMethod in itemAllocationMethods)
             {
                 foreach (string pricingRule in pricingRules)
                 {
                     foreach (string priceUpdatingRule in priceUpdatingRules)
                     {
-                        System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-
                         //ogni volta mi arrivano da hsolve due sequenze, la prima e l'ultima
                         IList<Sequence> sequences = HSolve.ComputeHeuristic(Configuration, itemAllocationMethod,
                             pricingRule, priceUpdatingRule);
-                        
+
                         //controllo se la lunghezza coperta dall'ultimo bin della soluzione è 
                         //minore rispetto alla lunghezza trovata nelle sequenze precedentementi 
                         if (sequences[0].WidthCovered < widthCovered)
@@ -95,6 +92,7 @@ namespace Nesting_4
                                 pricingRule + " " + priceUpdatingRule);
                             Sequences.RemoveAt(0);
                             Sequences.Insert(0,sequences[0]);
+
                         }
 
                         //controllo se l'area coperta dall'ultimo bin della soluzione è 
@@ -106,23 +104,10 @@ namespace Nesting_4
                                 pricingRule + " " + priceUpdatingRule);
                             Sequences.RemoveAt(1);
                             Sequences.Insert(1, sequences[1]);
+
                         }
-
-                        watch.Stop();
-                        long elapsedMs = watch.ElapsedMilliseconds;
-                        Console.WriteLine("elapsedMs " + elapsedMs);
-
                         Console.WriteLine("check " + counter);
                         counter += 1;
-
-                        
-
-                        /*if (Sequences[Sequences.Count - 1].Zstar < upperBound)
-                        {
-                            upperBound = Sequences[Sequences.Count - 1].Zstar;
-                        }*/
-
-                        //Console.WriteLine("ciao");
                     }
                 }
             }
@@ -139,9 +124,6 @@ namespace Nesting_4
             Console.WriteLine("lunghezza coperta ultimo bin " + Sequences[1].WidthCovered);
             Console.WriteLine("area usata ultimo bin - valore assoluto " + Sequences[1].UsedAreaAbsoluteValue);
             Console.WriteLine("area usata ultimo bin - percentuale " + Sequences[1].UsedAreaPercentageValue + "%");
-
-            //Console.WriteLine(upperBound + 1);
-
 
         }
     }              

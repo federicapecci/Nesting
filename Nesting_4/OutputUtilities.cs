@@ -15,6 +15,8 @@ namespace Nesting_4
 
         public int BinAreaId { get; set; } = int.MaxValue;
 
+        public double CurrentUsedArea { get; set; } = double.MaxValue;
+
         /// <summary>
         /// questo metodo calcola in un bin la massima lunghezza occupata dagli item
         /// </summary>
@@ -56,22 +58,21 @@ namespace Nesting_4
             {
                 usedArea += nestedItem.Height * nestedItem.Width;
             }
+            CurrentUsedArea = usedArea;
             return usedArea;
         }
 
-        public double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth) 
+        public double ComputeUsedAreaPercentageValue(double binHeight, double binWidth) 
         {
-            double usedArea = 0;
+            //double usedArea = 0;
             double percentage;
-            foreach (Item nestedItem in nestedItems)
+            /*foreach (Item nestedItem in nestedItems)
             {
                 usedArea += nestedItem.Height * nestedItem.Width;
-            }
-
+            }*/
             //x : 100 = area usata: area totale
-            percentage = usedArea * 100 / (binHeight * binWidth);
+            percentage = CurrentUsedArea * 100 / (binHeight * binWidth);
             percentage = Math.Round(percentage, 2, MidpointRounding.AwayFromZero);
-
             return percentage;
         }
 

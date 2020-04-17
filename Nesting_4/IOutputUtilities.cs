@@ -13,7 +13,7 @@ namespace Nesting_4
 
          double ComputeUsedAreaAbsoluteValue(IList<Item> nestedItems);
 
-         double ComputeUsedAreaPercentageValue(IList<Item> nestedItems, double binHeight, double binWidth);
+         double ComputeUsedAreaPercentageValue(double binHeight, double binWidth);
 
          bool IsNewBestAreaFound(Bin<Tuple> bin);
 
