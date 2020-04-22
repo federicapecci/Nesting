@@ -22,7 +22,7 @@ namespace Nesting_4
             PricingUtilities = new PricingUtilities();
             OutputUtilities = new OutputUtilities();
         }
-       
+
         /// <summary>
         /// metodo che computa l'euristica di hsolve 
         /// </summary>
@@ -40,6 +40,7 @@ namespace Nesting_4
 
             //inizializzo il prezzo v associato ad ogni item j
             IList<Item> items = new List<Item>();
+            IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
             int counter = 0;
 
             foreach (Dimension dimension in configuration.Dimensions) {
@@ -51,16 +52,9 @@ namespace Nesting_4
                     Price = PricingUtilities.ComputePricingRule(pricingRule, dimension.Height, dimension.Width)
                 };
                 items.Add(item);
-                counter += 1;
-            }
 
-            IList<Bin<Tuple>> bins = new List<Bin<Tuple>>();
-            counter = 0;
-
-            //inserisco ogni item prezzato e i nuovi punti disponibili 
-            //in un bin diverso
-            foreach(Item item in items)
-            {
+                //inserisco ogni item prezzato e i nuovi punti disponibili 
+                //in un bin diverso
                 Bin<Tuple> bin = new Bin<Tuple>()
                 {
                     Id = counter,
@@ -68,7 +62,7 @@ namespace Nesting_4
                     Width = configuration.BinWidth,
                     NestedItems = new List<Item>()
                     {
-                        items.ElementAt(counter)
+                        item
                     },
                     Points = new List<Tuple>()
                     {
@@ -106,19 +100,15 @@ namespace Nesting_4
                 bins.Add(bin);
                 counter += 1;
             }
-
-            int itemNumber = counter + 1;
-            
+                  
             //inizializzo il costo della soluzione con il numero degli elementi
-            int zStar = itemNumber;
+            int zStar = counter;
             
             //inizializzo il numero di iterazioni
             int iter = 0;
 
             //calcolo il lower bound ed il relativo intervallo
-            double lowerBound = Utilities.ComputeLowerBound(items, configuration.BinWidth, configuration.BinHeight);
-            double lowerBoundMin = lowerBound - configuration.LowerBoundDelta;
-            double lowerBoundMax = lowerBound + configuration.LowerBoundDelta;
+            double lowerBound;
             int maxIter = configuration.MaxIter;
 
         //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
@@ -163,8 +153,8 @@ namespace Nesting_4
 
 
         //================ STEP 3 - FILLING UP BIN i ================
-        l1: //Console.WriteLine("ciao");
-
+        l1:
+            IList<Item> notRemovedItems = new List<Item>();
             //cerco la posizione migliore per ogni item j'
             foreach (Item temporaryItem in temporaryItems)
             {                
@@ -199,10 +189,25 @@ namespace Nesting_4
                         }
                     }*/
                 }
+               
             }
 
-        //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
-            int z = i;
+            notRemovedItems = temporaryItems.Where(x => x.IsRemoved == false).ToList();
+
+            //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
+
+            int z = i; // K
+
+            //============ TEST ==============
+            lowerBound = Utilities.ComputeLowerBound(notRemovedItems, configuration.BinWidth, configuration.BinHeight);
+            notRemovedItems.Clear();
+
+            if((z + lowerBound) > zStar)
+            {
+                goto l2;
+            }
+            //================================
+
             bool isSortedTemporaryItemsEmpty = true;
 
             //controllo se tutta la lista è stata svuotata
@@ -219,12 +224,11 @@ namespace Nesting_4
             {
                 goto l0;
             }
-            if (!isSortedTemporaryItemsEmpty && (i < (zStar)))
+            if (!isSortedTemporaryItemsEmpty)
             {
                 i += 1;
                 goto l1;
             }
-            goto l2;
 
         //================ STEP 5 - UPDATE THE BEST SOLUTION ================
 
@@ -286,13 +290,6 @@ namespace Nesting_4
                 sequences.Insert(1, s);
             }
 
-            //================ STEP 6 - CHECK OPTIMALITY ================
-            //guardo se il costo della soluzione è compreso nell'intervallo del lower bound 
-            if (zStar > lowerBoundMin && zStar < lowerBoundMax)
-        {
-            goto end;
-        }
-
         //================ STEP 7 - UPDATE THE ITEM PRICES ================
 
         l2: if (iter == maxIter)
@@ -301,7 +298,18 @@ namespace Nesting_4
             }
             else
             {
-                PricingUtilities.ComputePricingUpdateRule(z, items, temporaryBins, priceUpdatingRule);
+                if (z > (zStar / 2)) 
+                {
+                    PricingUtilities.ComputePricingUpdateRule(z, items, temporaryBins, priceUpdatingRule, "REGPART");
+                }
+
+                if (z <= (zStar / 2))
+                {
+                    //Console.WriteLine("CIAO 1 ");
+                    PricingUtilities.ComputePricingUpdateRule(z, items, temporaryBins, priceUpdatingRule, "EXTRAPART");
+                    //Console.WriteLine("CIAO 2 ");
+                }
+
                 iter += 1;
                 
                 //rimetto tutti gli item come isRemoved = false perché cominicio una nuova iterazione

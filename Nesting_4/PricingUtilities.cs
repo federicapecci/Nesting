@@ -33,33 +33,31 @@ namespace Nesting_4
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule)
+        public void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule, string partitionType)
         {
             if (priceUpdatingRule == "PU1")
             {
                 double alpha = 0.9;
                 double beta = 1.1;
 
-                UpdateItemPrice(z, items, bins, alpha, beta);
+                UpdateItemPrice(z, items, bins, alpha, beta, partitionType);
             }
             else if (priceUpdatingRule == "PU2")
             {
-                //double rnd = GetRandomDouble(0.001, 0.999 + double.Epsilon);
-                double rnd = GetRandomDouble(0, 1);//new Random().NextDouble(); //double rnd tra [0,1
+                double rnd = GetRandomDouble(0, 1);
                 double alpha = 1 - rnd;
                 double beta = 1 + rnd;
 
-                UpdateItemPrice(z, items, bins, alpha, beta);
+                UpdateItemPrice(z, items, bins, alpha, beta, partitionType);
             }
             else if (priceUpdatingRule == "PU3")
             {
-
-                double rnd = GetRandomDouble(0, 1); // (0.001, 0.999 + double.Epsilon);
+                double rnd = GetRandomDouble(0, 1);
                 double alpha = 1 - rnd;
-                rnd = GetRandomDouble(0, 1); // (0.001, 0.999 + double.Epsilon);
+                rnd = GetRandomDouble(0, 1); 
                 double beta = 1 + rnd;
 
-                UpdateItemPrice(z, items, bins, alpha, beta);
+                UpdateItemPrice(z, items, bins, alpha, beta, partitionType);
             }
             else if(priceUpdatingRule == "PU001" || priceUpdatingRule == "PU002" || priceUpdatingRule == "PU005" ||
                 priceUpdatingRule == "PU02" || priceUpdatingRule == "PU05")
@@ -92,7 +90,7 @@ namespace Nesting_4
                  double alpha = 1 - x;
                  double beta = 1 + x;
 
-                 UpdateItemPrice(z, items, bins, alpha, beta); 
+                 UpdateItemPrice(z, items, bins, alpha, beta, partitionType); 
             }
             else if (priceUpdatingRule == "PU001R" || priceUpdatingRule == "PU002R" || priceUpdatingRule == "PU005R" ||
                  priceUpdatingRule == "PU02R" || priceUpdatingRule == "PU05R")
@@ -101,19 +99,19 @@ namespace Nesting_4
                  switch (priceUpdatingRule)
                  {
                     case "PU001R":
-                        rnd = GetRandomDouble(0, 0.01); // + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.01); 
                         break;
                     case "PU002R":
-                        rnd = GetRandomDouble(0, 0.02); // + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.02); 
                         break;
                     case "PU005R":
-                        rnd = GetRandomDouble(0, 0.05); // + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.05);
                         break;
                     case "PU02R":
-                        rnd = GetRandomDouble(0, 0.2); // + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.2); 
                         break;
                     case "PU05R":
-                        rnd = GetRandomDouble(0, 0.5); // + double.Epsilon);
+                        rnd = GetRandomDouble(0, 0.5);
                         break;
                     default:
                         Console.WriteLine("Valore x non settato");
@@ -124,7 +122,7 @@ namespace Nesting_4
                  double alpha = 1 - rnd;
                  double beta = 1 + rnd;
 
-                 UpdateItemPrice(z, items, bins, alpha, beta);
+                 UpdateItemPrice(z, items, bins, alpha, beta, partitionType);
             }
             else
             {
@@ -132,49 +130,64 @@ namespace Nesting_4
             }
         }
 
-        private void UpdateItemPrice(double z, IList<Item> items, IList<Bin<Tuple>> bins, double alpha, double beta)
+        private void UpdateItemPrice(double z, IList<Item> items, IList<Bin<Tuple>> bins, double alpha, double beta, string partitionType)
         {
-            bool itemFound = false;
-            //dato un certo item
-            foreach (Item item in items)
+            if (partitionType == "REGPART")
             {
-                
-                foreach (Bin<Tuple> bin in bins) //scorro tutti i bins
+                bool itemFound = false;
+                //dato un certo item
+                foreach (Item item in items)
                 {
-                    if (bin.NestedItems != null)
+
+                    foreach (Bin<Tuple> bin in bins) //scorro tutti i bins
                     {
-                        foreach (Item nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
+                        if (bin.NestedItems != null)
                         {
-                            if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
+                            foreach (Item nestedItem in bin.NestedItems) //e scorro tutti i nested items di ogni bin
                             {
-                                //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
-                                if (bin.Id <= (0.5 * z))
+                                if (nestedItem.Id == item.Id) //se trovo l'id di un nested item che corrisponde all'id dell'item dato
                                 {
-                                    item.Price = alpha * nestedItem.Price;
+                                    //aggiorno il prezzo dell'item dato in base a se il nested item con id corrispondente si trova nella prima o nella seconda metà dei bin
+                                    if (bin.Id <= (0.5 * z))
+                                    {
+                                        item.Price = alpha * nestedItem.Price;
+                                    }
+                                    else if (bin.Id > (0.5 * z))
+                                    {
+                                        item.Price = beta * nestedItem.Price;
+                                    }
+                                    itemFound = true;
+                                    break;
                                 }
-                                else if (bin.Id > (0.5 * z))
-                                {
-                                    item.Price = beta * nestedItem.Price;
-                                }
-                                itemFound = true;
-                                break;
                             }
                         }
+                        if (itemFound)
+                        {
+                            itemFound = false;
+                            break;
+                        }
                     }
-                    if(itemFound)
+                }
+            }else if (partitionType == "EXTRAPART")
+            {
+                //dato un certo item
+                foreach (Item item in items)
+                {
+                    if (item.IsRemoved == false)
                     {
-                        itemFound = false;
-                        break;
+                        item.Price = beta * item.Price;
+                    }
+                    else
+                    {
+                        item.Price = alpha * item.Price;
                     }
                 }
             }
+            else
+            {
+                Console.WriteLine("Il partition type non è stata settato");
+            }
         }
-
-        /*private double GetRandomDouble(double minimum, double maximum)
-        {
-            Random rand = new Random();
-            return rand.NextDouble() * (maximum - minimum) + minimum;
-        }*/
 
         private double GetRandomDouble(double minimum, double maximum)
         {

@@ -56,17 +56,17 @@ namespace Nesting_4
                 "PU2",
                 //"PU3",
 
-                "PU001", //
-                "PU002", //
-                "PU005", //
-                "PU02", //
+                //"PU001", 
+                "PU002", 
+                "PU005", 
+                "PU02", 
                 //"PU05",
 
-                "PU001R", //
+                //"PU001R", 
                 //"PU002R",
-                "PU005R",//
-                //"PU02R",
-                "PU05R"//
+                "PU005R",
+                //"PU02R", 
+                "PU05R"
             };
 
             Sequences.Add(new Sequence());
