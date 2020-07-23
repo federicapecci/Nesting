@@ -32,13 +32,16 @@ namespace Nesting_4
         public IList<Sequence> ComputeHeuristic(Configuration configuration, string itemAllocationMethod,
                             string pricingRule, string priceUpdatingRule)
         {
+
+            string evaluation;
+
             //================ STEP 1 - INITIALIZATION ================
 
             HSolveUtilities.Initialize(configuration, pricingRule, PricingUtilities);
 
             //================ STEP 2 - ERASE THE CURRENT SOLUTION ================
 
-            while (HSolveUtilities.GetIter() < HSolveUtilities.GetMaxIter())
+            while (HSolveUtilities.GetIter() != HSolveUtilities.GetMaxIter())
             {
 
                 HSolveUtilities.EraseCurrentSolution(configuration);
@@ -47,30 +50,30 @@ namespace Nesting_4
 
                 HSolveUtilities.FillUpBinI(itemAllocationMethod, Utilities);
 
-                string check = HSolveUtilities.CheckIfAllItemsAreAllocated(configuration, Utilities, PricingUtilities, itemAllocationMethod,
+                evaluation = HSolveUtilities.CheckIfAllItemsAreAllocated(configuration, Utilities, PricingUtilities, itemAllocationMethod,
                     OutputUtilities, pricingRule, priceUpdatingRule);
 
-                while (check == "FillUpBinI") { 
+                while (evaluation == "FillUpBinI") { 
 
                     HSolveUtilities.FillUpBinI(itemAllocationMethod, Utilities);
 
                     //================ STEP 4 - CHECK IF ALL ITEMS HAVE BEEN ALLOCATED ================
 
-                    check = HSolveUtilities.CheckIfAllItemsAreAllocated(configuration, Utilities, PricingUtilities, itemAllocationMethod,
+                    evaluation = HSolveUtilities.CheckIfAllItemsAreAllocated(configuration, Utilities, PricingUtilities, itemAllocationMethod,
                        OutputUtilities, pricingRule, priceUpdatingRule);
 
                 }
 
-                if(check == "UpdateItemPrices")
+                if(evaluation == "UpdateItemPrices")
                 {
                     HSolveUtilities.UpdateItemPrices(configuration, PricingUtilities, priceUpdatingRule);
                     
-                }else if(check == "UpdateBestSolution")
+                }else if(evaluation == "UpdateBestSolution")
                 {
                     HSolveUtilities.UpdateBestSolution(OutputUtilities, itemAllocationMethod, pricingRule, priceUpdatingRule);
                     HSolveUtilities.UpdateItemPrices(configuration, PricingUtilities, priceUpdatingRule);
                 }
-               
+                
             }
 
             return HSolveUtilities.GetSequences();
