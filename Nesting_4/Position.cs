@@ -10,7 +10,7 @@ namespace Nesting_4
     /// classe che rappresenta i punti in cui è 
     /// possibile nestare un nuovo item 
     /// </summary>
-    public class Tuple 
+    public class Position 
     {
         /// <summary>
         /// campo che rappresenta la coordinata p iniziale
@@ -24,6 +24,10 @@ namespace Nesting_4
         /// </summary>
         public double Qposition { get; set; } = 0;
 
+        /// <summary>
+        /// campo che rappresenta la rotazione r 
+        /// di un item, 0 => no  rotazione, 1 => rotazione di 90°
+        /// </summary>
         public double Rposition { get; set; } = 0;
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace Nesting_4
         /// </summary>
         public double HatchedArea { get; set; } = 0;
 
-        public Tuple() 
+        public Position() 
         {
             Pposition = 0;
             Qposition = 0;

@@ -39,7 +39,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        public Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryItem, string itemAllocationMethod)
+        public Bin IsBestPositionFound(Bin temporaryBin, Item temporaryItem, string itemAllocationMethod)
         {
 
 
@@ -113,7 +113,7 @@ namespace Nesting_4
             }
             else if (temporaryBin.Points.Count > 1)//se il bin contiene n punti
             {
-                foreach (Tuple feasiblePoint in temporaryBin.Points)
+                foreach (Position feasiblePoint in temporaryBin.Points)
                 {
                     if (!feasiblePoint.IsUsed)
                     {
@@ -161,7 +161,7 @@ namespace Nesting_4
 
                 //trovo la tupla con lo scarto minore tra quelle ancora disponibili
                 //(Where(x => x.HatchedArea >= 0) filtra solo le tuple con hatched area = 0)
-                Tuple minHatchedAreaTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedArea >= 0)
+                Position minHatchedAreaTuple = temporaryBin.Points.Where(x => x.IsUsed == false && x.HatchedArea >= 0)
                                                                .OrderBy(x => x.HatchedArea)
                                                                .FirstOrDefault();
 
@@ -173,8 +173,8 @@ namespace Nesting_4
                 }
 
                 //controllo se ho più tuple che hanno lo stesso scarto (il minore)
-                IList<Tuple> minHatchedAreaPoints = new List<Tuple>();
-                foreach (Tuple point in temporaryBin.Points)
+                IList<Position> minHatchedAreaPoints = new List<Position>();
+                foreach (Position point in temporaryBin.Points)
                 {
                     if (point.HatchedArea == minHatchedAreaTuple.HatchedArea && !point.IsUsed)
                     {
@@ -184,7 +184,7 @@ namespace Nesting_4
 
                 if (minHatchedAreaPoints.Count == 1)
                 {
-                    Tuple minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
+                    Position minHatchedAreaPoint = minHatchedAreaPoints.ElementAt(0);
                     Item pricedItem = null;
                     if (minHatchedAreaPoint.Rposition == 0)
                     {
@@ -232,7 +232,7 @@ namespace Nesting_4
                 }
                 else if (minHatchedAreaPoints.Count > 1)
                 {
-                    Tuple minCoordinatePoint = ApplyRule(minHatchedAreaPoints, itemAllocationMethod);
+                    Position minCoordinatePoint = ApplyRule(minHatchedAreaPoints, itemAllocationMethod);
                     Item pricedItem = null;
                     if (minCoordinatePoint.Rposition == 0)
                     {
@@ -290,7 +290,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <param name="point"></param>
-        private void HandleOperationsPostNestedItem(Bin<Tuple> temporaryBin, Item sortedTemporaryItem, Tuple point, Item pricedItem)
+        private void HandleOperationsPostNestedItem(Bin temporaryBin, Item sortedTemporaryItem, Position point, Item pricedItem)
         {
             //recupero il punto dalla lista usando l'id. tale punto lo setterò poi ad usato
             var matchingPoints = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
@@ -302,7 +302,7 @@ namespace Nesting_4
             //gestisco il fatto che ci possano essere più punti che portano alle stesse coordinate finali
             if (matchingPoints != null)
             {
-                foreach (Tuple matchingPoint in matchingPoints)
+                foreach (Position matchingPoint in matchingPoints)
                 {
                     matchingPoint.IsUsed = true;
                 }
@@ -312,7 +312,7 @@ namespace Nesting_4
                 matchingPoints = temporaryBin.Points.Where(x => x.PfinalPosition == point.PfinalPosition &&
                                                        x.QfinalPosition == point.QfinalPosition);
                 //.FirstOrDefault();
-                foreach (Tuple matchingPoint in matchingPoints)
+                foreach (Position matchingPoint in matchingPoints)
                 {
                     matchingPoint.IsUsed = true;
                 }
@@ -320,9 +320,9 @@ namespace Nesting_4
             //===============================================
 
             //controllo se non è più possibile usare dei punti 
-            foreach (Tuple p in temporaryBin.Points)
+            foreach (Position p in temporaryBin.Points)
             {
-                foreach (Tuple matchingPoint in matchingPoints)
+                foreach (Position matchingPoint in matchingPoints)
                 {
                     //cerco punti "coperti" dal nuovo item nestato
                     if ((p.Pposition >= pricedItem.BLpPosition && p.Pposition < pricedItem.BRpPosition &&
@@ -339,12 +339,12 @@ namespace Nesting_4
             }
 
             //controllo se il primo nuovo punto (TL) da aggiungere è già presente nella lista temporaryBin.Points e non è statao usato
-            Tuple pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
+            Position pointFound = temporaryBin.Points.Where(x => x.Pposition == point.PfinalPosition &&
                                                    x.Qposition == point.QfinalPosition + pricedItem.Height &&
                                                    x.IsUsed == false).FirstOrDefault();
 
             //definisco il primo nuovo punto
-            Tuple firstPoint = new Tuple()
+            Position firstPoint = new Position()
             {
                 Pposition = point.PfinalPosition,
                 Qposition = point.QfinalPosition + pricedItem.Height,
@@ -372,7 +372,7 @@ namespace Nesting_4
             {
                 temporaryBin.Points.Add(firstPoint);
 
-                firstPoint = new Tuple()
+                firstPoint = new Position()
                 {
                     Pposition = point.PfinalPosition,
                     Qposition = point.QfinalPosition + pricedItem.Height,
@@ -396,7 +396,7 @@ namespace Nesting_4
                                                         x.IsUsed == false).FirstOrDefault();
 
             //definisco il secondo nuovo punto
-            Tuple secondPoint = new Tuple()
+            Position secondPoint = new Position()
             {
                 Pposition = point.PfinalPosition + pricedItem.Width,
                 Qposition = point.QfinalPosition,
@@ -422,7 +422,7 @@ namespace Nesting_4
             {
                 temporaryBin.Points.Add(secondPoint);
 
-                secondPoint = new Tuple()
+                secondPoint = new Position()
                 {
                     Pposition = point.PfinalPosition + pricedItem.Width,
                     Qposition = point.QfinalPosition,
@@ -444,9 +444,9 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private void SetFeasiblePoints(Bin<Tuple> temporaryBin)
+        private void SetFeasiblePoints(Bin temporaryBin)
         {
-            foreach (Tuple point in temporaryBin.Points)
+            foreach (Position point in temporaryBin.Points)
             {
                 if (point.Pposition >= temporaryBin.Width || point.Qposition >= temporaryBin.Height)
                 {
@@ -466,7 +466,7 @@ namespace Nesting_4
         /// <param name="temporaryBin"></param>
         /// <param name="temporaryItem"></param>
         /// <returns></returns>
-        private double GetHatchedArea(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private double GetHatchedArea(Bin temporaryBin, Item newItem, Position feasiblePoint)
         {
             PushItemDown(temporaryBin, newItem, feasiblePoint);
             IList<Item> leftIntersectedItems = PushItemLeft(temporaryBin, newItem, feasiblePoint);
@@ -497,7 +497,7 @@ namespace Nesting_4
         /// <param name="leftIntersectedNestedItems"></param>
         /// <returns></returns>
         /// 
-        private void ComputeHatchedArea(Tuple feasiblePoint, Item newItem, IList<Item> downIntersectedItems, IList<Item> leftIntersectedItems)
+        private void ComputeHatchedArea(Position feasiblePoint, Item newItem, IList<Item> downIntersectedItems, IList<Item> leftIntersectedItems)
         {
             double totalHatchedArea = 0;
             //variabile per l'hatched area che eventualmente rimane sotto e a sinitra 
@@ -636,7 +636,7 @@ namespace Nesting_4
         /// <param name="temporaryItem"></param>
         /// <param name="newNestedItem"></param>
         /// <returns></returns>
-        private IList<Item> PushItemDown(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private IList<Item> PushItemDown(Bin temporaryBin, Item newItem, Position feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<Item> intersectedItems = new List<Item>();
@@ -689,7 +689,7 @@ namespace Nesting_4
 
         }
 
-        private IList<Item> CheckDownInsersectionNumber(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private IList<Item> CheckDownInsersectionNumber(Bin temporaryBin, Item newItem, Position feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<Item> intersectedItems = new List<Item>();
@@ -720,7 +720,7 @@ namespace Nesting_4
         /// <param name="temporaryItem"></param>
         /// <param name="newNestedItem"></param>
         /// <returns></returns>
-        private IList<Item> PushItemLeft(Bin<Tuple> temporaryBin, Item newItem, Tuple feasiblePoint)
+        private IList<Item> PushItemLeft(Bin temporaryBin, Item newItem, Position feasiblePoint)
         {
             //lista delle intersezioni tra item nuovo e item già in soluzione
             IList<Item> intersectedItems = new List<Item>();
@@ -793,7 +793,7 @@ namespace Nesting_4
         /// <param name="newItem"></param>
         /// <param name="temporaryBin"></param>
         /// <returns></returns>
-        bool IsOverlappingOk(Item newItem, Bin<Tuple> temporaryBin)
+        bool IsOverlappingOk(Item newItem, Bin temporaryBin)
         {
             foreach (Item nestedItem in temporaryBin.NestedItems)
             {
@@ -817,16 +817,16 @@ namespace Nesting_4
         /// (ref criterio: rules AC1 pag 141 paper part II)
         /// </summary>
         /// <returns></returns>
-        private Tuple ApplyRule(IList<Tuple> minHatchedAreaTuples, string itemAllocationMethod)
+        private Position ApplyRule(IList<Position> minHatchedAreaTuples, string itemAllocationMethod)
         {
-            Tuple result = null;
+            Position result = null;
 
             if (itemAllocationMethod == "AC1")
             {
-                IList<Tuple> pMinTuples = new List<Tuple>();
+                IList<Position> pMinTuples = new List<Position>();
                 double minFinalP = minHatchedAreaTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
 
-                foreach (Tuple minHatchedAreaTuple in minHatchedAreaTuples)
+                foreach (Position minHatchedAreaTuple in minHatchedAreaTuples)
                 {
                     if (minHatchedAreaTuple.PfinalPosition == minFinalP)
                     {
@@ -840,9 +840,9 @@ namespace Nesting_4
                 }
                 else
                 {
-                    IList<Tuple> qMinTuples = new List<Tuple>();
+                    IList<Position> qMinTuples = new List<Position>();
                     double minFinalQ = pMinTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
-                    foreach (Tuple qMinTuple in pMinTuples)
+                    foreach (Position qMinTuple in pMinTuples)
                     {
                         if (qMinTuple.QfinalPosition == minFinalQ)
                         {
@@ -862,10 +862,10 @@ namespace Nesting_4
             else if (itemAllocationMethod == "AC2")
             {
 
-                IList<Tuple> qMinTuples = new List<Tuple>();
+                IList<Position> qMinTuples = new List<Position>();
                 double minFinalQ = minHatchedAreaTuples.OrderBy(x => x.QfinalPosition).First().QfinalPosition;
 
-                foreach (Tuple minHatchedAreaTuple in minHatchedAreaTuples)
+                foreach (Position minHatchedAreaTuple in minHatchedAreaTuples)
                 {
                     if (minHatchedAreaTuple.QfinalPosition == minFinalQ)
                     {
@@ -879,9 +879,9 @@ namespace Nesting_4
                 }
                 else
                 {
-                    IList<Tuple> pMinTuples = new List<Tuple>();
+                    IList<Position> pMinTuples = new List<Position>();
                     double minFinalP = qMinTuples.OrderBy(x => x.PfinalPosition).First().PfinalPosition;
-                    foreach (Tuple pMinTuple in qMinTuples)//_____________
+                    foreach (Position pMinTuple in qMinTuples)//_____________
                     {
                         if (pMinTuple.PfinalPosition == minFinalP)
                         {
@@ -906,10 +906,10 @@ namespace Nesting_4
 
         }
 
-        public bool IsSolutionCorrect(IList<Item> items, IList<Bin<Tuple>> bins, int iter)
+        public bool IsSolutionCorrect(IList<Item> items, IList<Bin> bins, int iter)
         {
             int nestedItemSum = 0;
-            foreach (Bin<Tuple> bin in bins)
+            foreach (Bin bin in bins)
             {
                 if (bin.NestedItems != null)
                 {

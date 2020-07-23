@@ -58,7 +58,7 @@ namespace Nesting_4
                     Style = style
                 };
                 dxf.AddEntity(title);
-                foreach (Bin<Tuple> bin in sequence.Bins)
+                foreach (Bin bin in sequence.Bins)
                 {
                     if (bin.NestedItems != null)
                     {

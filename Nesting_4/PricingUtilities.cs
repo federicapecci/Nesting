@@ -33,7 +33,7 @@ namespace Nesting_4
         /// <param name="z"></param>
         /// <param name="items"></param>
         /// <param name="temporaryBin"></param>
-        public void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule, string partitionType)
+        public void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin> bins, string priceUpdatingRule, string partitionType)
         {
             if (priceUpdatingRule == "PU1")
             {
@@ -130,7 +130,7 @@ namespace Nesting_4
             }
         }
 
-        private void UpdateItemPrice(double z, IList<Item> items, IList<Bin<Tuple>> bins, double alpha, double beta, string partitionType)
+        private void UpdateItemPrice(double z, IList<Item> items, IList<Bin> bins, double alpha, double beta, string partitionType)
         {
             if (partitionType == "REGPART")
             {
@@ -139,7 +139,7 @@ namespace Nesting_4
                 foreach (Item item in items)
                 {
 
-                    foreach (Bin<Tuple> bin in bins) //scorro tutti i bins
+                    foreach (Bin bin in bins) //scorro tutti i bins
                     {
                         if (bin.NestedItems != null)
                         {

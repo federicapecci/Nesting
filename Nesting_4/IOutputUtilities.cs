@@ -7,7 +7,7 @@ namespace Nesting_4
     interface IOutputUtilities
     {
 
-         bool IsNewBestWidthFound(Bin<Tuple> bin);
+         bool IsNewBestWidthFound(Bin bin);
 
          double GetBestWidthFound();
 
@@ -15,7 +15,7 @@ namespace Nesting_4
 
          double ComputeUsedAreaPercentageValue(double binHeight, double binWidth);
 
-         bool IsNewBestAreaFound(Bin<Tuple> bin);
+         bool IsNewBestAreaFound(Bin bin);
 
          double GetBestAreaFound();
 

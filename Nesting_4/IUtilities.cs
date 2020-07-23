@@ -10,9 +10,9 @@ namespace Nesting_4
     {
         double ComputeLowerBound(IList<Item> pricedItems, int binWidth, int binHeight);
 
-        Bin<Tuple> IsBestPositionFound(Bin<Tuple> temporaryBin, Item temporaryPricedItem, string itemAllocationMethod);
+        Bin IsBestPositionFound(Bin temporaryBin, Item temporaryPricedItem, string itemAllocationMethod);
 
-        bool IsSolutionCorrect(IList<Item> items, IList<Bin<Tuple>> bins, int iter);
+        bool IsSolutionCorrect(IList<Item> items, IList<Bin> bins, int iter);
 
     }
 }

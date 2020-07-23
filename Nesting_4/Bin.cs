@@ -11,8 +11,7 @@ namespace Nesting_4
     /// di item. E' generico in X perché la lista 
     /// di punti potrebbe essere sia di tuple che di triple
     /// </summary>
-    /// <typeparam name="X"></typeparam>
-    public class Bin<X>
+    public class Bin : Dimension
     {
         /// <summary>
         /// identificativo del bin
@@ -22,12 +21,12 @@ namespace Nesting_4
         /// <summary>
         /// altezza del bin
         /// </summary>
-        public int Height { get; set; } = 0;
+        //public int Height { get; set; } = 0;
 
         /// <summary>
         /// lunghezza del bin
         /// </summary>
-        public int Width { get; set; } = 0;
+        //public int Width { get; set; } = 0;
 
         /// <summary>
         /// lista di item nestati all'interno del bin
@@ -39,7 +38,7 @@ namespace Nesting_4
         /// (Una coppia di punti viene generata ogni volta che un 
         /// nuovo elemento viene nestato nel bin)
         /// </summary>
-        public IList<X> Points { get; set; } = null;
+        public IList<Position> Points { get; set; } = null;
 
         public Bin() {}
     }

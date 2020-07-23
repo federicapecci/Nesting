@@ -27,7 +27,7 @@ namespace Nesting_4
         /// lista di bin relativi ad una certa sequenza.
         /// ogni sequenza è generata ad una certa iterazione
         /// </summary>
-        public IList<Bin<Tuple>> Bins { get; set; } = null;
+        public IList<Bin> Bins { get; set; } = null;
 
         /// <summary>
         /// campo in cui salvo la lunghezza massima coperta dagli item

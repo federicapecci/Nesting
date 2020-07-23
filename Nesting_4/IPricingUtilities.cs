@@ -8,7 +8,7 @@ namespace Nesting_4
     {
         double ComputePricingRule(string pricingRule, double height, double width);
 
-        void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin<Tuple>> bins, string priceUpdatingRule, string partitionType);
+        void ComputePricingUpdateRule(double z, IList<Item> items, IList<Bin> bins, string priceUpdatingRule, string partitionType);
 
     }
 }

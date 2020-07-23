@@ -18,7 +18,7 @@ namespace Nesting_4
             IConfigurationIO jsonConfigurationIO = new JsonConfigurationIO();
 
             //leggo da file json come impostare i parametri dell'algortimo hsolve e li salvo nell'oggetto configuration
-            Configuration configuration = jsonConfigurationIO.ReadAllData("2_configuration");
+            Configuration configuration = jsonConfigurationIO.ReadAllData("6_configuration");
 
             //lancio l'algoritmo passando i parametri della configurazione
             HBP hbp = new HBP(configuration);
@@ -26,7 +26,7 @@ namespace Nesting_4
 
             //scrivo il file dxf
             IDrawer dxfDrawer = new DxfDrawer();
-            dxfDrawer.WriteAllData(hbp.Sequences, "2_output");
+            dxfDrawer.WriteAllData(hbp.Sequences, "6_output_end_removed");
 
             //leggo risultato timer
             watch.Stop();

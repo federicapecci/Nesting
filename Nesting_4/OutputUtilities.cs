@@ -22,7 +22,7 @@ namespace Nesting_4
         /// </summary>
         /// <param name="bins"></param>
         /// <returns></returns>
-        public bool IsNewBestWidthFound(Bin<Tuple> bin) 
+        public bool IsNewBestWidthFound(Bin bin) 
         {
            
                 double currentWidth = double.MinValue;
@@ -76,7 +76,7 @@ namespace Nesting_4
             return percentage;
         }
 
-        public bool IsNewBestAreaFound(Bin<Tuple> bin)
+        public bool IsNewBestAreaFound(Bin bin)
         {
             double currentArea = 0;
 
